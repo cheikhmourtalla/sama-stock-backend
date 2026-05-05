@@ -15,7 +15,6 @@ type Product = {
   purchasePrice: number;
   alertThreshold: number;
   description?: string | null;
-  image?: string | null;
 };
 
 type ProductPayload = {
@@ -25,7 +24,7 @@ type ProductPayload = {
   purchasePrice: number;
   alertThreshold: number;
   description?: string;
-  image?: string;
+
 };
 
 const initialForm: ProductPayload = {
@@ -35,7 +34,6 @@ const initialForm: ProductPayload = {
   purchasePrice: 0,
   alertThreshold: 5,
   description: "",
-  image: "",
 };
 
 export default function Products() {
@@ -107,7 +105,6 @@ export default function Products() {
       purchasePrice: product.purchasePrice,
       alertThreshold: product.alertThreshold,
       description: product.description || "",
-      image: product.image || "",
     });
     setEditingId(product.id);
     setShowForm(true);

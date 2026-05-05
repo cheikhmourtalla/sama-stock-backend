@@ -4,13 +4,10 @@ import type { Product } from "../types/product";
 export type CreateProductPayload = {
   name: string;
   description?: string;
-  category: string;
-  reference: string;
   quantity: number;
   purchasePrice: number;
   salePrice: number;
   alertThreshold: number;
-  image?: string;
 };
 
 export type ProductQueryParams = {

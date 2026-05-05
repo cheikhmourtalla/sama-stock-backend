@@ -1,5 +1,7 @@
+import {  } from './product.controller';
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
+
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
@@ -83,19 +85,14 @@ export const createProduct = async (req: Request, res: Response) => {
     const {
       name,
       description,
-      category,
-      reference,
       quantity,
       purchasePrice,
       salePrice,
       alertThreshold,
-      image,
     } = req.body;
 
     if (
       !name ||
-      !category ||
-      !reference ||
       purchasePrice == null ||
       salePrice == null
     ) {
@@ -104,27 +101,16 @@ export const createProduct = async (req: Request, res: Response) => {
       });
     }
 
-    const existingProduct = await prisma.product.findUnique({
-      where: { reference },
-    });
-
-    if (existingProduct) {
-      return res.status(409).json({
-        message: "Cette référence existe déjà",
-      });
-    }
+    
 
     const product = await prisma.product.create({
       data: {
         name,
         description,
-        category,
-        reference,
         quantity: quantity ?? 0,
         purchasePrice,
         salePrice,
         alertThreshold: alertThreshold ?? 5,
-        image,
       },
     });
 
@@ -153,13 +139,11 @@ export const updateProduct = async (req: Request, res: Response) => {
     const {
       name,
       description,
-      category,
-      reference,
       quantity,
       purchasePrice,
       salePrice,
       alertThreshold,
-      image,
+
     } = req.body;
 
     const existingProduct = await prisma.product.findUnique({
@@ -172,30 +156,19 @@ export const updateProduct = async (req: Request, res: Response) => {
       });
     }
 
-    if (reference && reference !== existingProduct.reference) {
-      const referenceAlreadyUsed = await prisma.product.findUnique({
-        where: { reference },
-      });
 
-      if (referenceAlreadyUsed) {
-        return res.status(409).json({
-          message: "Cette référence existe déjà",
-        });
-      }
-    }
+      
 
     const updatedProduct = await prisma.product.update({
       where: { id },
       data: {
         name,
         description,
-        category,
-        reference,
         quantity,
         purchasePrice,
         salePrice,
         alertThreshold,
-        image,
+    
       },
     });
 
@@ -204,6 +177,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       product: updatedProduct,
     });
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: "Erreur lors de la modification du produit",
       error,

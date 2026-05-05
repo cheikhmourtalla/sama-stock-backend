@@ -8,7 +8,6 @@ import {
   X,
   ChevronRight,
   Users,
-  Wallet,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import logo from "../assets/logo.jpg";
@@ -19,7 +18,6 @@ const links = [
   { name: "Clients", path: "/clients", icon: Users },
   { name: "Stock", path: "/stock", icon: Boxes },
   { name: "Ventes", path: "/sales", icon: ShoppingCart },
-  { name: "Caisse", path: "/caisse", icon: Wallet },
   
 ];
 
