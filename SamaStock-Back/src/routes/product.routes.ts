@@ -1,34 +1,51 @@
 import { Router } from "express";
-import {
-  createProduct,
-  deleteProduct,
-  getLowStockProducts,
-  getOutOfStockProducts,
-  getProductById,
-  getProducts,
-  updateProduct,
-} from "../controllers/product.controller";
+import { productController } from "../controllers/product.controller";
 import { authorizeRoles, protect } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.get("/", protect, authorizeRoles("admin", "employee"), getProducts);
+router.get(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  productController.getProducts,
+);
 router.get(
   "/low-stock",
   protect,
   authorizeRoles("admin", "employee"),
-  getLowStockProducts
+  productController.getLowStockProducts,
 );
 router.get(
   "/out-of-stock",
   protect,
   authorizeRoles("admin", "employee"),
-  getOutOfStockProducts
+  productController.getOutOfStockProducts,
 );
-router.get("/:id", protect, authorizeRoles("admin", "employee"), getProductById);
+router.get(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "employee"),
+  productController.getProductById,
+);
 
-router.post("/", protect, authorizeRoles("admin"), createProduct);
-router.put("/:id", protect, authorizeRoles("admin"), updateProduct);
-router.delete("/:id", protect, authorizeRoles("admin"), deleteProduct);
+router.post(
+  "/",
+  protect,
+  authorizeRoles("admin"),
+  productController.createProduct,
+);
+router.put(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  productController.updateProduct,
+);
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  productController.deleteProduct,
+);
 
 export default router;

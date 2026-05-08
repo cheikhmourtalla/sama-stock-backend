@@ -1,12 +1,5 @@
 import { Router } from "express";
-import {
-  getSales,
-  getSaleById,
-  createSale,
-  updateSale,
-  deleteSale,
-  addSalePayment,
-} from "../controllers/sale.controller";
+import { saleController } from "../controllers/sale.controller";
 import { protect, authorizeRoles } from "../middlewares/auth.middleware";
 
 console.log("SALE ROUTES FILE LOADED");
@@ -25,14 +18,39 @@ router.patch(
   "/:id/payment",
   protect,
   authorizeRoles("admin", "employee"),
-  addSalePayment
+  saleController.addSalePayment,
 );
 
 // autres routes
-router.get("/", protect, authorizeRoles("admin", "employee"), getSales);
-router.get("/:id", protect, authorizeRoles("admin", "employee"), getSaleById);
-router.post("/", protect, authorizeRoles("admin", "employee"), createSale);
-router.put("/:id", protect, authorizeRoles("admin", "employee"), updateSale);
-router.delete("/:id", protect, authorizeRoles("admin"), deleteSale);
+router.get(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.getSales,
+);
+router.get(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.getSaleById,
+);
+router.post(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.createSale,
+);
+router.put(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.updateSale,
+);
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  saleController.deleteSale,
+);
 
 export default router;
