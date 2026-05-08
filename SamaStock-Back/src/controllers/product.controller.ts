@@ -1,8 +1,6 @@
 import {  } from './product.controller';
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
-
-
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const search = typeof req.query.search === "string" ? req.query.search : "";

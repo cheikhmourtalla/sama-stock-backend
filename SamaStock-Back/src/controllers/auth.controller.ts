@@ -24,6 +24,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
+    console.log(isPasswordValid);
 
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -38,8 +39,10 @@ export const login = async (req: Request, res: Response) => {
         role: user.role,
       },
       process.env.JWT_SECRET as string,
-      { expiresIn: "1d" }
+      { expiresIn: "1d" },
     );
+
+    console.log(token);
 
     return res.status(200).json({
       message: "Connexion réussie",

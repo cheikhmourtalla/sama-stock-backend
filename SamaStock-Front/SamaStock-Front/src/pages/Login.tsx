@@ -31,6 +31,7 @@ export default function Login() {
 
       toast.success("Connexion réussie");
       navigate("/", { replace: true });
+      navigate("/", { replace: true });
     } catch (error: any) {
       console.error("Erreur login", error);
 
