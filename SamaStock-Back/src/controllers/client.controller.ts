@@ -2,14 +2,11 @@ import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 import { ClientService } from "../services/client.service";
 export const getClients = async (_req: Request, res: Response) => {
-  
   const clients = await ClientService.getClient();
   return res
     .status(200)
     .json({ success: true, data: clients, message: "Client list" });
 };
-
-
 
 export const getClientById = async (req: Request, res: Response) => {
   try {
@@ -37,15 +34,15 @@ export const getClientById = async (req: Request, res: Response) => {
 
     const totalPurchases = client.sales.reduce(
       (sum, sale) => sum + sale.totalAmount,
-      0
+      0,
     );
     const totalPaid = client.sales.reduce(
       (sum, sale) => sum + sale.paidAmount,
-      0
+      0,
     );
     const totalRemaining = client.sales.reduce(
       (sum, sale) => sum + sale.remaining,
-      0
+      0,
     );
 
     return res.status(200).json({
