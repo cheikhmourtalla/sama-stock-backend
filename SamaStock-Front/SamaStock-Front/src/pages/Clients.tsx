@@ -64,7 +64,7 @@ export default function Clients() {
     try {
       setLoading(true);
       const data = await getClients();
-      setClients(data);
+      setClients(data.data);
     } catch (error) {
       console.error("Erreur clients", error);
       toast.error("Erreur lors du chargement des clients");

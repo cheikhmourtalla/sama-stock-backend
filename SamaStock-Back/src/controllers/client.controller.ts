@@ -1,47 +1,15 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
-
+import { ClientService } from "../services/client.service";
 export const getClients = async (_req: Request, res: Response) => {
-  try {
-    const clients = await prisma.client.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        sales: true,
-      },
-    });
-
-    const formattedClients = clients.map((client) => {
-      const totalPurchases = client.sales.reduce(
-        (sum, sale) => sum + sale.totalAmount,
-        0
-      );
-      const totalPaid = client.sales.reduce(
-        (sum, sale) => sum + sale.paidAmount,
-        0
-      );
-      const totalRemaining = client.sales.reduce(
-        (sum, sale) => sum + sale.remaining,
-        0
-      );
-
-      return {
-        ...client,
-        totalPurchases,
-        totalPaid,
-        totalRemaining,
-      };
-    });
-
-    return res.status(200).json(formattedClients);
-  } catch (error) {
-    return res.status(500).json({
-      message: "Erreur lors de la récupération des clients",
-      error,
-    });
-  }
+  
+  const clients = await ClientService.getClient();
+  return res
+    .status(200)
+    .json({ success: true, data: clients, message: "Client list" });
 };
+
+
 
 export const getClientById = async (req: Request, res: Response) => {
   try {
