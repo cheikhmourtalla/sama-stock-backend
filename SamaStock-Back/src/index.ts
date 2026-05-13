@@ -12,6 +12,7 @@ import stockRoutes from "./routes/stock.routes";
 import saleRoutes from "./routes/sale.routes";
 import dashboardRoutes from "./routes/dashboard.routes";
 import clientRoutes from "./routes/client.routes";
+import supplierRoute from "./routes/supplier.route";
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -31,9 +32,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/stock", stockRoutes);
-console.log("MOUTING /api/sales");
 app.use("/api/sales", saleRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/suppliers", supplierRoute);
 
 app.use((req, res) => {
   res.status(404).json({ message: `Route non trouvée: ${req.originalUrl}` });

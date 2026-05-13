@@ -17,6 +17,7 @@ model User {
 
 model Product {
   id            Int      @id @default(autoincrement())
+  
   name          String
   description   String?
   quantity      Int      @default(0)
@@ -67,3 +68,29 @@ model Sale {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   client  Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
 }
+
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  // Relation product
+nom       String
+email     String   @unique
+adresse   String?
+entreprise String
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+
+
+}
+
+// // nom du fournisseur ;
+// téléphone ;
+// email ;
+// adresse ;
+// entreprise ;
+// produits fournis ;
+// date d’ajout.
+
+// a supplier can supply one or many products
+
+// a products can be supplied by one or many suppliers
