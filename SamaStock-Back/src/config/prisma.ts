@@ -4,11 +4,11 @@ import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST || "localhost",
-  port: Number(process.env.DATABASE_PORT) || 3309,
+  port: Number(process.env.DATABASE_PORT) || 3306,
   user: process.env.DATABASE_USER || "root",
-  password : '1f2722a99C#',
+  password : '0000',
   // password: process.env.DATABASE_PASSWORD || "",
-  database: process.env.DATABASE_NAME || "samastock_db",
+  database: process.env.DATABASE_NAME || "sunustock_db",
 });
 
 export const prisma = new PrismaClient({ adapter });

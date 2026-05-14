@@ -7,6 +7,6 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: env("DATABASE_URL"),
+    url: ("mysql://root:0000@localhost:3306/sunustock_db"),
   },
 });
