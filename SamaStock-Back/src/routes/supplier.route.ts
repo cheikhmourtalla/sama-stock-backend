@@ -40,12 +40,27 @@ const router = Router();
 router.post(
   "/",
   protect,
-  authorizeRoles("admin", "employee"),
+  authorizeRoles("admin"),
   supplierController.createFournisseur,
 );
-// router.get("/all");
-// router.get("/");
-// router.patch("/");
-// router.delete("/");
+router.get(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  supplierController.findSuppliers,
+);
+router.patch(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  supplierController.updateSuppliers,
+);
+router.delete(
+  "/:id",
+
+  protect,
+  authorizeRoles("admin"),
+  supplierController.deleteSuppliers,
+);
 
 export default router;

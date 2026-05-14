@@ -1,7 +1,6 @@
 import { prisma } from "../config/prisma";
 
 export const ProductService = {
-
   // get products
   async getProducts(
     search: string,
@@ -9,7 +8,6 @@ export const ProductService = {
     page: number,
     limit: number,
   ) {
-
     const skip = (page - 1) * limit;
 
     const where: any = {};
@@ -50,7 +48,6 @@ export const ProductService = {
 
   // get one product
   async getProductById(id: number) {
-
     if (isNaN(id)) {
       throw new Error("ID invalide");
     }
@@ -68,6 +65,7 @@ export const ProductService = {
 
   // create product
   async createProduct(data: {
+    supplierId: number;
     name: string;
     description?: string;
     quantity?: number;
@@ -75,8 +73,8 @@ export const ProductService = {
     salePrice: number;
     alertThreshold?: number;
   }) {
-
     const {
+      supplierId,
       name,
       description,
       quantity,
@@ -85,18 +83,13 @@ export const ProductService = {
       alertThreshold,
     } = data;
 
-    if (
-      !name ||
-      purchasePrice == null ||
-      salePrice == null
-    ) {
-      throw new Error(
-        "Les champs obligatoires sont manquants"
-      );
+    if (!name || purchasePrice == null || salePrice == null) {
+      throw new Error("Les champs obligatoires sont manquants");
     }
 
     const product = await prisma.product.create({
       data: {
+        supplier_id: supplierId,
         name,
         description,
         quantity: quantity ?? 0,
@@ -105,7 +98,6 @@ export const ProductService = {
         alertThreshold: alertThreshold ?? 5,
       },
     });
-
     return product;
   },
 
@@ -121,40 +113,35 @@ export const ProductService = {
       alertThreshold?: number;
     },
   ) {
-
     if (isNaN(id)) {
       throw new Error("ID invalide");
     }
 
-    const existingProduct =
-      await prisma.product.findUnique({
-        where: { id },
-      });
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+    });
 
     if (!existingProduct) {
       throw new Error("Produit introuvable");
     }
 
-    const updatedProduct =
-      await prisma.product.update({
-        where: { id },
-        data,
-      });
+    const updatedProduct = await prisma.product.update({
+      where: { id },
+      data,
+    });
 
     return updatedProduct;
   },
 
   // delete product
   async deleteProduct(id: number) {
-
     if (isNaN(id)) {
       throw new Error("ID invalide");
     }
 
-    const existingProduct =
-      await prisma.product.findUnique({
-        where: { id },
-      });
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+    });
 
     if (!existingProduct) {
       throw new Error("Produit introuvable");
@@ -169,7 +156,6 @@ export const ProductService = {
 
   // low stock products
   async getLowStockProducts() {
-
     const products = await prisma.product.findMany({
       where: {
         quantity: {
@@ -182,8 +168,7 @@ export const ProductService = {
     });
 
     const lowStockProducts = products.filter(
-      (product) =>
-        product.quantity <= product.alertThreshold
+      (product) => product.quantity <= product.alertThreshold,
     );
 
     return lowStockProducts;
@@ -191,7 +176,6 @@ export const ProductService = {
 
   // out of stock products
   async getOutOfStockProducts() {
-
     const products = await prisma.product.findMany({
       where: {
         quantity: 0,

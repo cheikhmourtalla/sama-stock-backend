@@ -12,7 +12,7 @@ export interface AuthRequest extends Request {
 export const protect = (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const authHeader = req.headers.authorization;
@@ -33,8 +33,7 @@ export const protect = (
 
     req.user = decoded;
 
-    console.log(req.user )
-    
+    console.log(req.user);
 
     next();
   } catch (error) {
@@ -46,6 +45,8 @@ export const protect = (
 
 export const authorizeRoles = (...roles: string[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
+    // console.log(req.user);
+
     if (!req.user) {
       return res.status(401).json({
         message: "Accès non autorisé",
