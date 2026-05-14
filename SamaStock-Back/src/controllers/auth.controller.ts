@@ -6,6 +6,7 @@ const loginController = {
     // Validate Data entry
     const { email, password } = req.body;
     const token = await AuthService.login(email, password);
+    console.log(token);
     return res.status(200).json({ success: true, token, message: "ok" });
   },
 };

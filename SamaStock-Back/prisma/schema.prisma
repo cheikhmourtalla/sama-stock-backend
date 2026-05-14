@@ -17,9 +17,11 @@ model User {
 
 model Product {
   id            Int      @id @default(autoincrement())
+  supplier_id Int @default(0)
+  supplier Supplier @relation(fields: [supplier_id], references: [id], onDelete:  Cascade)
   name          String
   description   String?
-  quantity      Int      @default(0)
+  quantity      Int      
   purchasePrice Float
   salePrice     Float
   alertThreshold Int
@@ -28,6 +30,7 @@ model Product {
 
   movements StockMovement[]
   sales     Sale[]
+
 }
 
 model StockMovement {
@@ -37,7 +40,6 @@ model StockMovement {
   quantity  Int
   note      String?
   createdAt DateTime @default(now())
-
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
@@ -67,3 +69,30 @@ model Sale {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   client  Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
 }
+
+
+model Supplier {
+id        Int      @id @default(autoincrement())
+name       String
+phone  String
+address   String?
+// email     String   @unique
+// entreprise String
+createdAt DateTime? @default(now())
+updatedAt DateTime? @updatedAt
+product Product[]
+
+@@map("suppliers")
+}
+
+// // nom du fournisseur ;
+// téléphone ;
+// email ;
+// adresse ;
+// entreprise ;
+// produits fournis ;
+// date d’ajout.
+
+// a supplier can supply one or many products
+
+// a products can be supplied by one or many suppliers
