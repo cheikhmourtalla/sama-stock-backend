@@ -17,7 +17,7 @@ model User {
 
 model Product {
   id             Int      @id @default(autoincrement())
-  supplier_id    Int?      @default(0)
+  supplier_id    Int?      
   supplier       Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
   name           String
   description    String?
