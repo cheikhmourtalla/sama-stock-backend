@@ -108,8 +108,8 @@ enum CashType {
 
 model TransactionSummary {
     id Int @id @default(autoincrement())
-    transaction_id  Int 
-    transaction Transaction @relation(fields: [ transaction_id] , references: [id])
+    transaction_id  Int?
+    transaction Transaction? @relation(fields: [ transaction_id] , references: [id])
     balance Int
     entries Int
     exits Int

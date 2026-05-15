@@ -41,6 +41,8 @@ export const saleController = {
     res: Response,
   ) {
 
+    console.log(req.body)
+
     const result =
       await SaleService.createSale(
         req.body,
