@@ -57,7 +57,6 @@ router.patch(
 );
 router.delete(
   "/:id",
-
   protect,
   authorizeRoles("admin"),
   supplierController.deleteSuppliers,

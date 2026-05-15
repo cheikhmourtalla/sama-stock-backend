@@ -94,6 +94,7 @@ model Transaction {
   paymentMethod PaymentMethod
   createdAt     DateTime?     @default(now())
   updatedAt     DateTime?     @updatedAt
+  transactionSummary  TransactionSummary[]
 
   @@map("transactions")
 }
@@ -104,6 +105,17 @@ enum CashType {
   EXIT
   ENTRY
 }
+
+model TransactionSummary {
+    id Int @id @default(autoincrement())
+    transaction_id  Int 
+    transaction Transaction @relation(fields: [ transaction_id] , references: [id])
+    balance Int
+    entries Int
+    exits Int
+    transactions Int
+}
+
 
 enum PaymentMethod {
   CASH
