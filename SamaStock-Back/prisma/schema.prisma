@@ -86,10 +86,6 @@ model Supplier {
   @@map("suppliers")
 }
 
-// ============================
-// CASH SYSTEM
-// ============================
-
 model CashSession {
   id            Int            @id @default(autoincrement())
   openedAt      DateTime       @default(now())
