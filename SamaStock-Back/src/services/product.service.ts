@@ -87,9 +87,9 @@ export const ProductService = {
       throw new Error("Les champs obligatoires sont manquants");
     }
 
+    console.log(data);
     const product = await prisma.product.create({
       data: {
-        supplier_id: supplierId,
         name,
         description,
         quantity: quantity ?? 0,

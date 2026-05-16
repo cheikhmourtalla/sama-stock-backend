@@ -6,7 +6,7 @@ async function main() {
   const users = [
     {
       name: "Admin SamaStock",
-      email: "admin@gmail.com",
+      email: "admin@samastock.com",
       password: "admin123",
       role: "admin",
     },
