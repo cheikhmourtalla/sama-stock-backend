@@ -36,6 +36,8 @@ model Product {
 
 model StockMovement {
   id        Int      @id @default(autoincrement())
+  supplier_id Int 
+  supplier Supplier @relation(fields: [supplier_id] , references: [id])
   productId Int
   type      String
   quantity  Int
@@ -50,7 +52,6 @@ model Client {
   name      String
   phone     String   @unique
   createdAt DateTime @default(now())
-
   sales Sale[]
 }
 
@@ -66,7 +67,6 @@ model Sale {
   customer    String?
   note        String?
   createdAt   DateTime  @default(now())
-
   product Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   client  Client?     @relation(fields: [clientId], references: [id], onDelete: SetNull)
   cash    Transaction[]
@@ -79,6 +79,7 @@ model Supplier {
   address   String?
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
+  stock  StockMovement[]
 
   product Product[]
 
