@@ -1,16 +1,17 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
+
 import { SaleService } from "../services/sale.service";
 
+import {
+  CreateSaleSchema,
+  UpdateSaleSchema,
+  AddSalePaymentSchema,
+} from "../dto/sale/sale.dto";
+
 export const saleController = {
-
-  // get sales
-  async getSales(
-    _req: Request,
-    res: Response,
-  ) {
-
-    const sales =
-      await SaleService.getSales();
+  // get all sales
+  async getSales(_req: Request, res: Response) {
+    const sales = await SaleService.getSales();
 
     return res.status(200).json({
       success: true,
@@ -19,15 +20,10 @@ export const saleController = {
   },
 
   // get one sale
-  async getSaleById(
-    req: Request,
-    res: Response,
-  ) {
-
+  async getSaleById(req: Request, res: Response) {
     const id = Number(req.params.id);
 
-    const sale =
-      await SaleService.getSaleById(id);
+    const sale = await SaleService.getSaleById(id);
 
     return res.status(200).json({
       success: true,
@@ -36,87 +32,57 @@ export const saleController = {
   },
 
   // create sale
-  async createSale(
-    req: Request,
-    res: Response,
-  ) {
+  async createSale(req: Request, res: Response) {
+    const validatedData = CreateSaleSchema.parse(req.body);
 
-    const result =
-      await SaleService.createSale(
-        req.body,
-      );
+    const sale = await SaleService.createSale(validatedData);
 
     return res.status(201).json({
       success: true,
-      data: result.sale,
-      product: result.product,
-      message:
-        "Vente enregistrée avec succès",
+      data: sale,
+      message: "Vente enregistrée avec succès",
     });
   },
 
   // update sale
-  async updateSale(
-    req: Request,
-    res: Response,
-  ) {
-
+  async updateSale(req: Request, res: Response) {
     const id = Number(req.params.id);
 
-    const sale =
-      await SaleService.updateSale(
-        id,
-        req.body,
-      );
+    const validatedData = UpdateSaleSchema.parse(req.body);
+
+    const sale = await SaleService.updateSale(id, validatedData);
 
     return res.status(200).json({
       success: true,
       data: sale,
-      message:
-        "Vente modifiée avec succès",
+      message: "Vente modifiée avec succès",
     });
   },
 
   // delete sale
-  async deleteSale(
-    req: Request,
-    res: Response,
-  ) {
-
+  async deleteSale(req: Request, res: Response) {
     const id = Number(req.params.id);
 
     await SaleService.deleteSale(id);
 
     return res.status(200).json({
       success: true,
-      message:
-        "Vente supprimée avec succès",
+      message: "Vente supprimée avec succès",
     });
   },
 
   // add payment
-  async addSalePayment(
-    req: Request,
-    res: Response,
-  ) {
+  async addSalePayment(req: Request, res: Response) {
+    const saleId = Number(req.params.id);
 
-    const saleId = Number(
-      req.params.id,
-    );
+    const validatedData = AddSalePaymentSchema.parse(req.body);
 
-    const { amount } = req.body;
-
-    const sale =
-      await SaleService.addSalePayment(
-        saleId,
-        amount,
-      );
+    const sale = await SaleService.addSalePayment(saleId, validatedData.amount);
 
     return res.status(200).json({
       success: true,
       data: sale,
-      message:
-        "Paiement ajouté avec succès",
+      message: "Paiement ajouté avec succès",
     });
   },
 };

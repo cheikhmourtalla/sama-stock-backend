@@ -143,6 +143,7 @@ model Transaction {
   paymentMethod PaymentMethod
   createdAt     DateTime?     @default(now())
   updatedAt     DateTime?     @updatedAt
+  transactionSummary  TransactionSummary[]
 
   @@map("transactions")
 }

@@ -1,57 +1,37 @@
 import { prisma } from "../config/prisma";
 
+import { SaleRepository } from "../repositories/sale.repository";
+
+import {
+  CreateSaleDto,
+  UpdateSaleDto,
+} from "../dto/sale/sale.dto";
+
 export const SaleService = {
-
-  // get sales
   async getSales() {
-
-    const sales = await prisma.sale.findMany({
-      include: {
-        product: true,
-        client: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    return sales;
+    return SaleRepository.findAll();
   },
 
-  // get one sale
   async getSaleById(id: number) {
-
     if (!id) {
-      throw new Error(
-        "Identifiant de vente invalide"
-      );
+      throw new Error("Identifiant invalide");
     }
 
-    const sale = await prisma.sale.findUnique({
-      where: { id },
-      include: {
-        product: true,
-        client: true,
-      },
-    });
+    const sale =
+      await SaleRepository.findById(id);
 
     if (!sale) {
-      throw new Error("Vente introuvable");
+      throw new Error(
+        "Vente introuvable",
+      );
     }
 
     return sale;
   },
 
-  // create sale
-  async createSale(data: {
-    productId: number;
-    clientId?: number;
-    quantity: number;
-    paidAmount?: number;
-    customer?: string;
-    note?: string;
-  }) {
-
+  async createSale(
+    data: CreateSaleDto,
+  ) {
     const {
       productId,
       clientId,
@@ -61,297 +41,273 @@ export const SaleService = {
       note,
     } = data;
 
-    if (!productId || !quantity) {
-      throw new Error(
-        "productId et quantity sont obligatoires"
-      );
-    }
+    return prisma.$transaction(
+      async (tx) => {
+        // product
+        const product =
+          await tx.product.findUnique({
+            where: {
+              id: productId,
+            },
+          });
 
-    const qty = Number(quantity);
+        if (!product) {
+          throw new Error(
+            "Produit introuvable",
+          );
+        }
 
-    if (qty <= 0) {
-      throw new Error(
-        "La quantité doit être supérieure à 0"
-      );
-    }
+        // stock atomic update
+        const stockUpdate =
+          await tx.product.updateMany({
+            where: {
+              id: productId,
+              quantity: {
+                gte: quantity,
+              },
+            },
 
-    const product = await prisma.product.findUnique({
-      where: {
-        id: Number(productId),
+            data: {
+              quantity: {
+                decrement: quantity,
+              },
+            },
+          });
+
+        if (
+          stockUpdate.count === 0
+        ) {
+          throw new Error(
+            "Stock insuffisant",
+          );
+        }
+
+        // client
+        let client = null;
+
+        if (clientId) {
+          client =
+            await tx.client.findUnique({
+              where: {
+                id: clientId,
+              },
+            });
+
+          if (!client) {
+            throw new Error(
+              "Client introuvable",
+            );
+          }
+        }
+
+        // pricing
+        const unitPrice = Number(
+          product.salePrice,
+        );
+
+        const totalAmount =
+          unitPrice * quantity;
+
+        const paid = Number(
+          paidAmount ?? totalAmount,
+        );
+
+        if (
+          paid < 0 ||
+          paid > totalAmount
+        ) {
+          throw new Error(
+            "Montant invalide",
+          );
+        }
+
+        const remaining =
+          totalAmount - paid;
+
+        // sale
+        const sale =
+          await SaleRepository.create(
+            tx,
+            {
+              productId,
+              clientId:
+                clientId ?? null,
+              quantity,
+              unitPrice,
+              totalAmount,
+              paidAmount: paid,
+              remaining,
+              customer:
+                customer ??
+                client?.name ??
+                null,
+              note:
+                note ?? null,
+            },
+          );
+
+        // stock movement
+        await tx.stockMovement.create({
+          data: {
+            productId,
+            type: "SALE",
+            quantity,
+            note:
+              note ??
+              "Vente effectuée",
+          },
+        });
+
+        return sale;
       },
-    });
-
-    if (!product) {
-      throw new Error("Produit introuvable");
-    }
-
-    if (product.quantity < qty) {
-      throw new Error(
-        "Stock insuffisant pour effectuer cette vente"
-      );
-    }
-
-    let client = null;
-
-    if (clientId) {
-
-      client = await prisma.client.findUnique({
-        where: {
-          id: Number(clientId),
-        },
-      });
-
-      if (!client) {
-        throw new Error("Client introuvable");
-      }
-    }
-
-    const unitPrice = Number(product.salePrice);
-
-    const totalAmount = unitPrice * qty;
-
-    const paid = Number(
-      paidAmount ?? totalAmount
     );
-
-    if (
-      paid < 0 ||
-      paid > totalAmount
-    ) {
-      throw new Error(
-        "Le montant payé est invalide"
-      );
-    }
-
-    const remaining =
-      totalAmount - paid;
-
-    const updatedProduct =
-      await prisma.product.update({
-        where: {
-          id: Number(productId),
-        },
-        data: {
-          quantity:
-            product.quantity - qty,
-        },
-      });
-
-    const sale = await prisma.sale.create({
-      data: {
-        productId: Number(productId),
-        clientId: clientId
-          ? Number(clientId)
-          : null,
-        quantity: qty,
-        unitPrice,
-        totalAmount,
-        paidAmount: paid,
-        remaining,
-        customer:
-          customer ??
-          client?.name ??
-          null,
-        note: note ?? null,
-      },
-      include: {
-        product: true,
-        client: true,
-      },
-    });
-
-    await prisma.stockMovement.create({
-      data: {
-        productId: Number(productId),
-        type: "SALE",
-        quantity: qty,
-        note:
-          note ??
-          "Vente effectuée",
-      },
-    });
-
-    return {
-      sale,
-      product: updatedProduct,
-    };
   },
 
-  // update sale
   async updateSale(
     id: number,
-    data: {
-      note?: string;
-      customer?: string;
-    },
+    data: UpdateSaleDto,
   ) {
+    const sale =
+      await SaleRepository.findById(id);
 
-    if (!id) {
+    if (!sale) {
       throw new Error(
-        "Identifiant de vente invalide"
+        "Vente introuvable",
       );
     }
 
-    const existingSale =
-      await prisma.sale.findUnique({
-        where: { id },
-      });
+    return SaleRepository.update(
+      id,
+      {
+        customer:
+          data.customer ??
+          sale.customer,
 
-    if (!existingSale) {
-      throw new Error(
-        "Vente introuvable"
-      );
-    }
-
-    const updatedSale =
-      await prisma.sale.update({
-        where: { id },
-        data: {
-          note:
-            data.note ??
-            existingSale.note,
-
-          customer:
-            data.customer ??
-            existingSale.customer,
-        },
-        include: {
-          product: true,
-          client: true,
-        },
-      });
-
-    return updatedSale;
-  },
-
-  // delete sale
-  async deleteSale(id: number) {
-
-    if (!id) {
-      throw new Error(
-        "Identifiant de vente invalide"
-      );
-    }
-
-    const existingSale =
-      await prisma.sale.findUnique({
-        where: { id },
-        include: {
-          product: true,
-        },
-      });
-
-    if (!existingSale) {
-      throw new Error(
-        "Vente introuvable"
-      );
-    }
-
-    await prisma.product.update({
-      where: {
-        id: existingSale.productId,
-      },
-      data: {
-        quantity:
-          existingSale.product.quantity +
-          existingSale.quantity,
-      },
-    });
-
-    await prisma.stockMovement.create({
-      data: {
-        productId:
-          existingSale.productId,
-        type: "ENTRY",
-        quantity:
-          existingSale.quantity,
         note:
-          "Annulation / suppression vente",
+          data.note ??
+          sale.note,
       },
-    });
-
-    await prisma.sale.delete({
-      where: { id },
-    });
-
-    return true;
+    );
   },
 
-  // add payment
+  async deleteSale(id: number) {
+    return prisma.$transaction(
+      async (tx) => {
+        const sale =
+          await tx.sale.findUnique({
+            where: { id },
+
+            include: {
+              product: true,
+            },
+          });
+
+        if (!sale) {
+          throw new Error(
+            "Vente introuvable",
+          );
+        }
+
+        // restore stock
+        await tx.product.update({
+          where: {
+            id: sale.productId,
+          },
+
+          data: {
+            quantity: {
+              increment:
+                sale.quantity,
+            },
+          },
+        });
+
+        // stock movement
+        await tx.stockMovement.create({
+          data: {
+            productId:
+              sale.productId,
+
+            type: "ENTRY",
+
+            quantity:
+              sale.quantity,
+
+            note:
+              "Suppression vente",
+          },
+        });
+
+        await SaleRepository.delete(
+          tx,
+          id,
+        );
+
+        return true;
+      },
+    );
+  },
+
   async addSalePayment(
     saleId: number,
     amount: number,
   ) {
+    return prisma.$transaction(
+      async (tx) => {
+        const sale =
+          await tx.sale.findUnique({
+            where: {
+              id: saleId,
+            },
 
-    if (
-      !saleId ||
-      amount === undefined ||
-      amount === null
-    ) {
-      throw new Error(
-        "L'identifiant de la vente et le montant sont obligatoires"
-      );
-    }
+            include: {
+              product: true,
+              client: true,
+            },
+          });
 
-    const paymentAmount =
-      Number(amount);
+        if (!sale) {
+          throw new Error(
+            "Vente introuvable",
+          );
+        }
 
-    if (paymentAmount <= 0) {
-      throw new Error(
-        "Le montant doit être supérieur à 0"
-      );
-    }
+        if (sale.remaining <= 0) {
+          throw new Error(
+            "Vente déjà soldée",
+          );
+        }
 
-    const sale =
-      await prisma.sale.findUnique({
-        where: { id: saleId },
-        include: {
-          product: true,
-          client: true,
-        },
-      });
+        if (
+          amount >
+          sale.remaining
+        ) {
+          throw new Error(
+            "Montant supérieur au reste",
+          );
+        }
 
-    if (!sale) {
-      throw new Error(
-        "Vente introuvable"
-      );
-    }
+        return tx.sale.update({
+          where: {
+            id: saleId,
+          },
 
-    if (sale.remaining <= 0) {
-      throw new Error(
-        "Cette vente est déjà totalement soldée"
-      );
-    }
+          data: {
+            paidAmount: {
+              increment: amount,
+            },
 
-    if (
-      paymentAmount >
-      sale.remaining
-    ) {
-      throw new Error(
-        "Le montant dépasse le reste à payer"
-      );
-    }
+            remaining: {
+              decrement: amount,
+            },
+          },
 
-    const updatedSale =
-      await prisma.sale.update({
-        where: {
-          id: saleId,
-        },
-        data: {
-          paidAmount:
-            sale.paidAmount +
-            paymentAmount,
-
-          remaining:
-            sale.remaining -
-            paymentAmount,
-        },
-        include: {
-          product: true,
-          client: true,
-        },
-      });
-
-    return updatedSale;
+          include: {
+            product: true,
+            client: true,
+          },
+        });
+      },
+    );
   },
 };
