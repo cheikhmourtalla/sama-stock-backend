@@ -15,8 +15,6 @@ export const AuthService = {
         throw new Error("Email ou mot de pass incorrect");
       }
 
-      //    Verify password
-
       const { password } = user;
       console.log(password);
       const isPasswordValid = await bcrypt.compare(PlainTextpassword, password);

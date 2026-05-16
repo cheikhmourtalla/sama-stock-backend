@@ -5,9 +5,10 @@ export const openCash = async (req: Request, res: Response) => {
   try {
     const { userId, openingAmount } = req.body;
 
+    console.log(req.body);
     const session = await cashService.openCashSession(
       Number(userId),
-      Number(openingAmount)
+      Number(openingAmount),
     );
 
     return res.status(201).json({

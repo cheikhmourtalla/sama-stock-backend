@@ -3,7 +3,7 @@ import { CashMovementType, PaymentMethod } from "@prisma/client";
 
 export const openCashSession = async (
   userId: number,
-  openingAmount: number
+  openingAmount: number,
 ) => {
   const existingSession = await prisma.cashSession.findFirst({
     where: {
@@ -38,11 +38,19 @@ export const closeCashSession = async () => {
   }
 
   const entries = session.movements
-    .filter((m) => m.type === CashMovementType.SALE || m.type === CashMovementType.CLIENT_PAYMENT)
+    .filter(
+      (m) =>
+        m.type === CashMovementType.SALE ||
+        m.type === CashMovementType.CLIENT_PAYMENT,
+    )
     .reduce((acc, m) => acc + m.amount, 0);
 
   const outputs = session.movements
-    .filter((m) => m.type === CashMovementType.SUPPLIER_PAYMENT || m.type === CashMovementType.EXPENSE)
+    .filter(
+      (m) =>
+        m.type === CashMovementType.SUPPLIER_PAYMENT ||
+        m.type === CashMovementType.EXPENSE,
+    )
     .reduce((acc, m) => acc + m.amount, 0);
 
   const closingAmount = session.openingAmount + entries - outputs;
@@ -111,8 +119,8 @@ export const getCashHistory = async () => {
     include: {
       movements: true,
       user: {
-        select: { name: true }
-      }
+        select: { name: true },
+      },
     },
   });
 };

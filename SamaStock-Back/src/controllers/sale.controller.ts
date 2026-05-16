@@ -34,7 +34,7 @@ export const saleController = {
   // create sale
   async createSale(req: Request, res: Response) {
     const validatedData = CreateSaleSchema.parse(req.body);
-
+    
     const sale = await SaleService.createSale(validatedData);
 
     return res.status(201).json({
@@ -77,7 +77,7 @@ export const saleController = {
 
     const validatedData = AddSalePaymentSchema.parse(req.body);
 
-    const sale = await SaleService.createSale(req.body);
+    const sale = await SaleService.addSalePayment(saleId, validatedData.amount);
 
     return res.status(200).json({
       success: true,
@@ -86,3 +86,15 @@ export const saleController = {
     });
   },
 };
+
+  // id: 4,
+  // productId: 1,
+  // clientId: 1,
+  // quantity: 2,
+  // unitPrice: 100,
+  // totalAmount: 200,
+  // paidAmount: 100,
+  // remaining: 100,
+  // customer: 'cheikh',
+  // note: null,
+  // createdAt: 2026-05-16T18:34:09.500Z

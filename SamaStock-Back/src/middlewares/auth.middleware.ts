@@ -34,7 +34,7 @@ export const protect = (
 
     req.user = decoded;
 
-    console.log(req.user);
+    // console.log(req.user);
 
     next();
   } catch (error) {

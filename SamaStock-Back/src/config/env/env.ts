@@ -1,8 +1,7 @@
-import dotenv from "dotenv";
+import "dotenv/config";
 import { envSchema } from "./env-schema";
-dotenv.config();
-// Validation immédiate
 const parsed = envSchema.safeParse(process.env);
+
 
 if (!parsed.success) {
   console.error("❌ Invalid environment variables:", parsed.error.format());

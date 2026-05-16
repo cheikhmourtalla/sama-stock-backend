@@ -3,6 +3,7 @@ import { prisma } from "../config/prisma";
 import { SaleRepository } from "../repositories/sale.repository";
 
 import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto";
+import { error } from "node:console";
 
 export const SaleService = {
   async getSales() {
@@ -23,8 +24,10 @@ export const SaleService = {
     return sale;
   },
 
-  async createSale(data: CreateSaleDto) {
+  async createSale(data: CreateSaleDto, saleId?: string) {
     const { productId, clientId, quantity, paidAmount, customer, note } = data;
+
+    console.log(paidAmount);
 
     if (quantity <= 0) {
       throw new Error("Quantité invalide");
@@ -111,7 +114,6 @@ export const SaleService = {
       // stock movement
       await tx.stockMovement.create({
         data: {
-          
           productId,
           type: "SALE",
           quantity,
@@ -119,7 +121,25 @@ export const SaleService = {
         },
       });
 
-      return sale;
+      const currentSession = await tx.cashSession.findFirst({
+        orderBy: { openedAt: "desc" },
+      });
+
+      if (!currentSession?.isOpen) {
+        throw new Error("Caisse fermer");
+      }
+
+      await tx.cashMovement.create({
+        data: {
+          sessionId: currentSession.id,
+          type: "SALE",
+          label: "Vente",
+          amount: paidAmount as number,
+          paymentMethod: "CASH",
+        },
+      });
+
+      return;
     });
   },
 
@@ -134,6 +154,75 @@ export const SaleService = {
       customer: data.customer ?? existingSale.customer,
       note: data.note ?? existingSale.note,
     });
+  },
+
+  async addSalePayment(saleId: number, paidAmount: number) {
+    const payment = prisma.$transaction(async (tx) => {
+      //  find the product
+      const findSale = await tx.sale.findUnique({
+        where: { id: saleId },
+      });
+
+      if (!paidAmount || paidAmount <= 0) {
+        throw new Error("Le montant du vensement est incorect ");
+      }
+
+      if (!findSale?.remaining) {
+        throw new Error("Impossible de trouver le  rest");
+      }
+
+      //  the versed amount should not be > to the remainig amount
+      if (paidAmount > findSale.remaining) {
+        console.error(
+          `Le montant definit est superieur au reste ( ${findSale.remaining} fcfa )`,
+        );
+        throw new Error("Le montant definit est superieur au reste.");
+      }
+
+      // check if the versed amount = remaing amount , if true , remainng = 0
+      const isCompletePayment =
+        findSale?.remaining === paidAmount ? true : false;
+
+      // calculate the new remaning
+      const restPayment = !isCompletePayment
+        ? findSale.remaining - paidAmount
+        : 0;
+
+      //  set remaining to 0
+      await tx.sale.update({
+        where: { id: saleId },
+        data: {
+          remaining: isCompletePayment ? 0 : restPayment,
+        },
+      });
+      console.log(restPayment);
+
+      const currentCashSession = await tx.cashSession.findFirst({
+        orderBy: { openedAt: "desc" },
+      });
+
+      if (!currentCashSession || !currentCashSession.isOpen) {
+        console.error(`current Session : ${currentCashSession}`);
+        throw new Error("Erreur avec la caisse. La Caisse  est il ouverte?");
+      }
+
+      await tx.cashMovement.create({
+        data: {
+          sessionId: currentCashSession.id,
+          type: "CLIENT_PAYMENT",
+          label: "Versement dette",
+          amount: paidAmount,
+          paymentMethod: "CASH",
+        },
+      });
+
+      console.log(findSale);
+      console.log(isCompletePayment);
+    });
+
+    return payment;
+
+    // check  check the reste if the versed is not complet
   },
 
   async deleteSale(id: number) {
@@ -182,3 +271,40 @@ export const SaleService = {
     });
   },
 };
+
+//  //  find the product
+//     const findSale = await prisma.sale.findUnique({
+//       where: { id: saleId },
+//     });
+
+//     if (!amount) {
+//       throw new Error("Le montant du vensement est incorect ");
+//     }
+
+//     if (!findSale?.remaining) {
+//       throw new Error("Impossible de trouver le  rest");
+//     }
+
+//     //  the versed amount should not be > to the remainig amount
+//     if (amount > findSale.remaining) {
+//       console.error(
+//         `Le montant definit est superieur au reste ( ${findSale.remaining} fcfa )`,
+//       );
+//       throw new Error("Le montant definit est superieur au reste.");
+//     }
+
+//     // check if the versed amount = remaing amount , if true , remainng = 0
+//     const isComplete = findSale?.remaining === amount ? true : false;
+//     if(isComplete){
+//       const validateSale = prisma.sale.update ({
+//         where : {id  : saleId},
+//         data : {
+//           remaining : 0
+//         }
+//       })
+//     }
+
+//     console.log(findSale);
+//     console.log(isComplete);
+
+//     // check  check the reste if the versed is not complet
