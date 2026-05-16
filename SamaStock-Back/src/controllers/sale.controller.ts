@@ -77,7 +77,7 @@ export const saleController = {
 
     const validatedData = AddSalePaymentSchema.parse(req.body);
 
-    const sale = await SaleService.addSalePayment(saleId, validatedData.amount);
+    const sale = await SaleService.createSale(req.body);
 
     return res.status(200).json({
       success: true,
