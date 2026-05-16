@@ -19,6 +19,8 @@ model User {
 
 model Product {
   id          Int       @id @default(autoincrement())
+  supplier_id Int?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
   name        String
   description String?
   quantity    Int
@@ -33,9 +35,7 @@ model Product {
 }
 
 model StockMovement {
-  id        Int   @id @default(autoincrement())
-  supplier_id Int?
-  supplier Supplier?  @relation(fields: [supplier_id] , references: [id])
+  id        Int      @id @default(autoincrement())
   productId Int
   type      String
   quantity  Int
@@ -77,11 +77,10 @@ model Supplier {
   name      String
   phone     String
   address   String?
-  stock StockMovement[]
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
 
-
+  product Product[]
 
   @@map("suppliers")
 }
@@ -140,6 +139,7 @@ model Transaction {
   paymentMethod PaymentMethod
   createdAt     DateTime?     @default(now())
   updatedAt     DateTime?     @updatedAt
+
 
   @@map("transactions")
 }
