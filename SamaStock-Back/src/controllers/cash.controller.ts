@@ -1,20 +1,77 @@
 import { Request, Response } from "express";
-import { cashService } from "../services/cash.service";
+import * as cashService from "../services/cash.service";
 
-export const cashController = {
-  async addOperation(req: Request, res: Response) {
-    const data = await cashService.addOp(req.body);
+export const openCash = async (req: Request, res: Response) => {
+  try {
+    const { userId, openingAmount } = req.body;
 
-    return res
-      .status(201)
-      .json({ success: true, data, message: "depend du type" });
-  },
+    const session = await cashService.openCashSession(
+      Number(userId),
+      Number(openingAmount)
+    );
 
-  async cash(req: Request, res: Response) {
-    const data = await cashService.findOps();
+    return res.status(201).json({
+      success: true,
+      data: session,
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
-    return res
-      .status(201)
-      .json({ success: true, data, message: "Caisse operations" });
-  },
+export const closeCash = async (req: Request, res: Response) => {
+  try {
+    const session = await cashService.closeCashSession();
+
+    return res.json({
+      success: true,
+      data: session,
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const currentCash = async (req: Request, res: Response) => {
+  try {
+    const session = await cashService.getCurrentSession();
+    return res.json(session);
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const createMovement = async (req: Request, res: Response) => {
+  try {
+    const movement = await cashService.addCashMovement(req.body);
+
+    return res.status(201).json({
+      success: true,
+      data: movement,
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const historyCash = async (req: Request, res: Response) => {
+  try {
+    const history = await cashService.getCashHistory();
+    return res.json(history);
+  } catch (error: any) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
 };

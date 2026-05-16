@@ -13,20 +13,22 @@ model User {
   password  String
   role      String   @default("admin")
   createdAt DateTime @default(now())
+
+  cashSessions CashSession[]
 }
 
 model Product {
-  id             Int      @id @default(autoincrement())
-  supplier_id    Int?      
-  supplier       Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
-  name           String
-  description    String?
-  quantity       Int
-  purchasePrice  Float
-  salePrice      Float
+  id          Int       @id @default(autoincrement())
+  supplier_id Int?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  quantity    Int
+  purchasePrice Float
+  salePrice     Float
   alertThreshold Int
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   movements StockMovement[]
   sales     Sale[]
@@ -39,7 +41,8 @@ model StockMovement {
   quantity  Int
   note      String?
   createdAt DateTime @default(now())
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Client {
@@ -52,21 +55,20 @@ model Client {
 }
 
 model Sale {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   productId   Int
   clientId    Int?
   quantity    Int
   unitPrice   Float
   totalAmount Float
-  paidAmount  Float   @default(0)
-  remaining   Float   @default(0)
+  paidAmount  Float     @default(0)
+  remaining   Float     @default(0)
   customer    String?
+  note        String?
+  createdAt   DateTime  @default(now())
 
-  note      String?
-  createdAt DateTime @default(now())
-
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  client  Client? @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  product Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  client  Client?     @relation(fields: [clientId], references: [id], onDelete: SetNull)
   cash    Transaction[]
 }
 
@@ -77,17 +79,64 @@ model Supplier {
   address   String?
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
-  product   Product[]
+
+  product Product[]
 
   @@map("suppliers")
 }
 
-//  Cash 
+// ============================
+// CASH SYSTEM
+// ============================
+
+model CashSession {
+  id            Int            @id @default(autoincrement())
+  openedAt      DateTime       @default(now())
+  closedAt      DateTime?
+  openingAmount Float
+  closingAmount Float?
+  isOpen        Boolean        @default(true)
+  userId        Int
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movements     CashMovement[]
+  createdAt     DateTime       @default(now())
+
+  @@map("cash_sessions")
+}
+
+model CashMovement {
+  id            Int              @id @default(autoincrement())
+  sessionId     Int
+  session       CashSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type          CashMovementType
+  label         String
+  amount        Float
+  paymentMethod PaymentMethod
+  note          String?
+  createdAt     DateTime         @default(now())
+
+  @@map("cash_movements")
+}
+
+model Expense {
+  id            Int           @id @default(autoincrement())
+  label         String
+  amount        Float
+  paymentMethod PaymentMethod
+  note          String?
+  createdAt     DateTime      @default(now())
+
+  @@map("expenses")
+}
+
+// ============================
+// TRANSACTIONS
+// ============================
 
 model Transaction {
-  id Int @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   sale_id       Int?
-  sale         Sale?          @relation(fields: [sale_id], references: [id], onDelete: NoAction)
+  sale          Sale?         @relation(fields: [sale_id], references: [id], onDelete: NoAction)
   type          CashType
   label         String
   amount        Float
@@ -98,11 +147,20 @@ model Transaction {
   @@map("transactions")
 }
 
-// =========================== ENUMNS 
+// ============================
+// ENUMS
+// ============================
 
 enum CashType {
   EXIT
   ENTRY
+}
+
+enum CashMovementType {
+  SALE
+  CLIENT_PAYMENT
+  SUPPLIER_PAYMENT
+  EXPENSE
 }
 
 enum PaymentMethod {
