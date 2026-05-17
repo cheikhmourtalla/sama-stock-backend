@@ -29,7 +29,7 @@ export const DashboardService = {
       (total, product) => {
         return (
           total +
-          product.quantity * product.purchasePrice
+          product.quantity * product.purchasePrice.toNumber()
         );
       },
       0
@@ -46,7 +46,7 @@ export const DashboardService = {
 
     const totalSalesAmount = sales.reduce(
       (total, sale) => {
-        return total + sale.totalAmount;
+        return total + sale.totalAmount.toNumber();
       },
       0
     );

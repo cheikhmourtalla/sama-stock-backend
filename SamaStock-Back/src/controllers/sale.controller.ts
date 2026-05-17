@@ -1,13 +1,13 @@
 import type { Request, Response } from "express";
 
-import { SaleService } from "../services/sale.service";
+import { SaleService } from "../services/sale.service.js";
 
 import {
   CreateSaleSchema,
   UpdateSaleSchema,
   AddSalePaymentSchema,
-} from "../dto/sale/sale.dto";
-import loggerService from "../services/logger.service";
+} from "../dto/sale/sale.dto.js";
+import loggerService from "../services/logger.service.js";
 
 export const saleController = {
   // get all sales

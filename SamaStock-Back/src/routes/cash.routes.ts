@@ -1,18 +1,38 @@
 import { Router } from "express";
-import {
-  openCash,
-  closeCash,
-  currentCash,
-  createMovement,
-  historyCash,
-} from "../controllers/cash.controller";
+import { cashController } from "../controllers/cash.controller";
+import { authorizeRoles, protect } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.post("/open", openCash);
-router.post("/close", closeCash);
-router.get("/current", currentCash);
-router.get("/history", historyCash);
-router.post("/movement", createMovement);
+router.post(
+  "/open",
+  protect,
+  authorizeRoles("admin", "employee"),
+  cashController.openCash,
+);
+router.post(
+  "/close",
+  protect,
+  authorizeRoles("admin", "employee"),
+  cashController.closeCash,
+);
+router.get(
+  "/current",
+  protect,
+  authorizeRoles("admin", "employee"),
+  cashController.currentCash,
+);
+router.get(
+  "/history",
+  protect,
+  authorizeRoles("admin", "employee"),
+  cashController.historyCash,
+);
+router.post(
+  "/movement",
+  protect,
+  authorizeRoles("admin", "employee"),
+  cashController.createMovement,
+);
 
 export default router;

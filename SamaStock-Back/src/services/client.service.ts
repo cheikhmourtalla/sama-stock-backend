@@ -19,17 +19,17 @@ export const ClientService = {
 
     const clienWithBillingTotals = clients.map((client) => {
       const totalPurchases = client.sales.reduce(
-        (sum, sale) => sum + sale.totalAmount,
+        (sum, sale) => sum + sale.totalAmount.toNumber(),
         0,
       );
 
       const totalPaid = client.sales.reduce(
-        (sum, sale) => sum + sale.paidAmount,
+        (sum, sale) => sum + sale.paidAmount.toNumber(),
         0,
       );
 
       const totalRemaining = client.sales.reduce(
-        (sum, sale) => sum + sale.remaining,
+        (sum, sale) => sum + sale.remaining.toNumber(),
         0,
       );
 
@@ -72,17 +72,17 @@ export const ClientService = {
     }
 
     const totalPurchases = client.sales.reduce(
-      (sum, sale) => sum + sale.totalAmount,
+      (sum, sale) => sum + sale.totalAmount.toNumber(),
       0,
     );
 
     const totalPaid = client.sales.reduce(
-      (sum, sale) => sum + sale.paidAmount,
+      (sum, sale) => sum + sale.paidAmount.toNumber(),
       0,
     );
 
     const totalRemaining = client.sales.reduce(
-      (sum, sale) => sum + sale.remaining,
+      (sum, sale) => sum + sale.remaining.toNumber(),
       0,
     );
 
