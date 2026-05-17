@@ -18,7 +18,7 @@ import {
   performanceLogger,
   rateLimitedLogger,
 } from "./middlewares/logger.middleware";
-import { globalErrorHandler, notFoundHandler } from "./middlewares/Error";
+import { globalErrorHandler, notFoundHandler } from "./middlewares/error";
 import { ErrorService } from "./services/error.service";
 
 // Import des routes
