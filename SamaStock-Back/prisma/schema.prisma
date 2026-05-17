@@ -36,8 +36,8 @@ model Product {
 
 model StockMovement {
   id        Int      @id @default(autoincrement())
-  supplier_id Int 
-  supplier Supplier @relation(fields: [supplier_id] , references: [id])
+  supplier_id Int? 
+  supplier Supplier? @relation(fields: [supplier_id] , references: [id])
   productId Int
   type      String
   quantity  Int
