@@ -1,25 +1,43 @@
 import { prisma } from "../config/prisma";
-
 import { SaleRepository } from "../repositories/sale.repository";
-
 import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto";
-import { error } from "node:console";
+import loggerService from "../services/logger.service";
+
+const logger = loggerService.getLogger("SaleService");
 
 export const SaleService = {
   async getSales() {
-    return SaleRepository.findAll();
+    logger.debug(`Récupération de toutes les ventes`);
+
+    const sales = await SaleRepository.findAll();
+
+    logger.info(
+      `Liste des ventes récupérée - ${sales?.length || 0} vente(s) trouvée(s)`,
+    );
+
+    return sales;
   },
 
   async getSaleById(id: number) {
+    logger.debug(`Recherche de la vente ID: ${id}`);
+
     if (!id) {
-      throw new Error("Identifiant invalide");
+      logger.warn(`Identifiant invalide pour la recherche de vente`);
+      throw new Error("L'identifiant de la vente est invalide ou manquant.");
     }
 
     const sale = await SaleRepository.findById(id);
 
     if (!sale) {
-      throw new Error("Vente introuvable");
+      logger.warn(`Vente non trouvée - ID: ${id}`);
+      throw new Error(
+        `Vente avec l'ID ${id} introuvable. Vérifiez l'identifiant et réessayez.`,
+      );
     }
+
+    logger.debug(
+      `Vente trouvée - ID: ${id}, Client: ${sale.customer}, Total: ${sale.totalAmount}`,
+    );
 
     return sale;
   },
@@ -27,10 +45,19 @@ export const SaleService = {
   async createSale(data: CreateSaleDto, saleId?: string) {
     const { productId, clientId, quantity, paidAmount, customer, note } = data;
 
-    console.log(paidAmount);
+    logger.info(`Tentative de création d'une nouvelle vente`, {
+      productId,
+      clientId,
+      quantity,
+      paidAmount,
+      customer,
+    });
 
     if (quantity <= 0) {
-      throw new Error("Quantité invalide");
+      logger.warn(`Création vente refusée - Quantité invalide: ${quantity}`);
+      throw new Error(
+        `La quantité doit être supérieure à 0. Valeur reçue: ${quantity}.`,
+      );
     }
 
     return prisma.$transaction(async (tx) => {
@@ -42,7 +69,12 @@ export const SaleService = {
       });
 
       if (!product) {
-        throw new Error("Produit introuvable");
+        logger.warn(
+          `Création vente refusée - Produit introuvable ID: ${productId}`,
+        );
+        throw new Error(
+          `Produit avec l'ID ${productId} introuvable. Vérifiez le produit et réessayez.`,
+        );
       }
 
       // atomic stock update
@@ -61,7 +93,12 @@ export const SaleService = {
       });
 
       if (updated.count === 0) {
-        throw new Error("Stock insuffisant");
+        logger.warn(
+          `Création vente refusée - Stock insuffisant pour le produit ID: ${productId}, Quantité demandée: ${quantity}, Stock disponible: ${product.quantity}`,
+        );
+        throw new Error(
+          `Stock insuffisant pour le produit "${product.name}". Disponible: ${product.quantity}, Demandé: ${quantity}.`,
+        );
       }
 
       // client
@@ -75,22 +112,34 @@ export const SaleService = {
         });
 
         if (!client) {
-          throw new Error("Client introuvable");
+          logger.warn(
+            `Création vente refusée - Client introuvable ID: ${clientId}`,
+          );
+          throw new Error(
+            `Client avec l'ID ${clientId} introuvable. Veuillez vérifier le client ou créer la vente sans client.`,
+          );
         }
       }
 
       // prices
       const unitPrice = Number(product.salePrice);
-
       const totalAmount = unitPrice * quantity;
-
       const paid = Number(paidAmount ?? totalAmount);
 
       if (paid < 0 || paid > totalAmount) {
-        throw new Error("Montant payé invalide");
+        logger.warn(
+          `Création vente refusée - Montant payé invalide: ${paid} (Total: ${totalAmount})`,
+        );
+        throw new Error(
+          `Le montant payé (${paid}) est invalide. Il doit être compris entre 0 et ${totalAmount}.`,
+        );
       }
 
       const remaining = totalAmount - paid;
+
+      logger.debug(
+        `Calculs vente - Prix unitaire: ${unitPrice}, Total: ${totalAmount}, Payé: ${paid}, Restant: ${remaining}`,
+      );
 
       // create sale
       const sale = await tx.sale.create({
@@ -111,6 +160,8 @@ export const SaleService = {
         },
       });
 
+      logger.debug(`Vente créée en base - ID: ${sale.id}`);
+
       // stock movement
       await tx.stockMovement.create({
         data: {
@@ -126,7 +177,10 @@ export const SaleService = {
       });
 
       if (!currentSession?.isOpen) {
-        throw new Error("Caisse fermer");
+        logger.error(`Création vente échouée - Caisse fermée ou inexistante`);
+        throw new Error(
+          "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer une vente.",
+        );
       }
 
       await tx.cashMovement.create({
@@ -139,71 +193,110 @@ export const SaleService = {
         },
       });
 
-      return;
+      logger.info(
+        `Vente créée avec succès - ID: ${sale.id}, Produit: ${product.name}, Quantité: ${quantity}, Montant total: ${totalAmount}, Payé: ${paid}`,
+      );
+
+      return sale;
     });
   },
 
   async updateSale(id: number, data: UpdateSaleDto) {
+    logger.debug(`Tentative de modification de la vente ID: ${id}`);
+
     const existingSale = await SaleRepository.findById(id);
 
     if (!existingSale) {
-      throw new Error("Vente introuvable");
+      logger.warn(`Modification refusée - Vente introuvable ID: ${id}`);
+      throw new Error(
+        `Vente avec l'ID ${id} introuvable. La modification a échoué.`,
+      );
     }
 
-    return SaleRepository.update(id, {
+    const updatedSale = await SaleRepository.update(id, {
       customer: data.customer ?? existingSale.customer,
       note: data.note ?? existingSale.note,
     });
+
+    logger.info(
+      `Vente modifiée avec succès - ID: ${id}, Client: ${updatedSale?.customer}`,
+    );
+
+    return updatedSale;
   },
 
   async addSalePayment(saleId: number, paidAmount: number) {
+    logger.info(
+      `Tentative d'ajout de paiement pour la vente ID: ${saleId}, Montant: ${paidAmount}`,
+    );
+
     const payment = prisma.$transaction(async (tx) => {
-      //  find the product
       const findSale = await tx.sale.findUnique({
         where: { id: saleId },
       });
 
       if (!paidAmount || paidAmount <= 0) {
-        throw new Error("Le montant du vensement est incorect ");
-      }
-
-      if (!findSale?.remaining) {
-        throw new Error("Impossible de trouver le  rest");
-      }
-
-      //  the versed amount should not be > to the remainig amount
-      if (paidAmount > findSale.remaining) {
-        console.error(
-          `Le montant definit est superieur au reste ( ${findSale.remaining} fcfa )`,
+        logger.warn(`Ajout paiement refusé - Montant invalide: ${paidAmount}`);
+        throw new Error(
+          `Le montant du versement (${paidAmount}) est invalide. Le montant doit être supérieur à 0.`,
         );
-        throw new Error("Le montant definit est superieur au reste.");
       }
 
-      // check if the versed amount = remaing amount , if true , remainng = 0
-      const isCompletePayment =
-        findSale?.remaining === paidAmount ? true : false;
+      if (!findSale) {
+        logger.warn(`Ajout paiement refusé - Vente introuvable ID: ${saleId}`);
+        throw new Error(
+          `Vente avec l'ID ${saleId} introuvable. Impossible d'ajouter un paiement.`,
+        );
+      }
 
-      // calculate the new remaning
-      const restPayment = !isCompletePayment
-        ? findSale.remaining - paidAmount
-        : 0;
+      if (!findSale.remaining) {
+        logger.warn(
+          `Ajout paiement refusé - Vente déjà soldée ID: ${saleId}, Restant: ${findSale.remaining}`,
+        );
+        throw new Error(
+          `Cette vente est déjà entièrement payée. Aucun paiement supplémentaire n'est requis.`,
+        );
+      }
 
-      //  set remaining to 0
+      if (paidAmount > findSale.remaining) {
+        logger.warn(
+          `Ajout paiement refusé - Montant supérieur au reste dû pour la vente ID: ${saleId}, Restant: ${findSale.remaining}, Tentative: ${paidAmount}`,
+        );
+        throw new Error(
+          `Le montant du versement (${paidAmount}) est supérieur au reste à payer (${findSale.remaining} FCFA). Montant maximum autorisé: ${findSale.remaining} FCFA.`,
+        );
+      }
+
+      const isCompletePayment = findSale.remaining === paidAmount;
+      const restPayment = isCompletePayment
+        ? 0
+        : findSale.remaining - paidAmount;
+
+      logger.debug(
+        `Calcul paiement - Reste avant: ${findSale.remaining}, Paiement: ${paidAmount}, Paiement complet: ${isCompletePayment}, Nouveau reste: ${restPayment}`,
+      );
+
       await tx.sale.update({
         where: { id: saleId },
         data: {
-          remaining: isCompletePayment ? 0 : restPayment,
+          remaining: restPayment,
+          paidAmount: {
+            increment: paidAmount,
+          },
         },
       });
-      console.log(restPayment);
 
       const currentCashSession = await tx.cashSession.findFirst({
         orderBy: { openedAt: "desc" },
       });
 
       if (!currentCashSession || !currentCashSession.isOpen) {
-        console.error(`current Session : ${currentCashSession}`);
-        throw new Error("Erreur avec la caisse. La Caisse  est il ouverte?");
+        logger.error(
+          `Ajout paiement échoué - Caisse fermée ou inexistante pour la vente ID: ${saleId}`,
+        );
+        throw new Error(
+          "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer un paiement.",
+        );
       }
 
       await tx.cashMovement.create({
@@ -216,16 +309,17 @@ export const SaleService = {
         },
       });
 
-      console.log(findSale);
-      console.log(isCompletePayment);
+      logger.info(
+        `Paiement ajouté avec succès - Vente ID: ${saleId}, Montant: ${paidAmount}, Reste à payer: ${restPayment}, Vente ${isCompletePayment ? "complètement soldée" : "partiellement payée"}`,
+      );
     });
 
     return payment;
-
-    // check  check the reste if the versed is not complet
   },
 
   async deleteSale(id: number) {
+    logger.warn(`Tentative de suppression de la vente ID: ${id}`);
+
     return prisma.$transaction(async (tx) => {
       const sale = await tx.sale.findUnique({
         where: { id },
@@ -235,8 +329,15 @@ export const SaleService = {
       });
 
       if (!sale) {
-        throw new Error("Vente introuvable");
+        logger.warn(`Suppression refusée - Vente introuvable ID: ${id}`);
+        throw new Error(
+          `Vente avec l'ID ${id} introuvable. La suppression a échoué.`,
+        );
       }
+
+      logger.debug(
+        `Suppression de la vente - Produit: ${sale.productId}, Quantité à restaurer: ${sale.quantity}`,
+      );
 
       // restore stock
       await tx.product.update({
@@ -267,44 +368,11 @@ export const SaleService = {
         },
       });
 
+      logger.info(
+        `Vente supprimée avec succès - ID: ${id}, Produit ID: ${sale.productId}, Quantité restaurée: ${sale.quantity}`,
+      );
+
       return true;
     });
   },
 };
-
-//  //  find the product
-//     const findSale = await prisma.sale.findUnique({
-//       where: { id: saleId },
-//     });
-
-//     if (!amount) {
-//       throw new Error("Le montant du vensement est incorect ");
-//     }
-
-//     if (!findSale?.remaining) {
-//       throw new Error("Impossible de trouver le  rest");
-//     }
-
-//     //  the versed amount should not be > to the remainig amount
-//     if (amount > findSale.remaining) {
-//       console.error(
-//         `Le montant definit est superieur au reste ( ${findSale.remaining} fcfa )`,
-//       );
-//       throw new Error("Le montant definit est superieur au reste.");
-//     }
-
-//     // check if the versed amount = remaing amount , if true , remainng = 0
-//     const isComplete = findSale?.remaining === amount ? true : false;
-//     if(isComplete){
-//       const validateSale = prisma.sale.update ({
-//         where : {id  : saleId},
-//         data : {
-//           remaining : 0
-//         }
-//       })
-//     }
-
-//     console.log(findSale);
-//     console.log(isComplete);
-
-//     // check  check the reste if the versed is not complet

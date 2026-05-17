@@ -1,10 +1,15 @@
 import { prisma } from "../config/prisma";
 import { CashMovementType, PaymentMethod } from "@prisma/client";
+import loggerService from "../services/logger.service";
+
+const logger = loggerService.getLogger("CashService");
 
 export const openCashSession = async (
   userId: number,
   openingAmount: number,
 ) => {
+  logger.debug(`Tentative d'ouverture de caisse pour l'utilisateur: ${userId}`);
+
   const existingSession = await prisma.cashSession.findFirst({
     where: {
       isOpen: true,
@@ -12,18 +17,25 @@ export const openCashSession = async (
   });
 
   if (existingSession) {
-    throw new Error("Une caisse est déjà ouverte");
+    logger.warn(`Tentative d'ouverture de caisse refusée - Une caisse est déjà ouverte (session: ${existingSession.id})`);
+    throw new Error("Une caisse est déjà ouverte. Veuillez fermer la caisse actuelle avant d'en ouvrir une nouvelle.");
   }
 
-  return prisma.cashSession.create({
+  const session = await prisma.cashSession.create({
     data: {
       userId,
       openingAmount,
     },
   });
+
+  logger.info(`Caisse ouverte avec succès - Session: ${session.id}, Utilisateur: ${userId}, Montant: ${openingAmount}`);
+  
+  return session;
 };
 
 export const closeCashSession = async () => {
+  logger.debug(`Tentative de fermeture de caisse`);
+
   const session = await prisma.cashSession.findFirst({
     where: {
       isOpen: true,
@@ -34,7 +46,8 @@ export const closeCashSession = async () => {
   });
 
   if (!session) {
-    throw new Error("Aucune caisse ouverte");
+    logger.warn(`Tentative de fermeture de caisse refusée - Aucune caisse ouverte trouvée`);
+    throw new Error("Aucune caisse ouverte. Impossible de fermer une caisse inexistante.");
   }
 
   const entries = session.movements
@@ -55,7 +68,9 @@ export const closeCashSession = async () => {
 
   const closingAmount = session.openingAmount + entries - outputs;
 
-  return prisma.cashSession.update({
+  logger.debug(`Calcul de fermeture - Session: ${session.id}, Ouverture: ${session.openingAmount}, Entrées: ${entries}, Sorties: ${outputs}, Montant final: ${closingAmount}`);
+
+  const closedSession = await prisma.cashSession.update({
     where: {
       id: session.id,
     },
@@ -65,10 +80,16 @@ export const closeCashSession = async () => {
       closingAmount,
     },
   });
+
+  logger.info(`Caisse fermée avec succès - Session: ${session.id}, Montant d'ouverture: ${session.openingAmount}, Montant de fermeture: ${closingAmount}`);
+  
+  return closedSession;
 };
 
 export const getCurrentSession = async () => {
-  return prisma.cashSession.findFirst({
+  logger.debug(`Récupération de la session de caisse actuelle`);
+
+  const session = await prisma.cashSession.findFirst({
     where: {
       isOpen: true,
     },
@@ -80,6 +101,14 @@ export const getCurrentSession = async () => {
       },
     },
   });
+
+  if (!session) {
+    logger.debug(`Aucune session de caisse ouverte trouvée`);
+  } else {
+    logger.debug(`Session de caisse trouvée - ID: ${session.id}, Nombre de mouvements: ${session.movements?.length || 0}`);
+  }
+
+  return session;
 };
 
 export const addCashMovement = async (data: {
@@ -89,6 +118,8 @@ export const addCashMovement = async (data: {
   paymentMethod: PaymentMethod;
   note?: string;
 }) => {
+  logger.debug(`Tentative d'ajout de mouvement de caisse - Type: ${data.type}, Montant: ${data.amount}`);
+
   const session = await prisma.cashSession.findFirst({
     where: {
       isOpen: true,
@@ -96,10 +127,11 @@ export const addCashMovement = async (data: {
   });
 
   if (!session) {
-    throw new Error("La caisse est fermée");
+    logger.warn(`Tentative d'ajout de mouvement refusée - La caisse est fermée (Type: ${data.type}, Montant: ${data.amount})`);
+    throw new Error("La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer des mouvements.");
   }
 
-  return prisma.cashMovement.create({
+  const movement = await prisma.cashMovement.create({
     data: {
       sessionId: session.id,
       type: data.type,
@@ -109,10 +141,16 @@ export const addCashMovement = async (data: {
       note: data.note,
     },
   });
+
+  logger.info(`Mouvement de caisse ajouté avec succès - Session: ${session.id}, Type: ${data.type}, Label: ${data.label}, Montant: ${data.amount}, Moyen: ${data.paymentMethod}`);
+  
+  return movement;
 };
 
 export const getCashHistory = async () => {
-  return prisma.cashSession.findMany({
+  logger.debug(`Récupération de l'historique des caisses`);
+
+  const history = await prisma.cashSession.findMany({
     orderBy: {
       createdAt: "desc",
     },
@@ -123,4 +161,8 @@ export const getCashHistory = async () => {
       },
     },
   });
+
+  logger.info(`Historique des caisses récupéré - ${history.length} session(s) trouvée(s)`);
+  
+  return history;
 };

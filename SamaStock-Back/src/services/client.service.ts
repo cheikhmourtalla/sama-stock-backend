@@ -1,8 +1,13 @@
 import { prisma } from "../config/prisma";
+import loggerService from "../services/logger.service";
+
+const logger = loggerService.getLogger("ClientService");
 
 export const ClientService = {
   // get clients
   async getClient() {
+    logger.debug(`Récupération de la liste des clients`);
+
     const clients = await prisma.client.findMany({
       orderBy: {
         createdAt: "desc",
@@ -36,12 +41,16 @@ export const ClientService = {
       };
     });
 
+    logger.info(`Liste des clients récupérée - ${clients.length} client(s) trouvé(s)`);
+
     return clienWithBillingTotals;
   },
 
   // get one client
   async getClientById(userId: number) {
     const id = Number(userId);
+    
+    logger.debug(`Recherche du client ID: ${id}`);
 
     const client = await prisma.client.findUnique({
       where: { id },
@@ -58,7 +67,8 @@ export const ClientService = {
     });
 
     if (!client) {
-      throw new Error("Client non trouvé");
+      logger.warn(`Client non trouvé - ID: ${id}`);
+      throw new Error(`Client avec l'ID ${id} non trouvé. Vérifiez l'identifiant et réessayez.`);
     }
 
     const totalPurchases = client.sales.reduce(
@@ -76,6 +86,8 @@ export const ClientService = {
       0,
     );
 
+    logger.debug(`Client trouvé - ID: ${id}, Nom: ${client.name}, Total achats: ${totalPurchases}, Ventes: ${client.sales.length}`);
+
     return {
       ...client,
       totalPurchases,
@@ -86,8 +98,11 @@ export const ClientService = {
 
   // create client
   async createClient(name: string, phone: string) {
+    logger.debug(`Tentative de création d'un nouveau client - Nom: ${name}, Téléphone: ${phone}`);
+
     if (!name || !phone) {
-      throw new Error("Le nom et le téléphone sont obligatoires");
+      logger.warn(`Création client refusée - Champs manquants (nom: ${!!name}, téléphone: ${!!phone})`);
+      throw new Error("Le nom et le numéro de téléphone sont obligatoires pour créer un client.");
     }
 
     const existingClient = await prisma.client.findUnique({
@@ -95,7 +110,8 @@ export const ClientService = {
     });
 
     if (existingClient) {
-      throw new Error("Client existe déjà");
+      logger.warn(`Création client refusée - Un client existe déjà avec ce numéro: ${phone} (ID: ${existingClient.id})`);
+      throw new Error(`Un client avec le numéro ${phone} existe déjà. Veuillez utiliser un autre numéro.`);
     }
 
     const client = await prisma.client.create({
@@ -104,6 +120,8 @@ export const ClientService = {
         phone,
       },
     });
+
+    logger.info(`Client créé avec succès - ID: ${client.id}, Nom: ${name}, Téléphone: ${phone}`);
 
     return client;
   },
@@ -114,12 +132,15 @@ export const ClientService = {
     name: string,
     phone: string,
   ) {
+    logger.debug(`Tentative de modification du client ID: ${id}`);
+
     const existingClient = await prisma.client.findUnique({
       where: { id },
     });
 
     if (!existingClient) {
-      throw new Error("Client introuvable");
+      logger.warn(`Modification refusée - Client introuvable ID: ${id}`);
+      throw new Error(`Client avec l'ID ${id} introuvable. La modification a échoué.`);
     }
 
     const clientWithPhone = await prisma.client.findFirst({
@@ -132,9 +153,8 @@ export const ClientService = {
     });
 
     if (clientWithPhone) {
-      throw new Error(
-        "Un autre client utilise déjà ce numéro",
-      );
+      logger.warn(`Modification refusée - Numéro déjà utilisé par un autre client: ${phone} (client ID: ${clientWithPhone.id})`);
+      throw new Error(`Le numéro ${phone} est déjà utilisé par un autre client. Veuillez utiliser un autre numéro.`);
     }
 
     const updatedClient = await prisma.client.update({
@@ -145,11 +165,15 @@ export const ClientService = {
       },
     });
 
+    logger.info(`Client modifié avec succès - ID: ${id}, Ancien nom: ${existingClient.name}, Nouveau nom: ${name}, Téléphone: ${phone}`);
+
     return updatedClient;
   },
 
   // delete client
   async deleteClient(id: number) {
+    logger.warn(`Tentative de suppression du client ID: ${id}`);
+
     const existingClient = await prisma.client.findUnique({
       where: { id },
       include: {
@@ -158,18 +182,20 @@ export const ClientService = {
     });
 
     if (!existingClient) {
-      throw new Error("Client introuvable");
+      logger.warn(`Suppression refusée - Client introuvable ID: ${id}`);
+      throw new Error(`Client avec l'ID ${id} introuvable. La suppression a échoué.`);
     }
 
     if (existingClient.sales.length > 0) {
-      throw new Error(
-        "Impossible de supprimer un client ayant déjà des ventes",
-      );
+      logger.warn(`Suppression refusée - Client avec ventes existantes ID: ${id}, Nombre de ventes: ${existingClient.sales.length}`);
+      throw new Error(`Impossible de supprimer le client "${existingClient.name}" car il a ${existingClient.sales.length} vente(s) associée(s). Supprimez d'abord ses ventes.`);
     }
 
     await prisma.client.delete({
       where: { id },
     });
+
+    logger.info(`Client supprimé avec succès - ID: ${id}, Nom: ${existingClient.name}`);
 
     return true;
   },

@@ -1,78 +1,111 @@
+// controllers/cash.controller.ts
 import { Request, Response } from "express";
 import * as cashService from "../services/cash.service";
+import loggerService from "../services/logger.service";
 
 export const openCash = async (req: Request, res: Response) => {
-  try {
-    const { userId, openingAmount } = req.body;
+  const logger = loggerService.getLogger("CashController");
+  const requestId = (req as any).requestId;
+  const { userId, openingAmount } = req.body;
 
-    console.log(req.body);
-    const session = await cashService.openCashSession(
-      Number(userId),
-      Number(openingAmount),
-    );
+  logger.info(`Tentative d'ouverture de caisse`, {
+    requestId,
+    userId,
+    openingAmount,
+    ip: req.ip
+  });
 
-    return res.status(201).json({
-      success: true,
-      data: session,
-    });
-  } catch (error: any) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  const session = await cashService.openCashSession(
+    Number(userId),
+    Number(openingAmount),
+  );
+
+  logger.info(`Caisse ouverte avec succès`, {
+    requestId,
+    userId,
+    sessionId: session?.id,
+    openingAmount
+  });
+
+  return res.status(201).json({
+    success: true,
+    data: session,
+  });
 };
 
 export const closeCash = async (req: Request, res: Response) => {
-  try {
-    const session = await cashService.closeCashSession();
+  const logger = loggerService.getLogger("CashController");
+  const requestId = (req as any).requestId;
 
-    return res.json({
-      success: true,
-      data: session,
-    });
-  } catch (error: any) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  logger.info(`Tentative de fermeture de caisse`, {
+    requestId,
+    ip: req.ip
+  });
+
+  const session = await cashService.closeCashSession();
+
+  logger.info(`Caisse fermée avec succès`, {
+    requestId,
+    sessionId: session?.id
+  });
+
+  return res.json({
+    success: true,
+    data: session,
+  });
 };
 
 export const currentCash = async (req: Request, res: Response) => {
-  try {
-    const session = await cashService.getCurrentSession();
-    return res.json(session);
-  } catch (error: any) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
+  const logger = loggerService.getLogger("CashController");
+  const requestId = (req as any).requestId;
+
+  logger.debug(`Récupération de la session courante`, {
+    requestId,
+    ip: req.ip
+  });
+
+  const session = await cashService.getCurrentSession();
+
+  return res.json(session);
 };
 
 export const createMovement = async (req: Request, res: Response) => {
-  try {
-    const movement = await cashService.addCashMovement(req.body);
+  const logger = loggerService.getLogger("CashController");
+  const requestId = (req as any).requestId;
+  const movementData = req.body;
 
-    return res.status(201).json({
-      success: true,
-      data: movement,
-    });
-  } catch (error: any) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  logger.info(`Création d'un mouvement de caisse`, {
+    requestId,
+    movementType: movementData.type,
+    amount: movementData.amount,
+    ip: req.ip
+  });
+
+  const movement = await cashService.addCashMovement(req.body);
+
+  logger.info(`Mouvement de caisse créé avec succès`, {
+    requestId,
+    movementId: movement?.id,
+    amount: movementData.amount,
+    type: movementData.type
+  });
+
+  return res.status(201).json({
+    success: true,
+    data: movement,
+  });
 };
 
 export const historyCash = async (req: Request, res: Response) => {
-  try {
-    const history = await cashService.getCashHistory();
-    return res.json(history);
-  } catch (error: any) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
+  const logger = loggerService.getLogger("CashController");
+  const requestId = (req as any).requestId;
+
+  logger.debug(`Récupération de l'historique des caisses`, {
+    requestId,
+    ip: req.ip
+  });
+
+  const history = await cashService.getCashHistory();
+
+  return res.json(history);
 };

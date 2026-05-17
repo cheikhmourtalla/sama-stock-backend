@@ -1,143 +1,141 @@
+// middlewares/error.middleware.ts
+import { Request, Response, NextFunction } from "express";
+import { AppError, ErrorCodes } from "../utils/app-error";
+import loggerService from "../services/logger.service";
 
+// Gestionnaire d'erreurs global
+export const globalErrorHandler = (
+  err: Error | AppError,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // Récupérer le logger du service
+  const errorLogger = loggerService.getLogger("GlobalErrorHandler");
+  const requestId = (req as any).requestId || "unknown";
 
-// // errorMiddleware.js
-// const logger = require('./logger'); // Optionnel: votre système de logging
+  // Défaut: erreur interne
 
-// // Classe d'erreur personnalisée
-// class AppError extends Error {
-//   constructor(message, statusCode, errorCode = null) {
-//     super(message);
-//     this.statusCode = statusCode;
-//     this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
-//     this.isOperational = true;
-//     this.errorCode = errorCode;
-    
-//     Error.captureStackTrace(this, this.constructor);
-//   }
-// }
+  let statusCode = 500;
+  let errorCode = "INTERNAL_ERROR";
+  let message = "Erreur interne du serveur";
+  let details: any = null;
 
-// // Middleware pour les routes non trouvées (404)
-// const notFound = (req, res, next) => {
-//   const error = new AppError(`Route non trouvée: ${req.originalUrl}`, 404, 'ROUTE_NOT_FOUND');
-//   next(error);
-// };
+  // Si c'est notre erreur personnalisée
+  if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+    errorCode = err.errorCode;
+    details = err.details;
+  }
 
-// // Gestion des erreurs spécifiques MongoDB/Mongoose
-// const handleDuplicateKeyError = (err) => {
-//   const field = Object.keys(err.keyPattern)[0];
-//   const value = err.keyValue[field];
-//   return new AppError(
-//     `La valeur '${value}' pour le champ '${field}' existe déjà. Veuillez utiliser une autre valeur.`,
-//     409,
-//     'DUPLICATE_KEY_ERROR'
-//   );
-// };
+  // Erreurs Mongoose/MongoDB
+  if (err.name === "ValidationError") {
+    statusCode = 400;
+    message = "Erreur de validation des données";
+    errorCode = ErrorCodes.VALIDATION_ERROR;
+    details = (err as any).errors;
+  }
 
-// const handleValidationError = (err) => {
-//   const errors = Object.values(err.errors).map(e => e.message);
-//   const message = `Erreur de validation: ${errors.join('. ')}`;
-//   return new AppError(message, 400, 'VALIDATION_ERROR');
-// };
+  if (err.name === "CastError") {
+    statusCode = 400;
+    message = "Format d'ID invalide";
+    errorCode = ErrorCodes.INVALID_FORMAT;
+    details = { value: (err as any).value };
+  }
 
-// const handleCastError = (err) => {
-//   const message = `ID invalide: ${err.value}. Format incorrect.`;
-//   return new AppError(message, 400, 'INVALID_ID_FORMAT');
-// };
+  if ((err as any).code === 11000) {
+    statusCode = 409;
+    message = "Cette valeur existe déjà";
+    errorCode = ErrorCodes.DUPLICATE_ENTRY;
+    const field = Object.keys((err as any).keyPattern)[0];
+    details = { field, value: (err as any).keyValue[field] };
+  }
 
-// const handleJWTError = () => new AppError('Token invalide. Veuillez vous reconnecter.', 401, 'JWT_INVALID');
-// const handleJWTExpiredError = () => new AppError('Token expiré. Veuillez vous reconnecter.', 401, 'JWT_EXPIRED');
+  // Erreurs JWT
+  if (err.name === "JsonWebTokenError") {
+    statusCode = 401;
+    message = "Token invalide";
+    errorCode = ErrorCodes.INVALID_TOKEN;
+  }
 
-// // Middleware principal de gestion des erreurs
-// const errorHandler = (err, req, res, next) => {
-//   let error = { ...err };
-//   error.message = err.message;
-//   error.statusCode = err.statusCode || 500;
-  
-//   // Logging de l'erreur
-//   if (process.env.NODE_ENV === 'development') {
-//     console.error('ERROR ❌:', err);
-//   } else {
-//     // En production, log uniquement les erreurs critiques
-//     if (error.statusCode === 500) {
-//       logger.error(`${err.statusCode || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-//     } else {
-//       logger.warn(`${err.statusCode || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
-//     }
-//   }
-  
-//   // Gestion des erreurs spécifiques
-//   if (err.code === 11000) error = handleDuplicateKeyError(err);
-//   if (err.name === 'ValidationError') error = handleValidationError(err);
-//   if (err.name === 'CastError') error = handleCastError(err);
-//   if (err.name === 'JsonWebTokenError') error = handleJWTError();
-//   if (err.name === 'TokenExpiredError') error = handleJWTExpiredError();
-  
-//   // Envoi de la réponse
-//   if (process.env.NODE_ENV === 'development') {
-//     // Mode développement: erreur détaillée
-//     res.status(error.statusCode).json({
-//       success: false,
-//       status: error.status,
-//       statusCode: error.statusCode,
-//       message: error.message,
-//       errorCode: error.errorCode,
-//       stack: err.stack,
-//       error: err
-//     });
-//   } else {
-//     // Mode production: messages plus sûrs
-//     if (error.isOperational) {
-//       // Erreurs opérationnelles: message client-friendly
-//       res.status(error.statusCode).json({
-//         success: false,
-//         status: error.status,
-//         message: error.message,
-//         errorCode: error.errorCode
-//       });
-//     } else {
-//       // Erreurs de programmation: message générique
-//       console.error('ERREUR PROGRAMMATION:', err);
-//       res.status(500).json({
-//         success: false,
-//         status: 'error',
-//         message: 'Une erreur interne est survenue',
-//         errorCode: 'INTERNAL_SERVER_ERROR'
-//       });
-//     }
-//   }
-// };
+  if (err.name === "TokenExpiredError") {
+    statusCode = 401;
+    message = "Token expiré";
+    errorCode = ErrorCodes.TOKEN_EXPIRED;
+  }
 
-// // Middleware pour capturer les rejets de promesses non gérés
-// const unhandledRejectionHandler = () => {
-//   process.on('unhandledRejection', (err) => {
-//     console.error('PROMESSE NON GÉRÉE ❌:', err);
-//     logger.error(`UNHANDLED REJECTION: ${err.message}`, { stack: err.stack });
-    
-//     // Option: fermer proprement l'application
-//     // server.close(() => process.exit(1));
-//   });
-// };
+  // Log de l'erreur avec niveau approprié
+  const logContext = {
+    requestId,
+    url: req.url,
+    method: req.method,
+    ip: req.ip,
+    user: (req as any).user?.id || "anonymous",
+    statusCode,
+    errorCode,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+  };
 
-// // Middleware pour capturer les exceptions non capturées
-// const uncaughtExceptionHandler = () => {
-//   process.on('uncaughtException', (err) => {
-//     console.error('EXCEPTION NON CAPTURÉE ❌:', err);
-//     logger.error(`UNCAUGHT EXCEPTION: ${err.message}`, { stack: err.stack });
-    
-//     // Fermer proprement l'application
-//     process.exit(1);
-//   });
-// };
+  if (statusCode >= 500) {
+    // Erreur serveur - log critique
+    errorLogger.error(`[${errorCode}] ${message}`, {
+      ...logContext,
+      originalError: err.message,
+      stack: err.stack,
+    });
+  } else if (statusCode >= 400) {
+    // Erreur client - log warning
+    errorLogger.warn(`[${errorCode}] ${message}`, logContext);
+  }
 
-// // Module d'initialisation des gestionnaires
-// const setupErrorHandlers = () => {
-//   unhandledRejectionHandler();
-//   uncaughtExceptionHandler();
-// };
+  // Envoi de la réponse au client
+  const responseBody: any = {
+    success: false,
+    message,
+    errorCode,
+    requestId,
+  };
 
-// module.exports = {
-//   AppError,
-//   notFound,
-//   errorHandler,
-//   setupErrorHandlers
-// };
+  // Ajouter les détails en développement
+  if (process.env.NODE_ENV === "development") {
+    responseBody.details = details || err.message;
+    responseBody.stack = err.stack;
+  } else if (details && statusCode === 400) {
+    // En production, on peut donner quelques détails pour les erreurs 400
+    responseBody.details = details;
+  }
+
+  res.status(statusCode).json(responseBody);
+};
+
+// Middleware pour les routes non trouvées (404)
+export const notFoundHandler = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const notFoundLogger = loggerService.getLogger("NotFoundHandler");
+
+  notFoundLogger.warn(`Route non trouvée: ${req.method} ${req.originalUrl}`, {
+    url: req.originalUrl,
+    method: req.method,
+    ip: req.ip,
+    userAgent: req.get("user-agent"),
+  });
+
+  next(
+    new AppError(
+      `Route non trouvée: ${req.method} ${req.originalUrl}`,
+      404,
+      "ROUTE_NOT_FOUND",
+    ),
+  );
+};
+
+// Wrapper pour capturer les erreurs dans les fonctions async
+export const catchAsync = (fn: Function) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    fn(req, res, next).catch(next);
+  };
+};
