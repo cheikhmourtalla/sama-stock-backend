@@ -41,6 +41,7 @@ const customFormat = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss.SSS" }),
   winston.format.errors({ stack: true }),
   winston.format.splat(),
+   
   winston.format.printf(
     ({ timestamp, level, message, service, stack, ...meta }) => {
       let log = `${timestamp} [${level.toUpperCase()}]`;
