@@ -14,7 +14,7 @@ CREATE TABLE `User` (
 -- CreateTable
 CREATE TABLE `Product` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `supplier_id` INTEGER NOT NULL DEFAULT 0,
+    `supplier_id` INTEGER NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NULL,
     `quantity` INTEGER NOT NULL,
@@ -30,6 +30,7 @@ CREATE TABLE `Product` (
 -- CreateTable
 CREATE TABLE `StockMovement` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `supplier_id` INTEGER NULL,
     `productId` INTEGER NOT NULL,
     `type` VARCHAR(191) NOT NULL,
     `quantity` INTEGER NOT NULL,
@@ -80,6 +81,46 @@ CREATE TABLE `suppliers` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `cash_sessions` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `openedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `closedAt` DATETIME(3) NULL,
+    `openingAmount` DOUBLE NOT NULL,
+    `closingAmount` DOUBLE NULL,
+    `isOpen` BOOLEAN NOT NULL DEFAULT true,
+    `userId` INTEGER NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `cash_movements` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `sessionId` INTEGER NOT NULL,
+    `type` ENUM('SALE', 'CLIENT_PAYMENT', 'SUPPLIER_PAYMENT', 'EXPENSE') NOT NULL,
+    `label` VARCHAR(191) NOT NULL,
+    `amount` DOUBLE NOT NULL,
+    `paymentMethod` ENUM('CASH', 'WAVE', 'ORANGE_MONEY') NOT NULL,
+    `note` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `expenses` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `label` VARCHAR(191) NOT NULL,
+    `amount` DOUBLE NOT NULL,
+    `paymentMethod` ENUM('CASH', 'WAVE', 'ORANGE_MONEY') NOT NULL,
+    `note` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `transactions` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `sale_id` INTEGER NULL,
@@ -97,6 +138,9 @@ CREATE TABLE `transactions` (
 ALTER TABLE `Product` ADD CONSTRAINT `Product_supplier_id_fkey` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `StockMovement` ADD CONSTRAINT `StockMovement_supplier_id_fkey` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `StockMovement` ADD CONSTRAINT `StockMovement_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `Product`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -104,6 +148,12 @@ ALTER TABLE `Sale` ADD CONSTRAINT `Sale_productId_fkey` FOREIGN KEY (`productId`
 
 -- AddForeignKey
 ALTER TABLE `Sale` ADD CONSTRAINT `Sale_clientId_fkey` FOREIGN KEY (`clientId`) REFERENCES `Client`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `cash_sessions` ADD CONSTRAINT `cash_sessions_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `cash_movements` ADD CONSTRAINT `cash_movements_sessionId_fkey` FOREIGN KEY (`sessionId`) REFERENCES `cash_sessions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `transactions` ADD CONSTRAINT `transactions_sale_id_fkey` FOREIGN KEY (`sale_id`) REFERENCES `Sale`(`id`) ON DELETE NO ACTION ON UPDATE CASCADE;

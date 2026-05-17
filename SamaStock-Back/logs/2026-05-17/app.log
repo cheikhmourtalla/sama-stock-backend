@@ -1,0 +1,2 @@
+{"arch":"x64","cpus":8,"env":"development","freeMemory":"5.30 GB","hostname":"DESKTOP-1OSQ4Q6","level":"info","message":"System Information","nodeVersion":"v22.17.1","pid":22292,"platform":"win32","timestamp":"2026-05-17 16:32:13.367","totalMemory":"19.88 GB","uptime":"2.00 hours"}
+{"docs":"http://localhost:5000/api-docs","environment":"development","level":"info","message":"SamaStock backend démarré avec succès","nodeVersion":"v22.17.1","pid":22292,"port":5000,"timestamp":"2026-05-17 16:32:13.374","url":"http://localhost:5000"}

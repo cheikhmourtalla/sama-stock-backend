@@ -24,6 +24,11 @@ export const env = {
   jwt: {
     secret: parsed.data.JWT_SECRET,
   },
+
+  logs :  {
+    LogLevel : parsed.data.LOG_LEVEL,
+    LogRetentionDay: parsed.data.LOG_RETENTION_DAYS
+  }
 };
 
 // console.log(env);
