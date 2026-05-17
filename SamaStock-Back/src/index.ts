@@ -35,14 +35,18 @@ import cashRoutes from "./routes/cash.routes";
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
 
-// ==================== MIDDLEWARES GLOBAUX ====================
-// 1. Logging des requêtes (PREMIER middleware)
 app.use(requestLogger);
 app.use(performanceLogger(3000)); // Log les requêtes lentes (>3s)
 app.use(rateLimitedLogger(200)); // Limite à 200 logs/min par IP
 
 // 2. Middlewares standards
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    // "https://tonfrontend.vercel.app",
+  ],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
