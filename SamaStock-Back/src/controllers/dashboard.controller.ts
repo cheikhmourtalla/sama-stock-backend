@@ -1,7 +1,7 @@
 // controllers/dashboard.controller.ts
 import { Request, Response } from "express";
-import { DashboardService } from "../services/dashboard.service";
-import loggerService from "../services/logger.service";
+import { DashboardService } from "../services/dashboard.service.js";
+import loggerService from "../services/logger.service.js";
 
 export const dashboardController = {
 

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { StockService } from "../services/stock.service";
-import loggerService from "../services/logger.service";
+import { StockService } from "../services/stock.service.js";
+import loggerService from "../services/logger.service.js";
 
 export const stockController = {
   // entry

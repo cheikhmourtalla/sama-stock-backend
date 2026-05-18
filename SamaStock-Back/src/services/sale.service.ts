@@ -1,7 +1,7 @@
-import { prisma } from "../config/prisma";
-import { SaleRepository } from "../repositories/sale.repository";
-import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto";
-import loggerService from "../services/logger.service";
+import { prisma } from "../config/prisma.js";
+import { SaleRepository } from "../repositories/sale.repository.js";
+import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto.js";
+import loggerService from "../services/logger.service.js";
 
 const logger = loggerService.getLogger("SaleService");
 
@@ -258,7 +258,7 @@ export const SaleService = {
         );
       }
 
-      if (paidAmount > findSale.remaining) {
+      if (paidAmount > findSale.remaining.toNumber()) {
         logger.warn(
           `Ajout paiement refusé - Montant supérieur au reste dû pour la vente ID: ${saleId}, Restant: ${findSale.remaining}, Tentative: ${paidAmount}`,
         );
@@ -267,10 +267,10 @@ export const SaleService = {
         );
       }
 
-      const isCompletePayment = findSale.remaining === paidAmount;
+      const isCompletePayment = findSale.remaining.toNumber() === paidAmount;
       const restPayment = isCompletePayment
         ? 0
-        : findSale.remaining - paidAmount;
+        : findSale.remaining.toNumber() - paidAmount;
 
       logger.debug(
         `Calcul paiement - Reste avant: ${findSale.remaining}, Paiement: ${paidAmount}, Paiement complet: ${isCompletePayment}, Nouveau reste: ${restPayment}`,

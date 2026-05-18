@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
 }
 
 model User {
@@ -24,8 +24,8 @@ model Product {
   name        String
   description String?
   quantity    Int
-  purchasePrice Float
-  salePrice     Float
+  purchasePrice Decimal
+  salePrice     Decimal
   alertThreshold Int
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -60,10 +60,10 @@ model Sale {
   productId   Int
   clientId    Int?
   quantity    Int
-  unitPrice   Float
-  totalAmount Float
-  paidAmount  Float     @default(0)
-  remaining   Float     @default(0)
+  unitPrice   Decimal
+  totalAmount Decimal
+  paidAmount  Decimal     @default(0)
+  remaining   Decimal     @default(0)
   customer    String?
   note        String?
   createdAt   DateTime  @default(now())
@@ -90,8 +90,8 @@ model CashSession {
   id            Int            @id @default(autoincrement())
   openedAt      DateTime       @default(now())
   closedAt      DateTime?
-  openingAmount Float
-  closingAmount Float?
+  openingAmount Decimal
+  closingAmount Decimal?
   isOpen        Boolean        @default(true)
   userId        Int
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -107,7 +107,7 @@ model CashMovement {
   session       CashSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   type          CashMovementType
   label         String
-  amount        Float
+  amount        Decimal
   paymentMethod PaymentMethod
   note          String?
   createdAt     DateTime         @default(now())
@@ -118,7 +118,7 @@ model CashMovement {
 model Expense {
   id            Int           @id @default(autoincrement())
   label         String
-  amount        Float
+  amount        Decimal
   paymentMethod PaymentMethod
   note          String?
   createdAt     DateTime      @default(now())
@@ -136,7 +136,7 @@ model Transaction {
   sale          Sale?         @relation(fields: [sale_id], references: [id], onDelete: NoAction)
   type          CashType
   label         String
-  amount        Float
+  amount        Decimal
   paymentMethod PaymentMethod
   createdAt     DateTime?     @default(now())
   updatedAt     DateTime?     @updatedAt

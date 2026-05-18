@@ -1,6 +1,6 @@
-import { prisma } from "../config/prisma";
+import { prisma } from "../config/prisma.js";
 import { CashMovementType, PaymentMethod } from "@prisma/client";
-import loggerService from "../services/logger.service";
+import loggerService from "../services/logger.service.js";
 
 const logger = loggerService.getLogger("CashService");
 
@@ -56,7 +56,7 @@ export const closeCashSession = async () => {
         m.type === CashMovementType.SALE ||
         m.type === CashMovementType.CLIENT_PAYMENT,
     )
-    .reduce((acc, m) => acc + m.amount, 0);
+    .reduce((acc, m) => acc + m.amount.toNumber(), 0);
 
   const outputs = session.movements
     .filter(
@@ -64,9 +64,9 @@ export const closeCashSession = async () => {
         m.type === CashMovementType.SUPPLIER_PAYMENT ||
         m.type === CashMovementType.EXPENSE,
     )
-    .reduce((acc, m) => acc + m.amount, 0);
+    .reduce((acc, m) => acc + m.amount.toNumber(), 0);
 
-  const closingAmount = session.openingAmount + entries - outputs;
+  const closingAmount = session.openingAmount.toNumber() + entries - outputs;
 
   logger.debug(`Calcul de fermeture - Session: ${session.id}, Ouverture: ${session.openingAmount}, Entrées: ${entries}, Sorties: ${outputs}, Montant final: ${closingAmount}`);
 

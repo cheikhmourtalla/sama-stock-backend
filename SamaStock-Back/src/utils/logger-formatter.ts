@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { LogMetadata, AuditLog, MetricLog } from "../interfaces/logger";
+import { LogMetadata, AuditLog, MetricLog } from "../interfaces/logger.js";
 
 export class LogFormatter {
   static formatConsole(

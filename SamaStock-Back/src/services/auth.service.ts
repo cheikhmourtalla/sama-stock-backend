@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { prisma } from "../config/prisma";
-import { env } from "../config/env/env";
-import loggerService from "../services/logger.service";
+import { prisma } from "../config/prisma.js";
+import { env } from "../config/env/env.js";
+import loggerService from "../services/logger.service.js";
 
 const logger = loggerService.getLogger("AuthService");
 

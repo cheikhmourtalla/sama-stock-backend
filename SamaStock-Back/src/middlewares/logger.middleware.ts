@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
-import { logger } from "../config/logger-config";
+import { logger } from "../config/logger-config.js";
 import loggerService from "../services/logger.service.js";
 import { RequestLog, ResponseLog, LogMetadata } from "../interfaces/logger.js";
 

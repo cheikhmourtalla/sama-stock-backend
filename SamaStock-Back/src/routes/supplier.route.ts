@@ -1,6 +1,6 @@
-import { supplierController } from "./../controllers/supplier.controller";
+import { supplierController } from "./../controllers/supplier.controller.js";
 import { Router } from "express";
-import { authorizeRoles, protect } from "../middlewares/auth.middleware";
+import { authorizeRoles, protect } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 /**

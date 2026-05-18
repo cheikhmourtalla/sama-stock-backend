@@ -1,7 +1,7 @@
 // controllers/client.controller.ts
 import { Request, Response } from "express";
-import { ClientService } from "../services/client.service";
-import loggerService from "../services/logger.service";
+import { ClientService } from "../services/client.service.js";
+import loggerService from "../services/logger.service.js";
 
 export const clientController = {
 

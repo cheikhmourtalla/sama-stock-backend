@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { envSchema } from "./env-schema";
+import { envSchema } from "./env-schema.js";
 const parsed = envSchema.safeParse(process.env);
 
 

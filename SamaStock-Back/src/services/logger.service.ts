@@ -1,4 +1,4 @@
-import { logger, ServiceLogger } from "../config/logger-config";
+import { logger, ServiceLogger } from "../config/logger-config.js";
 import os from "os";
 import fs from "fs/promises";
 import path from "path";
@@ -13,8 +13,9 @@ import {
   IServiceLogger,
 } from "../interfaces/logger.js";
 
-const filename = __filename;
-const __dirname = path.dirname(filename);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class LoggerService {
   private loggers: Map<string, IServiceLogger>;

@@ -1,6 +1,6 @@
 // services/error.service.ts
-import { AppError, ErrorCodes } from "../utils/app-error";
-import loggerService from "./logger.service";
+import { AppError, ErrorCodes } from "../utils/app-error.js";
+import loggerService from "./logger.service.js";
 
 export class ErrorService {
   private logger = loggerService.getLogger("ErrorService");

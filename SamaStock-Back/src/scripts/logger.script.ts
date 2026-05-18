@@ -1,4 +1,4 @@
-import loggerService from "../services/logger.service";
+import loggerService from "../services/logger.service.js";
 
 async function cleanLogs() {
   console.log("Starting log cleanup...");
