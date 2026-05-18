@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc  && cpy \"src/prisma/**/*\" dist/src/prisma",
     "start": "cross-env NODE_ENV=production node dist/src/index.js && npx prisma migrate && prisma migrate deploy && npm run start",
     "prisma:generate": "prisma generate --schema=src/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev",
@@ -53,6 +53,7 @@
     "@types/pg": "^8.20.0",
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
+    "cpy-cli": "^7.0.0",
     "nodemon": "^3.1.14",
     "prisma": "^7.8.0",
     "ts-node": "^10.9.2",

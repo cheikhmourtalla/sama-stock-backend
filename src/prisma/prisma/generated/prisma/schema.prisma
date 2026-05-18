@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-    output   = "../prisma/generated/prisma"
+  output   = "./prisma/generated/prisma"
 }
 
 datasource db {
@@ -19,31 +19,31 @@ model User {
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  supplier_id Int?
-  supplier    Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
-  name        String
-  description String?
-  quantity    Int
-  purchasePrice Decimal
-  salePrice     Decimal
+  id             Int       @id @default(autoincrement())
+  supplier_id    Int?
+  supplier       Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  quantity       Int
+  purchasePrice  Decimal
+  salePrice      Decimal
   alertThreshold Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   movements StockMovement[]
   sales     Sale[]
 }
 
 model StockMovement {
-  id        Int      @id @default(autoincrement())
-  supplier_id Int? 
-  supplier Supplier? @relation(fields: [supplier_id] , references: [id])
-  productId Int
-  type      String
-  quantity  Int
-  note      String?
-  createdAt DateTime @default(now())
+  id          Int       @id @default(autoincrement())
+  supplier_id Int?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id])
+  productId   Int
+  type        String
+  quantity    Int
+  note        String?
+  createdAt   DateTime  @default(now())
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
@@ -53,34 +53,34 @@ model Client {
   name      String
   phone     String   @unique
   createdAt DateTime @default(now())
-  sales Sale[]
+  sales     Sale[]
 }
 
 model Sale {
-  id          Int       @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   productId   Int
   clientId    Int?
   quantity    Int
   unitPrice   Decimal
   totalAmount Decimal
-  paidAmount  Decimal     @default(0)
-  remaining   Decimal     @default(0)
+  paidAmount  Decimal       @default(0)
+  remaining   Decimal       @default(0)
   customer    String?
   note        String?
-  createdAt   DateTime  @default(now())
-  product Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  client  Client?     @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  cash    Transaction[]
+  createdAt   DateTime      @default(now())
+  product     Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  client      Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  cash        Transaction[]
 }
 
 model Supplier {
-  id        Int       @id @default(autoincrement())
+  id        Int             @id @default(autoincrement())
   name      String
   phone     String
   address   String?
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
-  stock  StockMovement[]
+  createdAt DateTime?       @default(now())
+  updatedAt DateTime?       @updatedAt
+  stock     StockMovement[]
 
   product Product[]
 
@@ -141,7 +141,6 @@ model Transaction {
   paymentMethod PaymentMethod
   createdAt     DateTime?     @default(now())
   updatedAt     DateTime?     @updatedAt
-
 
   @@map("transactions")
 }
