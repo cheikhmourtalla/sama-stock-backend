@@ -1,12 +1,14 @@
 import "dotenv/config";
 import { envSchema } from "./env-schema.js";
-// const parsed = envSchema.safeParse(process.env);
 
+if (process.env.NODE_ENV === "development") {
+  const parsed = envSchema.safeParse(process.env);
 
-// if (!parsed.success) {
-//   console.error("❌ Invalid environment variables:", parsed.error.format());
-//   process.exit(1);
-// }
+  if (!parsed.success) {
+    console.error("❌ Invalid environment variables:", parsed.error.format());
+    process.exit(1);
+  }
+}
 
 export const env = {
   isProduction: process.env.NODE_ENV === "production",
@@ -25,10 +27,10 @@ export const env = {
     secret: process.env.JWT_SECRET,
   },
 
-  logs :  {
-    LogLevel : process.env.LOG_LEVEL,
-    LogRetentionDay: process.env.LOG_RETENTION_DAYS
-  }
+  logs: {
+    LogLevel: process.env.LOG_LEVEL,
+    LogRetentionDay: process.env.LOG_RETENTION_DAYS,
+  },
 };
 
 console.log(env);
