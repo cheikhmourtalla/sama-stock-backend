@@ -1,19 +1,19 @@
 import "dotenv/config";
 import { envSchema } from "./env-schema.js";
 
-if (process.env.NODE_ENV === "development") {
-  const parsed = envSchema.safeParse(process.env);
+// if (process.env.NODE_ENV === "development") {
+//   const parsed = envSchema.safeParse(process.env);
 
-  if (!parsed.success) {
-    console.error("❌ Invalid environment variables:", parsed.error.format());
-    process.exit(1);
-  }
-}
+//   if (!parsed.success) {
+//     console.error("❌ Invalid environment variables:", parsed.error.format());
+//     process.exit(1);
+//   }
+// }
 
 export const env = {
   isProduction: process.env.NODE_ENV === "production",
   isDevelopment: process.env.NODE_ENV === "development",
-  port: process.env.PORT,
+  port: process.env.PORT || 3000, 
   logLevel: process.env.LOG_LEVEL,
   db: {
     username: process.env.DATABASE_USER,
