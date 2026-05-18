@@ -10,11 +10,7 @@ export interface AuthRequest extends Request {
   };
 }
 
-export const protect = (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction,
-) => {
+export const protect = (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -32,7 +28,7 @@ export const protect = (
       role: string;
     };
 
-    req.user = decoded;
+    (req as any).user = decoded;
 
     // console.log(req.user);
 
