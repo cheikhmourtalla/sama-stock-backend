@@ -1,34 +1,34 @@
 import "dotenv/config";
 import { envSchema } from "./env-schema.js";
-const parsed = envSchema.safeParse(process.env);
+// const parsed = envSchema.safeParse(process.env);
 
 
-if (!parsed.success) {
-  console.error("❌ Invalid environment variables:", parsed.error.format());
-  process.exit(1);
-}
+// if (!parsed.success) {
+//   console.error("❌ Invalid environment variables:", parsed.error.format());
+//   process.exit(1);
+// }
 
 export const env = {
-  isProduction: parsed.data.NODE_ENV === "production",
-  isDevelopment: parsed.data.NODE_ENV === "development",
-  port: parsed.data.PORT,
-  logLevel: parsed.data.LOG_LEVEL,
+  isProduction: process.env.NODE_ENV === "production",
+  isDevelopment: process.env.NODE_ENV === "development",
+  port: process.env.PORT,
+  logLevel: process.env.LOG_LEVEL,
   db: {
-    username: parsed.data.DATABASE_USER,
-    password: parsed.data.DATABASE_PASSWORD,
-    dbName: parsed.data.DATABASE_NAME,
-    url: parsed.data.DATABASE_URL,
-    host: parsed.data.DB_HOST,
-    port: parsed.data.DB_PORT,
+    username: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    dbName: process.env.DATABASE_NAME,
+    url: process.env.DATABASE_URL,
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
   },
   jwt: {
-    secret: parsed.data.JWT_SECRET,
+    secret: process.env.JWT_SECRET,
   },
 
   logs :  {
-    LogLevel : parsed.data.LOG_LEVEL,
-    LogRetentionDay: parsed.data.LOG_RETENTION_DAYS
+    LogLevel : process.env.LOG_LEVEL,
+    LogRetentionDay: process.env.LOG_RETENTION_DAYS
   }
 };
 
-// console.log(env);
+console.log(env);
