@@ -1,9 +1,6 @@
 import { prisma } from "../config/prisma.js";
 
-import {
-  Prisma,
-  PrismaClient,
-} from "@prisma/client";
+import { Prisma, PrismaClient } from "../prisma/generated/prisma/client";
 
 const includeRelations = {
   product: true,
@@ -27,20 +24,14 @@ export const SaleRepository = {
     });
   },
 
-  create(
-    tx: Prisma.TransactionClient,
-    data: Prisma.SaleUncheckedCreateInput,
-  ) {
+  create(tx: Prisma.TransactionClient, data: Prisma.SaleUncheckedCreateInput) {
     return tx.sale.create({
       data,
       include: includeRelations,
     });
   },
 
-  update(
-    id: number,
-    data: Prisma.SaleUpdateInput,
-  ) {
+  update(id: number, data: Prisma.SaleUpdateInput) {
     return prisma.sale.update({
       where: { id },
       data,
@@ -48,10 +39,7 @@ export const SaleRepository = {
     });
   },
 
-  delete(
-    tx: Prisma.TransactionClient,
-    id: number,
-  ) {
+  delete(tx: Prisma.TransactionClient, id: number) {
     return tx.sale.delete({
       where: { id },
     });
