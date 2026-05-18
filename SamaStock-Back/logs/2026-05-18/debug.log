@@ -1,2 +1,0 @@
-{"docs":"http://localhost:5000/api-docs","environment":"production","level":"info","message":"SamaStock backend démarré avec succès","nodeVersion":"v22.17.1","pid":16308,"port":5000,"timestamp":"2026-05-18 09:59:17.134","url":"http://localhost:5000"}
-{"level":"info","message":"Signal SIGINT reçu - Arrêt du serveur","service":"Process","timestamp":"2026-05-18 09:59:19.529"}
