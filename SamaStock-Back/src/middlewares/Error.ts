@@ -1,7 +1,7 @@
 // middlewares/error.middleware.ts
 import { Request, Response, NextFunction } from "express";
-import { AppError, ErrorCodes } from "../utils/app-error";
-import loggerService from "../services/logger.service";
+import { AppError, ErrorCodes } from "../utils/app-error.js";
+import loggerService from "../services/logger.service.js";
 
 // Gestionnaire d'erreurs global
 export const globalErrorHandler = (

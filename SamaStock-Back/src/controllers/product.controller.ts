@@ -1,7 +1,7 @@
 // controllers/product.controller.ts
 import { Request, Response } from "express";
-import { ProductService } from "../services/product.service";
-import loggerService from "../services/logger.service";
+import { ProductService } from "../services/product.service.js";
+import loggerService from "../services/logger.service.js";
 
 export const productController = {
 

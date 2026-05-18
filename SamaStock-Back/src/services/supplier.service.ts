@@ -1,4 +1,4 @@
-import { prisma } from "./../config/prisma";
+import { prisma } from "./../config/prisma.js";
 // ALWAYS CHECK ID IF THE SOURCE ID EXTERNAL
 
 export type ISupplier = {

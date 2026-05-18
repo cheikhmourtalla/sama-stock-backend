@@ -7,9 +7,9 @@ import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 
 // Import des configurations
-import swaggerSpec from "./swagger-config";
-import { logger, stream } from "./config/logger-config";
-import loggerService from "./services/logger.service";
+import swaggerSpec from "./swagger-config.js";
+import { logger, stream } from "./config/logger-config.js";
+import loggerService from "./services/logger.service.js";
 
 // Import des middlewares
 import {
@@ -17,19 +17,19 @@ import {
   errorLogger,
   performanceLogger,
   rateLimitedLogger,
-} from "./middlewares/logger.middleware";
-import { globalErrorHandler, notFoundHandler } from "./middlewares/error";
-import { ErrorService } from "./services/error.service";
+} from "./middlewares/logger.middleware.js";
+import { globalErrorHandler, notFoundHandler } from "./middlewares/error.js";
+import { ErrorService } from "./services/error.service.js";
 
 // Import des routes
-import authRoutes from "./routes/auth.routes";
-import productRoutes from "./routes/product.routes";
-import stockRoutes from "./routes/stock.routes";
-import saleRoutes from "./routes/sale.routes";
-import dashboardRoutes from "./routes/dashboard.routes";
-import clientRoutes from "./routes/client.routes";
-import supplierRoute from "./routes/supplier.route";
-import cashRoutes from "./routes/cash.routes";
+import authRoutes from "./routes/auth.routes.js";
+import productRoutes from "./routes/product.routes.js";
+import stockRoutes from "./routes/stock.routes.js";
+import saleRoutes from "./routes/sale.routes.js";
+import dashboardRoutes from "./routes/dashboard.routes.js";
+import clientRoutes from "./routes/client.routes.js";
+import supplierRoute from "./routes/supplier.route.js";
+import cashRoutes from "./routes/cash.routes.js";
 
 // ==================== INITIALISATION ====================
 const app = express();
@@ -40,13 +40,15 @@ app.use(performanceLogger(3000)); // Log les requêtes lentes (>3s)
 app.use(rateLimitedLogger(200)); // Limite à 200 logs/min par IP
 
 // 2. Middlewares standards
-app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    // "https://tonfrontend.vercel.app",
-  ],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      // "https://tonfrontend.vercel.app",
+    ],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
@@ -111,20 +113,28 @@ const server = app.listen(PORT, () => {
   });
 
   console.log(`\n🚀 SamaStock backend running on http://localhost:${PORT}`);
-  console.log(`📚 Swagger API documentation: http://localhost:${PORT}/api-docs`);
+  console.log(
+    `📚 Swagger API documentation: http://localhost:${PORT}/api-docs`,
+  );
   console.log(`📝 Logs système disponibles dans /logs directory\n`);
 });
 
 // ==================== TÂCHES PLANIFIÉES ====================
 // Nettoyage des logs toutes les 24h
-setInterval(() => {
-  loggerService.cleanupOldLogs(30);
-}, 24 * 60 * 60 * 1000);
+setInterval(
+  () => {
+    loggerService.cleanupOldLogs(30);
+  },
+  24 * 60 * 60 * 1000,
+);
 
 // Métriques toutes les heures
-setInterval(() => {
-  loggerService.logPerformanceMetrics();
-}, 60 * 60 * 1000);
+setInterval(
+  () => {
+    loggerService.logPerformanceMetrics();
+  },
+  60 * 60 * 1000,
+);
 
 // ==================== GESTIONNAIRES GLOBAUX ====================
 // Configuration des gestionnaires d'erreurs globaux

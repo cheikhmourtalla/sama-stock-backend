@@ -1,6 +1,6 @@
-import { prisma } from "../config/prisma";
+import { prisma } from "../config/prisma.js";
 import { CashMovementType, PaymentMethod } from "@prisma/client";
-import loggerService from "../services/logger.service";
+import loggerService from "../services/logger.service.js";
 
 const logger = loggerService.getLogger("CashService");
 

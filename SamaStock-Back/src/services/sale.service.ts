@@ -1,7 +1,7 @@
-import { prisma } from "../config/prisma";
-import { SaleRepository } from "../repositories/sale.repository";
-import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto";
-import loggerService from "../services/logger.service";
+import { prisma } from "../config/prisma.js";
+import { SaleRepository } from "../repositories/sale.repository.js";
+import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto.js";
+import loggerService from "../services/logger.service.js";
 
 const logger = loggerService.getLogger("SaleService");
 

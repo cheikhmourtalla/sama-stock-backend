@@ -1,5 +1,5 @@
-import { prisma } from "../config/prisma";
-import loggerService from "../services/logger.service";
+import { prisma } from "../config/prisma.js";
+import loggerService from "../services/logger.service.js";
 
 const logger = loggerService.getLogger("ClientService");
 

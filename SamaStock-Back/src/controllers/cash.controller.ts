@@ -1,7 +1,7 @@
 // controllers/cash.controller.ts
 import { Request, Response } from "express";
-import * as cashService from "../services/cash.service";
-import loggerService from "../services/logger.service";
+import * as cashService from "../services/cash.service.js";
+import loggerService from "../services/logger.service.js";
 
 export const cashController = {
   async openCash(req: Request, res: Response) {

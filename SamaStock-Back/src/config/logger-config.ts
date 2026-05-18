@@ -2,17 +2,11 @@ import winston from "winston";
 import DailyRotateFile from "winston-daily-rotate-file";
 import path from "path";
 // import { fileURLToPath } from "url";
-import {
-  LogLevel,
-  LogMetadata,
-  IServiceLogger,
-} from "../interfaces/logger.js";
+import { LogLevel, LogMetadata, IServiceLogger } from "../interfaces/logger.js";
+import { fileURLToPath } from "url";
 
-
-const filename = __filename; 
- const __dirname = path.dirname(filename);
-
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Niveaux de log personnalisés
 const logLevels = {
@@ -41,7 +35,7 @@ const customFormat = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss.SSS" }),
   winston.format.errors({ stack: true }),
   winston.format.splat(),
-   
+
   winston.format.printf(
     ({ timestamp, level, message, service, stack, ...meta }) => {
       let log = `${timestamp} [${level.toUpperCase()}]`;
@@ -195,10 +189,9 @@ export class ServiceLogger implements IServiceLogger {
   }
 }
 
-
 export const stream = {
   write: (message: string) => {
     const cleanMessage = message.trim();
     logger.http(cleanMessage);
-  }
+  },
 };

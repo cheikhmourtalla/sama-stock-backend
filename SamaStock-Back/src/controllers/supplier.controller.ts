@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { supplierService } from "../services/supplier.service";
+import { supplierService } from "../services/supplier.service.js";
 export const supplierController = {
   async createFournisseur(req: Request, res: Response) {
     const { body } = req;
