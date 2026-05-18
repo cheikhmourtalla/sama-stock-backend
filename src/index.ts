@@ -44,6 +44,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "https://willowy-puffpuff-b08db2.netlify.app"
       // "https://tonfrontend.vercel.app",
     ],
     credentials: true,
