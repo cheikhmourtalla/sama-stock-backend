@@ -8,7 +8,7 @@
     "dev": "cross-env NODE_ENV=development tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "prisma generate --schema=src/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
