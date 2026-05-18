@@ -5,7 +5,7 @@ export const env = {
   port: process.env.PORT || 3000,
   logLevel: process.env.LOG_LEVEL,
   db: {
-    url: process.env.DATABASE_URL,
+    url: isProduction ? process.env.PROD_URL : process.env.DATABASE_URL ,
   },
   jwt: {
     secret: process.env.JWT_SECRET,

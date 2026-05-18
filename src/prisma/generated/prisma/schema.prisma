@@ -1,0 +1,168 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../prisma/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+
+  cashSessions CashSession[]
+}
+
+model Product {
+  id             Int       @id @default(autoincrement())
+  supplier_id    Int?
+  supplier       Supplier? @relation(fields: [supplier_id], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  quantity       Int
+  purchasePrice  Decimal
+  salePrice      Decimal
+  alertThreshold Int
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  movements StockMovement[]
+  sales     Sale[]
+}
+
+model StockMovement {
+  id          Int       @id @default(autoincrement())
+  supplier_id Int?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [id])
+  productId   Int
+  type        String
+  quantity    Int
+  note        String?
+  createdAt   DateTime  @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Client {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String   @unique
+  createdAt DateTime @default(now())
+  sales     Sale[]
+}
+
+model Sale {
+  id          Int           @id @default(autoincrement())
+  productId   Int
+  clientId    Int?
+  quantity    Int
+  unitPrice   Decimal
+  totalAmount Decimal
+  paidAmount  Decimal       @default(0)
+  remaining   Decimal       @default(0)
+  customer    String?
+  note        String?
+  createdAt   DateTime      @default(now())
+  product     Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+  client      Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  cash        Transaction[]
+}
+
+model Supplier {
+  id        Int             @id @default(autoincrement())
+  name      String
+  phone     String
+  address   String?
+  createdAt DateTime?       @default(now())
+  updatedAt DateTime?       @updatedAt
+  stock     StockMovement[]
+
+  product Product[]
+
+  @@map("suppliers")
+}
+
+model CashSession {
+  id            Int            @id @default(autoincrement())
+  openedAt      DateTime       @default(now())
+  closedAt      DateTime?
+  openingAmount Decimal
+  closingAmount Decimal?
+  isOpen        Boolean        @default(true)
+  userId        Int
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movements     CashMovement[]
+  createdAt     DateTime       @default(now())
+
+  @@map("cash_sessions")
+}
+
+model CashMovement {
+  id            Int              @id @default(autoincrement())
+  sessionId     Int
+  session       CashSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type          CashMovementType
+  label         String
+  amount        Decimal
+  paymentMethod PaymentMethod
+  note          String?
+  createdAt     DateTime         @default(now())
+
+  @@map("cash_movements")
+}
+
+model Expense {
+  id            Int           @id @default(autoincrement())
+  label         String
+  amount        Decimal
+  paymentMethod PaymentMethod
+  note          String?
+  createdAt     DateTime      @default(now())
+
+  @@map("expenses")
+}
+
+// ============================
+// TRANSACTIONS
+// ============================
+
+model Transaction {
+  id            Int           @id @default(autoincrement())
+  sale_id       Int?
+  sale          Sale?         @relation(fields: [sale_id], references: [id], onDelete: NoAction)
+  type          CashType
+  label         String
+  amount        Decimal
+  paymentMethod PaymentMethod
+  createdAt     DateTime?     @default(now())
+  updatedAt     DateTime?     @updatedAt
+
+  @@map("transactions")
+}
+
+// ============================
+// ENUMS
+// ============================
+
+enum CashType {
+  EXIT
+  ENTRY
+}
+
+enum CashMovementType {
+  SALE
+  CLIENT_PAYMENT
+  SUPPLIER_PAYMENT
+  EXPENSE
+}
+
+enum PaymentMethod {
+  CASH
+  WAVE
+  ORANGE_MONEY
+}

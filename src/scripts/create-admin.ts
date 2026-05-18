@@ -4,7 +4,6 @@ import { prisma } from "../config/prisma.js";
 import { env } from "../config/env/env.js";
 
 async function main() {
-  console.log(env.db.url);
   const users = [
     {
       name: "Admin SamaStock",
