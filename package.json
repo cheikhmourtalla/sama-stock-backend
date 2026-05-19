@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx watch src/index.ts",
-"build": "tsc && copyfiles -u 1 \"prisma/**/*\" dist/prisma",
+    "build": "tsc",
     "start": "cross-env NODE_ENV=production node dist/src/index.js  && npx prisma migrate && prisma migrate deploy && npm run start",
     "prisma:generate": "prisma generate --schema=src/prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev",
