@@ -4,3 +4,4 @@
 {"level":"info","message":"Signal SIGINT reçu - Arrêt du serveur","service":"Process","timestamp":"2026-05-18 09:59:19.529"}
 {"docs":"http://localhost:5000/api-docs","environment":"production","level":"info","message":"SamaStock backend démarré avec succès","nodeVersion":"v22.17.1","pid":22904,"port":5000,"timestamp":"2026-05-18 15:20:32.748","url":"http://localhost:5000"}
 {"docs":"http://localhost:5000/api-docs","environment":"production","level":"info","message":"SamaStock backend démarré avec succès","nodeVersion":"v22.17.1","pid":51636,"port":5000,"timestamp":"2026-05-19 08:46:24.048","url":"http://localhost:5000"}
+{"docs":"http://localhost:5000/api-docs","environment":"production","level":"info","message":"SamaStock backend démarré avec succès","nodeVersion":"v22.17.1","pid":35704,"port":5000,"timestamp":"2026-05-19 09:14:25.026","url":"http://localhost:5000"}
