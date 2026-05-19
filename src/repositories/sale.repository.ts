@@ -1,9 +1,6 @@
 import { prisma } from "../config/prisma.js";
 
-import {
-  Prisma,
-  PrismaClient,
-} from "../../prisma/prisma/generated/prisma";
+import { Prisma, PrismaClient } from "../../prisma/generated/prisma/client.js";
 
 const includeRelations = {
   product: true,

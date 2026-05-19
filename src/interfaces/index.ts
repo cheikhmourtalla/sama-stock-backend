@@ -1,4 +1,4 @@
-import { CashType, PaymentMethod } from "../../prisma/prisma/generated/prisma";
+import { CashType, PaymentMethod } from "../../prisma/generated/prisma/client.js";
 
 export type IOperation = {
   type: CashType;
