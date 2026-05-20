@@ -1,5 +1,6 @@
 import { prisma } from "../config/prisma.js";
-
+import { AppError } from "../utils/app-error.js";
+import { ErrorCodes } from "../utils/app-error.js";
 export const ProductService = {
   // get products
   async getProducts(
@@ -57,7 +58,11 @@ export const ProductService = {
     });
 
     if (!product) {
-      throw new AppError("Produit introuvable", 404, ErrorCodes.PRODUCT_NOT_FOUND);
+      throw new AppError(
+        "Produit introuvable",
+        404,
+        ErrorCodes.PRODUCT_NOT_FOUND,
+      );
     }
 
     return product;
