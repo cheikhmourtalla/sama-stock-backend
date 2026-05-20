@@ -44,8 +44,8 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://peppy-faun-3bcc7b.netlify.app"
-      // "https://tonfrontend.vercel.app",
+      "https://peppy-faun-3bcc7b.netlify.app",
+      "https://sama-stock-frontend-v2.vercel.app",
     ],
     credentials: true,
   }),
