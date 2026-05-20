@@ -49,7 +49,7 @@ export const ProductService = {
   // get one product
   async getProductById(id: number) {
     if (isNaN(id)) {
-      throw new Error("ID invalide");
+      throw new AppError("ID invalide", 400, ErrorCodes.VALIDATION_ERROR);
     }
 
     const product = await prisma.product.findUnique({
@@ -57,7 +57,7 @@ export const ProductService = {
     });
 
     if (!product) {
-      throw new Error("Produit introuvable");
+      throw new AppError("Produit introuvable", 404, ErrorCodes.PRODUCT_NOT_FOUND);
     }
 
     return product;

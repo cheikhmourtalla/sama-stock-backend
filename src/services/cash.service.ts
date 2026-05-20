@@ -1,4 +1,5 @@
 import { prisma } from "../config/prisma.js";
+import { AppError, ErrorCodes } from "../utils/app-error.js";
 import {
   CashMovementType,
   PaymentMethod,
@@ -23,9 +24,11 @@ export const openCashSession = async (
     logger.warn(
       `Tentative d'ouverture de caisse refusée - Une caisse est déjà ouverte (session: ${existingSession.id})`,
     );
-    throw new Error(
-      "Une caisse est déjà ouverte. Veuillez fermer la caisse actuelle avant d'en ouvrir une nouvelle.",
-    );
+    throw new AppError(
+        "Une caisse est déjà ouverte. Veuillez fermer la caisse actuelle avant d'en ouvrir une nouvelle.",
+        400,
+        ErrorCodes.SESSION_ALREADY_OPEN,
+      );
   }
 
   const session = await prisma.cashSession.create({
@@ -58,9 +61,7 @@ export const closeCashSession = async () => {
     logger.warn(
       `Tentative de fermeture de caisse refusée - Aucune caisse ouverte trouvée`,
     );
-    throw new Error(
-      "Aucune caisse ouverte. Impossible de fermer une caisse inexistante.",
-    );
+    throw new AppError("Aucune caisse ouverte. Impossible de fermer une caisse inexistante.", 403, ErrorCodes.SESSION_NOT_OPEN);
   }
 
   const entries = session.movements
@@ -151,8 +152,10 @@ export const addCashMovement = async (data: {
     logger.warn(
       `Tentative d'ajout de mouvement refusée - La caisse est fermée (Type: ${data.type}, Montant: ${data.amount})`,
     );
-    throw new Error(
+    throw new AppError(
       "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer des mouvements.",
+      403,
+      ErrorCodes.SESSION_NOT_OPEN,
     );
   }
 

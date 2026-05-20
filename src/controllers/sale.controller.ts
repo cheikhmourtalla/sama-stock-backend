@@ -150,10 +150,15 @@ export const saleController = {
       requestId,
       saleId,
       amount: validatedData.amount,
+      paymentMethod: validatedData.paymentMethod,
       ip: req.ip,
     });
 
-    const sale = await SaleService.addSalePayment(saleId, validatedData.amount);
+    const sale = await SaleService.addSalePayment(
+      saleId,
+      validatedData.amount,
+      validatedData.paymentMethod as any
+    );
 
     logger.info(`Paiement ajouté avec succès pour la vente ID: ${saleId}`, {
       requestId,

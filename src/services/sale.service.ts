@@ -1,7 +1,9 @@
 import { prisma } from "../config/prisma.js";
+import { AppError, ErrorCodes } from "../utils/app-error.js";
 import { SaleRepository } from "../repositories/sale.repository.js";
 import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto.js";
 import loggerService from "../services/logger.service.js";
+import { PaymentMethod } from "../../prisma/generated/prisma/client.js";
 
 const logger = loggerService.getLogger("SaleService");
 
@@ -23,16 +25,14 @@ export const SaleService = {
 
     if (!id) {
       logger.warn(`Identifiant invalide pour la recherche de vente`);
-      throw new Error("L'identifiant de la vente est invalide ou manquant.");
+      throw new AppError("L'identifiant de la vente est invalide ou manquant.", 400, ErrorCodes.VALIDATION_ERROR);
     }
 
     const sale = await SaleRepository.findById(id);
 
     if (!sale) {
       logger.warn(`Vente non trouvée - ID: ${id}`);
-      throw new Error(
-        `Vente avec l'ID ${id} introuvable. Vérifiez l'identifiant et réessayez.`,
-      );
+      throw new AppError(`Vente avec l'ID ${id} introuvable. Vérifiez l'identifiant et réessayez.`, 404, ErrorCodes.SALE_NOT_FOUND);
     }
 
     logger.debug(
@@ -43,21 +43,20 @@ export const SaleService = {
   },
 
   async createSale(data: CreateSaleDto, saleId?: string) {
-    const { productId, clientId, quantity, paidAmount, customer, note } = data;
+    const { productId, clientId, quantity, paidAmount, paymentMethod, customer, note } = data;
 
     logger.info(`Tentative de création d'une nouvelle vente`, {
       productId,
       clientId,
       quantity,
       paidAmount,
+      paymentMethod,
       customer,
     });
 
     if (quantity <= 0) {
       logger.warn(`Création vente refusée - Quantité invalide: ${quantity}`);
-      throw new Error(
-        `La quantité doit être supérieure à 0. Valeur reçue: ${quantity}.`,
-      );
+      throw new AppError(`La quantité doit être supérieure à 0. Valeur reçue: ${quantity}.`, 400, ErrorCodes.VALIDATION_ERROR);
     }
 
     return prisma.$transaction(async (tx) => {
@@ -72,9 +71,7 @@ export const SaleService = {
         logger.warn(
           `Création vente refusée - Produit introuvable ID: ${productId}`,
         );
-        throw new Error(
-          `Produit avec l'ID ${productId} introuvable. Vérifiez le produit et réessayez.`,
-        );
+        throw new AppError(`Produit avec l'ID ${productId} introuvable. Vérifiez le produit et réessayez.`, 404, ErrorCodes.PRODUCT_NOT_FOUND);
       }
 
       // atomic stock update
@@ -96,9 +93,7 @@ export const SaleService = {
         logger.warn(
           `Création vente refusée - Stock insuffisant pour le produit ID: ${productId}, Quantité demandée: ${quantity}, Stock disponible: ${product.quantity}`,
         );
-        throw new Error(
-          `Stock insuffisant pour le produit "${product.name}". Disponible: ${product.quantity}, Demandé: ${quantity}.`,
-        );
+        throw new AppError(`Stock insuffisant pour le produit "${product.name}". Disponible: ${product.quantity}, Demandé: ${quantity}.`, 400, ErrorCodes.INSUFFICIENT_STOCK);
       }
 
       // client
@@ -115,9 +110,7 @@ export const SaleService = {
           logger.warn(
             `Création vente refusée - Client introuvable ID: ${clientId}`,
           );
-          throw new Error(
-            `Client avec l'ID ${clientId} introuvable. Veuillez vérifier le client ou créer la vente sans client.`,
-          );
+          throw new AppError(`Client avec l'ID ${clientId} introuvable. Veuillez vérifier le client ou créer la vente sans client.`, 404, ErrorCodes.CLIENT_NOT_FOUND);
         }
       }
 
@@ -130,9 +123,7 @@ export const SaleService = {
         logger.warn(
           `Création vente refusée - Montant payé invalide: ${paid} (Total: ${totalAmount})`,
         );
-        throw new Error(
-          `Le montant payé (${paid}) est invalide. Il doit être compris entre 0 et ${totalAmount}.`,
-        );
+        throw new AppError(`Le montant payé (${paid}) est invalide. Il doit être compris entre 0 et ${totalAmount}.`, 400, ErrorCodes.VALIDATION_ERROR);
       }
 
       const remaining = totalAmount - paid;
@@ -178,9 +169,7 @@ export const SaleService = {
 
       if (!currentSession?.isOpen) {
         logger.error(`Création vente échouée - Caisse fermée ou inexistante`);
-        throw new Error(
-          "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer une vente.",
-        );
+        throw new AppError("La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer une vente.", 403, ErrorCodes.SESSION_NOT_OPEN);
       }
 
       await tx.cashMovement.create({
@@ -189,7 +178,7 @@ export const SaleService = {
           type: "SALE",
           label: "Vente",
           amount: paidAmount as number,
-          paymentMethod: "CASH",
+          paymentMethod: paymentMethod ?? "CASH",
         },
       });
 
@@ -208,9 +197,7 @@ export const SaleService = {
 
     if (!existingSale) {
       logger.warn(`Modification refusée - Vente introuvable ID: ${id}`);
-      throw new Error(
-        `Vente avec l'ID ${id} introuvable. La modification a échoué.`,
-      );
+      throw new AppError(`Vente avec l'ID ${id} introuvable. La modification a échoué.`, 404, ErrorCodes.SALE_NOT_FOUND);
     }
 
     const updatedSale = await SaleRepository.update(id, {
@@ -225,9 +212,9 @@ export const SaleService = {
     return updatedSale;
   },
 
-  async addSalePayment(saleId: number, paidAmount: number) {
+  async addSalePayment(saleId: number, paidAmount: number, paymentMethod: PaymentMethod = "CASH") {
     logger.info(
-      `Tentative d'ajout de paiement pour la vente ID: ${saleId}, Montant: ${paidAmount}`,
+      `Tentative d'ajout de paiement pour la vente ID: ${saleId}, Montant: ${paidAmount}, Moyen: ${paymentMethod}`,
     );
 
     const payment = prisma.$transaction(async (tx) => {
@@ -237,34 +224,26 @@ export const SaleService = {
 
       if (!paidAmount || paidAmount <= 0) {
         logger.warn(`Ajout paiement refusé - Montant invalide: ${paidAmount}`);
-        throw new Error(
-          `Le montant du versement (${paidAmount}) est invalide. Le montant doit être supérieur à 0.`,
-        );
+        throw new AppError(`Le montant du versement (${paidAmount}) est invalide. Le montant doit être supérieur à 0.`, 400, ErrorCodes.VALIDATION_ERROR);
       }
 
       if (!findSale) {
         logger.warn(`Ajout paiement refusé - Vente introuvable ID: ${saleId}`);
-        throw new Error(
-          `Vente avec l'ID ${saleId} introuvable. Impossible d'ajouter un paiement.`,
-        );
+        throw new AppError(`Vente avec l'ID ${saleId} introuvable. Impossible d'ajouter un paiement.`, 404, ErrorCodes.SALE_NOT_FOUND);
       }
 
       if (!findSale.remaining) {
         logger.warn(
           `Ajout paiement refusé - Vente déjà soldée ID: ${saleId}, Restant: ${findSale.remaining}`,
         );
-        throw new Error(
-          `Cette vente est déjà entièrement payée. Aucun paiement supplémentaire n'est requis.`,
-        );
+        throw new AppError(`Cette vente est déjà entièrement payée. Aucun paiement supplémentaire n'est requis.`, 400, ErrorCodes.VALIDATION_ERROR);
       }
 
       if (paidAmount > findSale.remaining.toNumber()) {
         logger.warn(
           `Ajout paiement refusé - Montant supérieur au reste dû pour la vente ID: ${saleId}, Restant: ${findSale.remaining}, Tentative: ${paidAmount}`,
         );
-        throw new Error(
-          `Le montant du versement (${paidAmount}) est supérieur au reste à payer (${findSale.remaining} FCFA). Montant maximum autorisé: ${findSale.remaining} FCFA.`,
-        );
+        throw new AppError(`Le montant du versement (${paidAmount}) est supérieur au reste à payer (${findSale.remaining}) FCFA. Montant maximum autorisé: ${findSale.remaining} FCFA.`, 400, ErrorCodes.VALIDATION_ERROR);
       }
 
       const isCompletePayment = findSale.remaining.toNumber() === paidAmount;
@@ -294,9 +273,7 @@ export const SaleService = {
         logger.error(
           `Ajout paiement échoué - Caisse fermée ou inexistante pour la vente ID: ${saleId}`,
         );
-        throw new Error(
-          "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer un paiement.",
-        );
+        throw new AppError("La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer un paiement.", 403, ErrorCodes.SESSION_NOT_OPEN);
       }
 
       await tx.cashMovement.create({
@@ -305,7 +282,7 @@ export const SaleService = {
           type: "CLIENT_PAYMENT",
           label: "Versement dette",
           amount: paidAmount,
-          paymentMethod: "CASH",
+          paymentMethod: paymentMethod,
         },
       });
 
@@ -330,9 +307,7 @@ export const SaleService = {
 
       if (!sale) {
         logger.warn(`Suppression refusée - Vente introuvable ID: ${id}`);
-        throw new Error(
-          `Vente avec l'ID ${id} introuvable. La suppression a échoué.`,
-        );
+        throw new AppError(`Vente avec l'ID ${id} introuvable. La suppression a échoué.`, 404, ErrorCodes.SALE_NOT_FOUND);
       }
 
       logger.debug(

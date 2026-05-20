@@ -1,29 +1,21 @@
-// utils/AppError.ts
 export class AppError extends Error {
   public statusCode: number;
-  public status: string;
-  public isOperational: boolean;
   public errorCode: string;
   public details?: any;
 
-  constructor(
-    message: string,
-    statusCode: number = 500,
-    errorCode: string = "INTERNAL_ERROR",
-    details?: any,
-  ) {
+  constructor(message: string, statusCode: number, errorCode: string, details?: any) {
     super(message);
+    this.name = "AppError";
     this.statusCode = statusCode;
-    this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
-    this.isOperational = true;
     this.errorCode = errorCode;
     this.details = details;
-
-    Error.captureStackTrace(this, this.constructor);
+    // Capture stack trace without this constructor
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, AppError);
+    }
   }
 }
 
-// Types d'erreurs prédéfinis
 export const ErrorCodes = {
   // Auth errors (1000-1999)
   UNAUTHORIZED: "AUTH_001",
@@ -45,6 +37,8 @@ export const ErrorCodes = {
   SALE_NOT_FOUND: "BIZ_003",
   CLIENT_NOT_FOUND: "BIZ_004",
   SUPPLIER_NOT_FOUND: "BIZ_005",
+  SESSION_NOT_OPEN: "BIZ_010",
+  SESSION_ALREADY_OPEN: "BIZ_011",
 
   // Database errors (4000-4999)
   DB_CONNECTION_ERROR: "DB_001",
@@ -58,5 +52,3 @@ export const ErrorCodes = {
   INTERNAL_ERROR: "SYS_001",
   RATE_LIMIT_EXCEEDED: "SYS_002",
 } as const;
-
-// export type ErrorCodesTypes = typeof ErrorCodes;
