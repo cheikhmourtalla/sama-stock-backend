@@ -42,14 +42,7 @@ app.use(rateLimitedLogger(200)); // Limite à 200 logs/min par IP
 // 2. Middlewares standards
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://peppy-faun-3bcc7b.netlify.app",
-      "https://sama-stock-frontend-v2.vercel.app",
-      "https://samastockfront.netlify.app",
-      "https://samastockfr.netlify.app",
-      "https://nimble-monstera-022f79.netlify.app",
-    ],
+    origin: ["http://localhost:5173", "https://sama-stock.netlify.app"],
     credentials: true,
   }),
 );
