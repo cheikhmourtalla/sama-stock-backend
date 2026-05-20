@@ -1,6 +1,6 @@
 generator client {
   provider               = "prisma-client-js"
-  output                 = "generated/prisma"
+  output                 = "../generated/prisma"
   moduleFormat           = "esm"
   generatedFileExtension = "ts"
   importFileExtension    = "ts"
@@ -74,6 +74,7 @@ model Sale {
   product     Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
   client      Client?       @relation(fields: [clientId], references: [id], onDelete: SetNull)
   cash        Transaction[]
+  facure      Facture?
 }
 
 model Supplier {
@@ -149,6 +150,57 @@ model Transaction {
 }
 
 // ============================
+// facture
+// ============================
+
+// schema.prisma
+
+model Facture {
+  id      Int           @id @default(autoincrement())
+  numero  Int           @unique
+  statut  StatutFacture @default(NON_REGLEE)
+  sale_id Int           @unique
+  sale    Sale          @relation(fields: [sale_id], references: [id], onDelete: Cascade)
+
+  // Informations client
+  clientNom       String
+  clientAdresse   String?
+  clientTelephone String?
+
+  // Informations société
+  entrepriseNom String  @default("TOUBA PALLENE")
+  ninea         String?
+
+  //              Montants
+  total        Float
+  montantVerse Float @default(0)
+  resteDu      Float
+
+  // Date facture
+  dateFacture DateTime @default(now())
+
+  //              Relations
+  lignes LigneFacture[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LigneFacture {
+  id Int @id @default(autoincrement())
+
+  designation  String
+  quantite     Int
+  prixUnitaire Float
+  montant      Float
+
+  factureId Int
+  facture   Facture @relation(fields: [factureId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+// ============================
 // ENUMS
 // ============================
 
@@ -168,4 +220,10 @@ enum PaymentMethod {
   CASH
   WAVE
   ORANGE_MONEY
+}
+
+enum StatutFacture {
+  REGLEE
+  NON_REGLEE
+  PARTIELLEMENT_REGLEE
 }

@@ -224,6 +224,34 @@ exports.Prisma.TransactionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.FactureScalarFieldEnum = {
+  id: 'id',
+  numero: 'numero',
+  statut: 'statut',
+  sale_id: 'sale_id',
+  clientNom: 'clientNom',
+  clientAdresse: 'clientAdresse',
+  clientTelephone: 'clientTelephone',
+  entrepriseNom: 'entrepriseNom',
+  ninea: 'ninea',
+  total: 'total',
+  montantVerse: 'montantVerse',
+  resteDu: 'resteDu',
+  dateFacture: 'dateFacture',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LigneFactureScalarFieldEnum = {
+  id: 'id',
+  designation: 'designation',
+  quantite: 'quantite',
+  prixUnitaire: 'prixUnitaire',
+  montant: 'montant',
+  factureId: 'factureId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -256,6 +284,12 @@ exports.CashType = exports.$Enums.CashType = {
   ENTRY: 'ENTRY'
 };
 
+exports.StatutFacture = exports.$Enums.StatutFacture = {
+  REGLEE: 'REGLEE',
+  NON_REGLEE: 'NON_REGLEE',
+  PARTIELLEMENT_REGLEE: 'PARTIELLEMENT_REGLEE'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Product: 'Product',
@@ -266,7 +300,9 @@ exports.Prisma.ModelName = {
   CashSession: 'CashSession',
   CashMovement: 'CashMovement',
   Expense: 'Expense',
-  Transaction: 'Transaction'
+  Transaction: 'Transaction',
+  Facture: 'Facture',
+  LigneFacture: 'LigneFacture'
 };
 
 /**

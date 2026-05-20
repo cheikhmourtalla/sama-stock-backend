@@ -63,6 +63,16 @@ export type Expense = $Result.DefaultSelection<Prisma.$ExpensePayload>
  * 
  */
 export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
+/**
+ * Model Facture
+ * 
+ */
+export type Facture = $Result.DefaultSelection<Prisma.$FacturePayload>
+/**
+ * Model LigneFacture
+ * 
+ */
+export type LigneFacture = $Result.DefaultSelection<Prisma.$LigneFacturePayload>
 
 /**
  * Enums
@@ -94,6 +104,15 @@ export const PaymentMethod: {
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
 
+
+export const StatutFacture: {
+  REGLEE: 'REGLEE',
+  NON_REGLEE: 'NON_REGLEE',
+  PARTIELLEMENT_REGLEE: 'PARTIELLEMENT_REGLEE'
+};
+
+export type StatutFacture = (typeof StatutFacture)[keyof typeof StatutFacture]
+
 }
 
 export type CashType = $Enums.CashType
@@ -107,6 +126,10 @@ export const CashMovementType: typeof $Enums.CashMovementType
 export type PaymentMethod = $Enums.PaymentMethod
 
 export const PaymentMethod: typeof $Enums.PaymentMethod
+
+export type StatutFacture = $Enums.StatutFacture
+
+export const StatutFacture: typeof $Enums.StatutFacture
 
 /**
  * ##  Prisma Client ʲˢ
@@ -328,6 +351,26 @@ export class PrismaClient<
     * ```
     */
   get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.facture`: Exposes CRUD operations for the **Facture** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Factures
+    * const factures = await prisma.facture.findMany()
+    * ```
+    */
+  get facture(): Prisma.FactureDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.ligneFacture`: Exposes CRUD operations for the **LigneFacture** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more LigneFactures
+    * const ligneFactures = await prisma.ligneFacture.findMany()
+    * ```
+    */
+  get ligneFacture(): Prisma.LigneFactureDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -771,7 +814,9 @@ export namespace Prisma {
     CashSession: 'CashSession',
     CashMovement: 'CashMovement',
     Expense: 'Expense',
-    Transaction: 'Transaction'
+    Transaction: 'Transaction',
+    Facture: 'Facture',
+    LigneFacture: 'LigneFacture'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -787,7 +832,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "product" | "stockMovement" | "client" | "sale" | "supplier" | "cashSession" | "cashMovement" | "expense" | "transaction"
+      modelProps: "user" | "product" | "stockMovement" | "client" | "sale" | "supplier" | "cashSession" | "cashMovement" | "expense" | "transaction" | "facture" | "ligneFacture"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1531,6 +1576,154 @@ export namespace Prisma {
           }
         }
       }
+      Facture: {
+        payload: Prisma.$FacturePayload<ExtArgs>
+        fields: Prisma.FactureFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.FactureFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.FactureFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>
+          }
+          findFirst: {
+            args: Prisma.FactureFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.FactureFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>
+          }
+          findMany: {
+            args: Prisma.FactureFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>[]
+          }
+          create: {
+            args: Prisma.FactureCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>
+          }
+          createMany: {
+            args: Prisma.FactureCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.FactureCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>[]
+          }
+          delete: {
+            args: Prisma.FactureDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>
+          }
+          update: {
+            args: Prisma.FactureUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>
+          }
+          deleteMany: {
+            args: Prisma.FactureDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.FactureUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.FactureUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>[]
+          }
+          upsert: {
+            args: Prisma.FactureUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$FacturePayload>
+          }
+          aggregate: {
+            args: Prisma.FactureAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateFacture>
+          }
+          groupBy: {
+            args: Prisma.FactureGroupByArgs<ExtArgs>
+            result: $Utils.Optional<FactureGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.FactureCountArgs<ExtArgs>
+            result: $Utils.Optional<FactureCountAggregateOutputType> | number
+          }
+        }
+      }
+      LigneFacture: {
+        payload: Prisma.$LigneFacturePayload<ExtArgs>
+        fields: Prisma.LigneFactureFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LigneFactureFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LigneFactureFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>
+          }
+          findFirst: {
+            args: Prisma.LigneFactureFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LigneFactureFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>
+          }
+          findMany: {
+            args: Prisma.LigneFactureFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>[]
+          }
+          create: {
+            args: Prisma.LigneFactureCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>
+          }
+          createMany: {
+            args: Prisma.LigneFactureCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LigneFactureCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>[]
+          }
+          delete: {
+            args: Prisma.LigneFactureDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>
+          }
+          update: {
+            args: Prisma.LigneFactureUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>
+          }
+          deleteMany: {
+            args: Prisma.LigneFactureDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LigneFactureUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LigneFactureUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>[]
+          }
+          upsert: {
+            args: Prisma.LigneFactureUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LigneFacturePayload>
+          }
+          aggregate: {
+            args: Prisma.LigneFactureAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLigneFacture>
+          }
+          groupBy: {
+            args: Prisma.LigneFactureGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LigneFactureGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LigneFactureCountArgs<ExtArgs>
+            result: $Utils.Optional<LigneFactureCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1649,6 +1842,8 @@ export namespace Prisma {
     cashMovement?: CashMovementOmit
     expense?: ExpenseOmit
     transaction?: TransactionOmit
+    facture?: FactureOmit
+    ligneFacture?: LigneFactureOmit
   }
 
   /* Types for Logging */
@@ -1925,6 +2120,37 @@ export namespace Prisma {
    */
   export type CashSessionCountOutputTypeCountMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CashMovementWhereInput
+  }
+
+
+  /**
+   * Count Type FactureCountOutputType
+   */
+
+  export type FactureCountOutputType = {
+    lignes: number
+  }
+
+  export type FactureCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    lignes?: boolean | FactureCountOutputTypeCountLignesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * FactureCountOutputType without action
+   */
+  export type FactureCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FactureCountOutputType
+     */
+    select?: FactureCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * FactureCountOutputType without action
+   */
+  export type FactureCountOutputTypeCountLignesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LigneFactureWhereInput
   }
 
 
@@ -6848,6 +7074,7 @@ export namespace Prisma {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     client?: boolean | Sale$clientArgs<ExtArgs>
     cash?: boolean | Sale$cashArgs<ExtArgs>
+    facure?: boolean | Sale$facureArgs<ExtArgs>
     _count?: boolean | SaleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sale"]>
 
@@ -6902,6 +7129,7 @@ export namespace Prisma {
     product?: boolean | ProductDefaultArgs<ExtArgs>
     client?: boolean | Sale$clientArgs<ExtArgs>
     cash?: boolean | Sale$cashArgs<ExtArgs>
+    facure?: boolean | Sale$facureArgs<ExtArgs>
     _count?: boolean | SaleCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SaleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6919,6 +7147,7 @@ export namespace Prisma {
       product: Prisma.$ProductPayload<ExtArgs>
       client: Prisma.$ClientPayload<ExtArgs> | null
       cash: Prisma.$TransactionPayload<ExtArgs>[]
+      facure: Prisma.$FacturePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -7329,6 +7558,7 @@ export namespace Prisma {
     product<T extends ProductDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ProductDefaultArgs<ExtArgs>>): Prisma__ProductClient<$Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends Sale$clientArgs<ExtArgs> = {}>(args?: Subset<T, Sale$clientArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     cash<T extends Sale$cashArgs<ExtArgs> = {}>(args?: Subset<T, Sale$cashArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    facure<T extends Sale$facureArgs<ExtArgs> = {}>(args?: Subset<T, Sale$facureArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7810,6 +8040,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Sale.facure
+   */
+  export type Sale$facureArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    where?: FactureWhereInput
   }
 
   /**
@@ -13518,6 +13767,2422 @@ export namespace Prisma {
 
 
   /**
+   * Model Facture
+   */
+
+  export type AggregateFacture = {
+    _count: FactureCountAggregateOutputType | null
+    _avg: FactureAvgAggregateOutputType | null
+    _sum: FactureSumAggregateOutputType | null
+    _min: FactureMinAggregateOutputType | null
+    _max: FactureMaxAggregateOutputType | null
+  }
+
+  export type FactureAvgAggregateOutputType = {
+    id: number | null
+    numero: number | null
+    sale_id: number | null
+    total: number | null
+    montantVerse: number | null
+    resteDu: number | null
+  }
+
+  export type FactureSumAggregateOutputType = {
+    id: number | null
+    numero: number | null
+    sale_id: number | null
+    total: number | null
+    montantVerse: number | null
+    resteDu: number | null
+  }
+
+  export type FactureMinAggregateOutputType = {
+    id: number | null
+    numero: number | null
+    statut: $Enums.StatutFacture | null
+    sale_id: number | null
+    clientNom: string | null
+    clientAdresse: string | null
+    clientTelephone: string | null
+    entrepriseNom: string | null
+    ninea: string | null
+    total: number | null
+    montantVerse: number | null
+    resteDu: number | null
+    dateFacture: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FactureMaxAggregateOutputType = {
+    id: number | null
+    numero: number | null
+    statut: $Enums.StatutFacture | null
+    sale_id: number | null
+    clientNom: string | null
+    clientAdresse: string | null
+    clientTelephone: string | null
+    entrepriseNom: string | null
+    ninea: string | null
+    total: number | null
+    montantVerse: number | null
+    resteDu: number | null
+    dateFacture: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type FactureCountAggregateOutputType = {
+    id: number
+    numero: number
+    statut: number
+    sale_id: number
+    clientNom: number
+    clientAdresse: number
+    clientTelephone: number
+    entrepriseNom: number
+    ninea: number
+    total: number
+    montantVerse: number
+    resteDu: number
+    dateFacture: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type FactureAvgAggregateInputType = {
+    id?: true
+    numero?: true
+    sale_id?: true
+    total?: true
+    montantVerse?: true
+    resteDu?: true
+  }
+
+  export type FactureSumAggregateInputType = {
+    id?: true
+    numero?: true
+    sale_id?: true
+    total?: true
+    montantVerse?: true
+    resteDu?: true
+  }
+
+  export type FactureMinAggregateInputType = {
+    id?: true
+    numero?: true
+    statut?: true
+    sale_id?: true
+    clientNom?: true
+    clientAdresse?: true
+    clientTelephone?: true
+    entrepriseNom?: true
+    ninea?: true
+    total?: true
+    montantVerse?: true
+    resteDu?: true
+    dateFacture?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FactureMaxAggregateInputType = {
+    id?: true
+    numero?: true
+    statut?: true
+    sale_id?: true
+    clientNom?: true
+    clientAdresse?: true
+    clientTelephone?: true
+    entrepriseNom?: true
+    ninea?: true
+    total?: true
+    montantVerse?: true
+    resteDu?: true
+    dateFacture?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type FactureCountAggregateInputType = {
+    id?: true
+    numero?: true
+    statut?: true
+    sale_id?: true
+    clientNom?: true
+    clientAdresse?: true
+    clientTelephone?: true
+    entrepriseNom?: true
+    ninea?: true
+    total?: true
+    montantVerse?: true
+    resteDu?: true
+    dateFacture?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type FactureAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Facture to aggregate.
+     */
+    where?: FactureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Factures to fetch.
+     */
+    orderBy?: FactureOrderByWithRelationInput | FactureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: FactureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Factures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Factures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Factures
+    **/
+    _count?: true | FactureCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: FactureAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: FactureSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: FactureMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: FactureMaxAggregateInputType
+  }
+
+  export type GetFactureAggregateType<T extends FactureAggregateArgs> = {
+        [P in keyof T & keyof AggregateFacture]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateFacture[P]>
+      : GetScalarType<T[P], AggregateFacture[P]>
+  }
+
+
+
+
+  export type FactureGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: FactureWhereInput
+    orderBy?: FactureOrderByWithAggregationInput | FactureOrderByWithAggregationInput[]
+    by: FactureScalarFieldEnum[] | FactureScalarFieldEnum
+    having?: FactureScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: FactureCountAggregateInputType | true
+    _avg?: FactureAvgAggregateInputType
+    _sum?: FactureSumAggregateInputType
+    _min?: FactureMinAggregateInputType
+    _max?: FactureMaxAggregateInputType
+  }
+
+  export type FactureGroupByOutputType = {
+    id: number
+    numero: number
+    statut: $Enums.StatutFacture
+    sale_id: number
+    clientNom: string
+    clientAdresse: string | null
+    clientTelephone: string | null
+    entrepriseNom: string
+    ninea: string | null
+    total: number
+    montantVerse: number
+    resteDu: number
+    dateFacture: Date
+    createdAt: Date
+    updatedAt: Date
+    _count: FactureCountAggregateOutputType | null
+    _avg: FactureAvgAggregateOutputType | null
+    _sum: FactureSumAggregateOutputType | null
+    _min: FactureMinAggregateOutputType | null
+    _max: FactureMaxAggregateOutputType | null
+  }
+
+  type GetFactureGroupByPayload<T extends FactureGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<FactureGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof FactureGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], FactureGroupByOutputType[P]>
+            : GetScalarType<T[P], FactureGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type FactureSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numero?: boolean
+    statut?: boolean
+    sale_id?: boolean
+    clientNom?: boolean
+    clientAdresse?: boolean
+    clientTelephone?: boolean
+    entrepriseNom?: boolean
+    ninea?: boolean
+    total?: boolean
+    montantVerse?: boolean
+    resteDu?: boolean
+    dateFacture?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    sale?: boolean | SaleDefaultArgs<ExtArgs>
+    lignes?: boolean | Facture$lignesArgs<ExtArgs>
+    _count?: boolean | FactureCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["facture"]>
+
+  export type FactureSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numero?: boolean
+    statut?: boolean
+    sale_id?: boolean
+    clientNom?: boolean
+    clientAdresse?: boolean
+    clientTelephone?: boolean
+    entrepriseNom?: boolean
+    ninea?: boolean
+    total?: boolean
+    montantVerse?: boolean
+    resteDu?: boolean
+    dateFacture?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["facture"]>
+
+  export type FactureSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    numero?: boolean
+    statut?: boolean
+    sale_id?: boolean
+    clientNom?: boolean
+    clientAdresse?: boolean
+    clientTelephone?: boolean
+    entrepriseNom?: boolean
+    ninea?: boolean
+    total?: boolean
+    montantVerse?: boolean
+    resteDu?: boolean
+    dateFacture?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["facture"]>
+
+  export type FactureSelectScalar = {
+    id?: boolean
+    numero?: boolean
+    statut?: boolean
+    sale_id?: boolean
+    clientNom?: boolean
+    clientAdresse?: boolean
+    clientTelephone?: boolean
+    entrepriseNom?: boolean
+    ninea?: boolean
+    total?: boolean
+    montantVerse?: boolean
+    resteDu?: boolean
+    dateFacture?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type FactureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "numero" | "statut" | "sale_id" | "clientNom" | "clientAdresse" | "clientTelephone" | "entrepriseNom" | "ninea" | "total" | "montantVerse" | "resteDu" | "dateFacture" | "createdAt" | "updatedAt", ExtArgs["result"]["facture"]>
+  export type FactureInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sale?: boolean | SaleDefaultArgs<ExtArgs>
+    lignes?: boolean | Facture$lignesArgs<ExtArgs>
+    _count?: boolean | FactureCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type FactureIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }
+  export type FactureIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sale?: boolean | SaleDefaultArgs<ExtArgs>
+  }
+
+  export type $FacturePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Facture"
+    objects: {
+      sale: Prisma.$SalePayload<ExtArgs>
+      lignes: Prisma.$LigneFacturePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      numero: number
+      statut: $Enums.StatutFacture
+      sale_id: number
+      clientNom: string
+      clientAdresse: string | null
+      clientTelephone: string | null
+      entrepriseNom: string
+      ninea: string | null
+      total: number
+      montantVerse: number
+      resteDu: number
+      dateFacture: Date
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["facture"]>
+    composites: {}
+  }
+
+  type FactureGetPayload<S extends boolean | null | undefined | FactureDefaultArgs> = $Result.GetResult<Prisma.$FacturePayload, S>
+
+  type FactureCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<FactureFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: FactureCountAggregateInputType | true
+    }
+
+  export interface FactureDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Facture'], meta: { name: 'Facture' } }
+    /**
+     * Find zero or one Facture that matches the filter.
+     * @param {FactureFindUniqueArgs} args - Arguments to find a Facture
+     * @example
+     * // Get one Facture
+     * const facture = await prisma.facture.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FactureFindUniqueArgs>(args: SelectSubset<T, FactureFindUniqueArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Facture that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FactureFindUniqueOrThrowArgs} args - Arguments to find a Facture
+     * @example
+     * // Get one Facture
+     * const facture = await prisma.facture.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FactureFindUniqueOrThrowArgs>(args: SelectSubset<T, FactureFindUniqueOrThrowArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Facture that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactureFindFirstArgs} args - Arguments to find a Facture
+     * @example
+     * // Get one Facture
+     * const facture = await prisma.facture.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FactureFindFirstArgs>(args?: SelectSubset<T, FactureFindFirstArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Facture that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactureFindFirstOrThrowArgs} args - Arguments to find a Facture
+     * @example
+     * // Get one Facture
+     * const facture = await prisma.facture.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FactureFindFirstOrThrowArgs>(args?: SelectSubset<T, FactureFindFirstOrThrowArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Factures that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactureFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Factures
+     * const factures = await prisma.facture.findMany()
+     * 
+     * // Get first 10 Factures
+     * const factures = await prisma.facture.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const factureWithIdOnly = await prisma.facture.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends FactureFindManyArgs>(args?: SelectSubset<T, FactureFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Facture.
+     * @param {FactureCreateArgs} args - Arguments to create a Facture.
+     * @example
+     * // Create one Facture
+     * const Facture = await prisma.facture.create({
+     *   data: {
+     *     // ... data to create a Facture
+     *   }
+     * })
+     * 
+     */
+    create<T extends FactureCreateArgs>(args: SelectSubset<T, FactureCreateArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Factures.
+     * @param {FactureCreateManyArgs} args - Arguments to create many Factures.
+     * @example
+     * // Create many Factures
+     * const facture = await prisma.facture.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends FactureCreateManyArgs>(args?: SelectSubset<T, FactureCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Factures and returns the data saved in the database.
+     * @param {FactureCreateManyAndReturnArgs} args - Arguments to create many Factures.
+     * @example
+     * // Create many Factures
+     * const facture = await prisma.facture.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Factures and only return the `id`
+     * const factureWithIdOnly = await prisma.facture.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends FactureCreateManyAndReturnArgs>(args?: SelectSubset<T, FactureCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Facture.
+     * @param {FactureDeleteArgs} args - Arguments to delete one Facture.
+     * @example
+     * // Delete one Facture
+     * const Facture = await prisma.facture.delete({
+     *   where: {
+     *     // ... filter to delete one Facture
+     *   }
+     * })
+     * 
+     */
+    delete<T extends FactureDeleteArgs>(args: SelectSubset<T, FactureDeleteArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Facture.
+     * @param {FactureUpdateArgs} args - Arguments to update one Facture.
+     * @example
+     * // Update one Facture
+     * const facture = await prisma.facture.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends FactureUpdateArgs>(args: SelectSubset<T, FactureUpdateArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Factures.
+     * @param {FactureDeleteManyArgs} args - Arguments to filter Factures to delete.
+     * @example
+     * // Delete a few Factures
+     * const { count } = await prisma.facture.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends FactureDeleteManyArgs>(args?: SelectSubset<T, FactureDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Factures.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactureUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Factures
+     * const facture = await prisma.facture.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends FactureUpdateManyArgs>(args: SelectSubset<T, FactureUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Factures and returns the data updated in the database.
+     * @param {FactureUpdateManyAndReturnArgs} args - Arguments to update many Factures.
+     * @example
+     * // Update many Factures
+     * const facture = await prisma.facture.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Factures and only return the `id`
+     * const factureWithIdOnly = await prisma.facture.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends FactureUpdateManyAndReturnArgs>(args: SelectSubset<T, FactureUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Facture.
+     * @param {FactureUpsertArgs} args - Arguments to update or create a Facture.
+     * @example
+     * // Update or create a Facture
+     * const facture = await prisma.facture.upsert({
+     *   create: {
+     *     // ... data to create a Facture
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Facture we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FactureUpsertArgs>(args: SelectSubset<T, FactureUpsertArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Factures.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactureCountArgs} args - Arguments to filter Factures to count.
+     * @example
+     * // Count the number of Factures
+     * const count = await prisma.facture.count({
+     *   where: {
+     *     // ... the filter for the Factures we want to count
+     *   }
+     * })
+    **/
+    count<T extends FactureCountArgs>(
+      args?: Subset<T, FactureCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], FactureCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Facture.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactureAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FactureAggregateArgs>(args: Subset<T, FactureAggregateArgs>): Prisma.PrismaPromise<GetFactureAggregateType<T>>
+
+    /**
+     * Group by Facture.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FactureGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends FactureGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: FactureGroupByArgs['orderBy'] }
+        : { orderBy?: FactureGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, FactureGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFactureGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Facture model
+   */
+  readonly fields: FactureFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Facture.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__FactureClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    sale<T extends SaleDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SaleDefaultArgs<ExtArgs>>): Prisma__SaleClient<$Result.GetResult<Prisma.$SalePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    lignes<T extends Facture$lignesArgs<ExtArgs> = {}>(args?: Subset<T, Facture$lignesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Facture model
+   */
+  interface FactureFieldRefs {
+    readonly id: FieldRef<"Facture", 'Int'>
+    readonly numero: FieldRef<"Facture", 'Int'>
+    readonly statut: FieldRef<"Facture", 'StatutFacture'>
+    readonly sale_id: FieldRef<"Facture", 'Int'>
+    readonly clientNom: FieldRef<"Facture", 'String'>
+    readonly clientAdresse: FieldRef<"Facture", 'String'>
+    readonly clientTelephone: FieldRef<"Facture", 'String'>
+    readonly entrepriseNom: FieldRef<"Facture", 'String'>
+    readonly ninea: FieldRef<"Facture", 'String'>
+    readonly total: FieldRef<"Facture", 'Float'>
+    readonly montantVerse: FieldRef<"Facture", 'Float'>
+    readonly resteDu: FieldRef<"Facture", 'Float'>
+    readonly dateFacture: FieldRef<"Facture", 'DateTime'>
+    readonly createdAt: FieldRef<"Facture", 'DateTime'>
+    readonly updatedAt: FieldRef<"Facture", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Facture findUnique
+   */
+  export type FactureFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * Filter, which Facture to fetch.
+     */
+    where: FactureWhereUniqueInput
+  }
+
+  /**
+   * Facture findUniqueOrThrow
+   */
+  export type FactureFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * Filter, which Facture to fetch.
+     */
+    where: FactureWhereUniqueInput
+  }
+
+  /**
+   * Facture findFirst
+   */
+  export type FactureFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * Filter, which Facture to fetch.
+     */
+    where?: FactureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Factures to fetch.
+     */
+    orderBy?: FactureOrderByWithRelationInput | FactureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Factures.
+     */
+    cursor?: FactureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Factures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Factures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Factures.
+     */
+    distinct?: FactureScalarFieldEnum | FactureScalarFieldEnum[]
+  }
+
+  /**
+   * Facture findFirstOrThrow
+   */
+  export type FactureFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * Filter, which Facture to fetch.
+     */
+    where?: FactureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Factures to fetch.
+     */
+    orderBy?: FactureOrderByWithRelationInput | FactureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Factures.
+     */
+    cursor?: FactureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Factures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Factures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Factures.
+     */
+    distinct?: FactureScalarFieldEnum | FactureScalarFieldEnum[]
+  }
+
+  /**
+   * Facture findMany
+   */
+  export type FactureFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * Filter, which Factures to fetch.
+     */
+    where?: FactureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Factures to fetch.
+     */
+    orderBy?: FactureOrderByWithRelationInput | FactureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Factures.
+     */
+    cursor?: FactureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Factures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Factures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Factures.
+     */
+    distinct?: FactureScalarFieldEnum | FactureScalarFieldEnum[]
+  }
+
+  /**
+   * Facture create
+   */
+  export type FactureCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Facture.
+     */
+    data: XOR<FactureCreateInput, FactureUncheckedCreateInput>
+  }
+
+  /**
+   * Facture createMany
+   */
+  export type FactureCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Factures.
+     */
+    data: FactureCreateManyInput | FactureCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Facture createManyAndReturn
+   */
+  export type FactureCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * The data used to create many Factures.
+     */
+    data: FactureCreateManyInput | FactureCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Facture update
+   */
+  export type FactureUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Facture.
+     */
+    data: XOR<FactureUpdateInput, FactureUncheckedUpdateInput>
+    /**
+     * Choose, which Facture to update.
+     */
+    where: FactureWhereUniqueInput
+  }
+
+  /**
+   * Facture updateMany
+   */
+  export type FactureUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Factures.
+     */
+    data: XOR<FactureUpdateManyMutationInput, FactureUncheckedUpdateManyInput>
+    /**
+     * Filter which Factures to update
+     */
+    where?: FactureWhereInput
+    /**
+     * Limit how many Factures to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Facture updateManyAndReturn
+   */
+  export type FactureUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * The data used to update Factures.
+     */
+    data: XOR<FactureUpdateManyMutationInput, FactureUncheckedUpdateManyInput>
+    /**
+     * Filter which Factures to update
+     */
+    where?: FactureWhereInput
+    /**
+     * Limit how many Factures to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Facture upsert
+   */
+  export type FactureUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Facture to update in case it exists.
+     */
+    where: FactureWhereUniqueInput
+    /**
+     * In case the Facture found by the `where` argument doesn't exist, create a new Facture with this data.
+     */
+    create: XOR<FactureCreateInput, FactureUncheckedCreateInput>
+    /**
+     * In case the Facture was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<FactureUpdateInput, FactureUncheckedUpdateInput>
+  }
+
+  /**
+   * Facture delete
+   */
+  export type FactureDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+    /**
+     * Filter which Facture to delete.
+     */
+    where: FactureWhereUniqueInput
+  }
+
+  /**
+   * Facture deleteMany
+   */
+  export type FactureDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Factures to delete
+     */
+    where?: FactureWhereInput
+    /**
+     * Limit how many Factures to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Facture.lignes
+   */
+  export type Facture$lignesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    where?: LigneFactureWhereInput
+    orderBy?: LigneFactureOrderByWithRelationInput | LigneFactureOrderByWithRelationInput[]
+    cursor?: LigneFactureWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LigneFactureScalarFieldEnum | LigneFactureScalarFieldEnum[]
+  }
+
+  /**
+   * Facture without action
+   */
+  export type FactureDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Facture
+     */
+    select?: FactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Facture
+     */
+    omit?: FactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: FactureInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model LigneFacture
+   */
+
+  export type AggregateLigneFacture = {
+    _count: LigneFactureCountAggregateOutputType | null
+    _avg: LigneFactureAvgAggregateOutputType | null
+    _sum: LigneFactureSumAggregateOutputType | null
+    _min: LigneFactureMinAggregateOutputType | null
+    _max: LigneFactureMaxAggregateOutputType | null
+  }
+
+  export type LigneFactureAvgAggregateOutputType = {
+    id: number | null
+    quantite: number | null
+    prixUnitaire: number | null
+    montant: number | null
+    factureId: number | null
+  }
+
+  export type LigneFactureSumAggregateOutputType = {
+    id: number | null
+    quantite: number | null
+    prixUnitaire: number | null
+    montant: number | null
+    factureId: number | null
+  }
+
+  export type LigneFactureMinAggregateOutputType = {
+    id: number | null
+    designation: string | null
+    quantite: number | null
+    prixUnitaire: number | null
+    montant: number | null
+    factureId: number | null
+    createdAt: Date | null
+  }
+
+  export type LigneFactureMaxAggregateOutputType = {
+    id: number | null
+    designation: string | null
+    quantite: number | null
+    prixUnitaire: number | null
+    montant: number | null
+    factureId: number | null
+    createdAt: Date | null
+  }
+
+  export type LigneFactureCountAggregateOutputType = {
+    id: number
+    designation: number
+    quantite: number
+    prixUnitaire: number
+    montant: number
+    factureId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type LigneFactureAvgAggregateInputType = {
+    id?: true
+    quantite?: true
+    prixUnitaire?: true
+    montant?: true
+    factureId?: true
+  }
+
+  export type LigneFactureSumAggregateInputType = {
+    id?: true
+    quantite?: true
+    prixUnitaire?: true
+    montant?: true
+    factureId?: true
+  }
+
+  export type LigneFactureMinAggregateInputType = {
+    id?: true
+    designation?: true
+    quantite?: true
+    prixUnitaire?: true
+    montant?: true
+    factureId?: true
+    createdAt?: true
+  }
+
+  export type LigneFactureMaxAggregateInputType = {
+    id?: true
+    designation?: true
+    quantite?: true
+    prixUnitaire?: true
+    montant?: true
+    factureId?: true
+    createdAt?: true
+  }
+
+  export type LigneFactureCountAggregateInputType = {
+    id?: true
+    designation?: true
+    quantite?: true
+    prixUnitaire?: true
+    montant?: true
+    factureId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type LigneFactureAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LigneFacture to aggregate.
+     */
+    where?: LigneFactureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LigneFactures to fetch.
+     */
+    orderBy?: LigneFactureOrderByWithRelationInput | LigneFactureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LigneFactureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LigneFactures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LigneFactures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned LigneFactures
+    **/
+    _count?: true | LigneFactureCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LigneFactureAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LigneFactureSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LigneFactureMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LigneFactureMaxAggregateInputType
+  }
+
+  export type GetLigneFactureAggregateType<T extends LigneFactureAggregateArgs> = {
+        [P in keyof T & keyof AggregateLigneFacture]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLigneFacture[P]>
+      : GetScalarType<T[P], AggregateLigneFacture[P]>
+  }
+
+
+
+
+  export type LigneFactureGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LigneFactureWhereInput
+    orderBy?: LigneFactureOrderByWithAggregationInput | LigneFactureOrderByWithAggregationInput[]
+    by: LigneFactureScalarFieldEnum[] | LigneFactureScalarFieldEnum
+    having?: LigneFactureScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LigneFactureCountAggregateInputType | true
+    _avg?: LigneFactureAvgAggregateInputType
+    _sum?: LigneFactureSumAggregateInputType
+    _min?: LigneFactureMinAggregateInputType
+    _max?: LigneFactureMaxAggregateInputType
+  }
+
+  export type LigneFactureGroupByOutputType = {
+    id: number
+    designation: string
+    quantite: number
+    prixUnitaire: number
+    montant: number
+    factureId: number
+    createdAt: Date
+    _count: LigneFactureCountAggregateOutputType | null
+    _avg: LigneFactureAvgAggregateOutputType | null
+    _sum: LigneFactureSumAggregateOutputType | null
+    _min: LigneFactureMinAggregateOutputType | null
+    _max: LigneFactureMaxAggregateOutputType | null
+  }
+
+  type GetLigneFactureGroupByPayload<T extends LigneFactureGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LigneFactureGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LigneFactureGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LigneFactureGroupByOutputType[P]>
+            : GetScalarType<T[P], LigneFactureGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LigneFactureSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    designation?: boolean
+    quantite?: boolean
+    prixUnitaire?: boolean
+    montant?: boolean
+    factureId?: boolean
+    createdAt?: boolean
+    facture?: boolean | FactureDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["ligneFacture"]>
+
+  export type LigneFactureSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    designation?: boolean
+    quantite?: boolean
+    prixUnitaire?: boolean
+    montant?: boolean
+    factureId?: boolean
+    createdAt?: boolean
+    facture?: boolean | FactureDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["ligneFacture"]>
+
+  export type LigneFactureSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    designation?: boolean
+    quantite?: boolean
+    prixUnitaire?: boolean
+    montant?: boolean
+    factureId?: boolean
+    createdAt?: boolean
+    facture?: boolean | FactureDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["ligneFacture"]>
+
+  export type LigneFactureSelectScalar = {
+    id?: boolean
+    designation?: boolean
+    quantite?: boolean
+    prixUnitaire?: boolean
+    montant?: boolean
+    factureId?: boolean
+    createdAt?: boolean
+  }
+
+  export type LigneFactureOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "designation" | "quantite" | "prixUnitaire" | "montant" | "factureId" | "createdAt", ExtArgs["result"]["ligneFacture"]>
+  export type LigneFactureInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    facture?: boolean | FactureDefaultArgs<ExtArgs>
+  }
+  export type LigneFactureIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    facture?: boolean | FactureDefaultArgs<ExtArgs>
+  }
+  export type LigneFactureIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    facture?: boolean | FactureDefaultArgs<ExtArgs>
+  }
+
+  export type $LigneFacturePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "LigneFacture"
+    objects: {
+      facture: Prisma.$FacturePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      designation: string
+      quantite: number
+      prixUnitaire: number
+      montant: number
+      factureId: number
+      createdAt: Date
+    }, ExtArgs["result"]["ligneFacture"]>
+    composites: {}
+  }
+
+  type LigneFactureGetPayload<S extends boolean | null | undefined | LigneFactureDefaultArgs> = $Result.GetResult<Prisma.$LigneFacturePayload, S>
+
+  type LigneFactureCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LigneFactureFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LigneFactureCountAggregateInputType | true
+    }
+
+  export interface LigneFactureDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['LigneFacture'], meta: { name: 'LigneFacture' } }
+    /**
+     * Find zero or one LigneFacture that matches the filter.
+     * @param {LigneFactureFindUniqueArgs} args - Arguments to find a LigneFacture
+     * @example
+     * // Get one LigneFacture
+     * const ligneFacture = await prisma.ligneFacture.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LigneFactureFindUniqueArgs>(args: SelectSubset<T, LigneFactureFindUniqueArgs<ExtArgs>>): Prisma__LigneFactureClient<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one LigneFacture that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LigneFactureFindUniqueOrThrowArgs} args - Arguments to find a LigneFacture
+     * @example
+     * // Get one LigneFacture
+     * const ligneFacture = await prisma.ligneFacture.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LigneFactureFindUniqueOrThrowArgs>(args: SelectSubset<T, LigneFactureFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LigneFactureClient<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LigneFacture that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneFactureFindFirstArgs} args - Arguments to find a LigneFacture
+     * @example
+     * // Get one LigneFacture
+     * const ligneFacture = await prisma.ligneFacture.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LigneFactureFindFirstArgs>(args?: SelectSubset<T, LigneFactureFindFirstArgs<ExtArgs>>): Prisma__LigneFactureClient<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first LigneFacture that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneFactureFindFirstOrThrowArgs} args - Arguments to find a LigneFacture
+     * @example
+     * // Get one LigneFacture
+     * const ligneFacture = await prisma.ligneFacture.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LigneFactureFindFirstOrThrowArgs>(args?: SelectSubset<T, LigneFactureFindFirstOrThrowArgs<ExtArgs>>): Prisma__LigneFactureClient<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more LigneFactures that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneFactureFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all LigneFactures
+     * const ligneFactures = await prisma.ligneFacture.findMany()
+     * 
+     * // Get first 10 LigneFactures
+     * const ligneFactures = await prisma.ligneFacture.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const ligneFactureWithIdOnly = await prisma.ligneFacture.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LigneFactureFindManyArgs>(args?: SelectSubset<T, LigneFactureFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a LigneFacture.
+     * @param {LigneFactureCreateArgs} args - Arguments to create a LigneFacture.
+     * @example
+     * // Create one LigneFacture
+     * const LigneFacture = await prisma.ligneFacture.create({
+     *   data: {
+     *     // ... data to create a LigneFacture
+     *   }
+     * })
+     * 
+     */
+    create<T extends LigneFactureCreateArgs>(args: SelectSubset<T, LigneFactureCreateArgs<ExtArgs>>): Prisma__LigneFactureClient<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many LigneFactures.
+     * @param {LigneFactureCreateManyArgs} args - Arguments to create many LigneFactures.
+     * @example
+     * // Create many LigneFactures
+     * const ligneFacture = await prisma.ligneFacture.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LigneFactureCreateManyArgs>(args?: SelectSubset<T, LigneFactureCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many LigneFactures and returns the data saved in the database.
+     * @param {LigneFactureCreateManyAndReturnArgs} args - Arguments to create many LigneFactures.
+     * @example
+     * // Create many LigneFactures
+     * const ligneFacture = await prisma.ligneFacture.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many LigneFactures and only return the `id`
+     * const ligneFactureWithIdOnly = await prisma.ligneFacture.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LigneFactureCreateManyAndReturnArgs>(args?: SelectSubset<T, LigneFactureCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a LigneFacture.
+     * @param {LigneFactureDeleteArgs} args - Arguments to delete one LigneFacture.
+     * @example
+     * // Delete one LigneFacture
+     * const LigneFacture = await prisma.ligneFacture.delete({
+     *   where: {
+     *     // ... filter to delete one LigneFacture
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LigneFactureDeleteArgs>(args: SelectSubset<T, LigneFactureDeleteArgs<ExtArgs>>): Prisma__LigneFactureClient<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one LigneFacture.
+     * @param {LigneFactureUpdateArgs} args - Arguments to update one LigneFacture.
+     * @example
+     * // Update one LigneFacture
+     * const ligneFacture = await prisma.ligneFacture.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LigneFactureUpdateArgs>(args: SelectSubset<T, LigneFactureUpdateArgs<ExtArgs>>): Prisma__LigneFactureClient<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more LigneFactures.
+     * @param {LigneFactureDeleteManyArgs} args - Arguments to filter LigneFactures to delete.
+     * @example
+     * // Delete a few LigneFactures
+     * const { count } = await prisma.ligneFacture.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LigneFactureDeleteManyArgs>(args?: SelectSubset<T, LigneFactureDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LigneFactures.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneFactureUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many LigneFactures
+     * const ligneFacture = await prisma.ligneFacture.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LigneFactureUpdateManyArgs>(args: SelectSubset<T, LigneFactureUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more LigneFactures and returns the data updated in the database.
+     * @param {LigneFactureUpdateManyAndReturnArgs} args - Arguments to update many LigneFactures.
+     * @example
+     * // Update many LigneFactures
+     * const ligneFacture = await prisma.ligneFacture.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more LigneFactures and only return the `id`
+     * const ligneFactureWithIdOnly = await prisma.ligneFacture.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LigneFactureUpdateManyAndReturnArgs>(args: SelectSubset<T, LigneFactureUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one LigneFacture.
+     * @param {LigneFactureUpsertArgs} args - Arguments to update or create a LigneFacture.
+     * @example
+     * // Update or create a LigneFacture
+     * const ligneFacture = await prisma.ligneFacture.upsert({
+     *   create: {
+     *     // ... data to create a LigneFacture
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the LigneFacture we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LigneFactureUpsertArgs>(args: SelectSubset<T, LigneFactureUpsertArgs<ExtArgs>>): Prisma__LigneFactureClient<$Result.GetResult<Prisma.$LigneFacturePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of LigneFactures.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneFactureCountArgs} args - Arguments to filter LigneFactures to count.
+     * @example
+     * // Count the number of LigneFactures
+     * const count = await prisma.ligneFacture.count({
+     *   where: {
+     *     // ... the filter for the LigneFactures we want to count
+     *   }
+     * })
+    **/
+    count<T extends LigneFactureCountArgs>(
+      args?: Subset<T, LigneFactureCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LigneFactureCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a LigneFacture.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneFactureAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LigneFactureAggregateArgs>(args: Subset<T, LigneFactureAggregateArgs>): Prisma.PrismaPromise<GetLigneFactureAggregateType<T>>
+
+    /**
+     * Group by LigneFacture.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LigneFactureGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LigneFactureGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LigneFactureGroupByArgs['orderBy'] }
+        : { orderBy?: LigneFactureGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LigneFactureGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLigneFactureGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the LigneFacture model
+   */
+  readonly fields: LigneFactureFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for LigneFacture.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LigneFactureClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    facture<T extends FactureDefaultArgs<ExtArgs> = {}>(args?: Subset<T, FactureDefaultArgs<ExtArgs>>): Prisma__FactureClient<$Result.GetResult<Prisma.$FacturePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the LigneFacture model
+   */
+  interface LigneFactureFieldRefs {
+    readonly id: FieldRef<"LigneFacture", 'Int'>
+    readonly designation: FieldRef<"LigneFacture", 'String'>
+    readonly quantite: FieldRef<"LigneFacture", 'Int'>
+    readonly prixUnitaire: FieldRef<"LigneFacture", 'Float'>
+    readonly montant: FieldRef<"LigneFacture", 'Float'>
+    readonly factureId: FieldRef<"LigneFacture", 'Int'>
+    readonly createdAt: FieldRef<"LigneFacture", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * LigneFacture findUnique
+   */
+  export type LigneFactureFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneFacture to fetch.
+     */
+    where: LigneFactureWhereUniqueInput
+  }
+
+  /**
+   * LigneFacture findUniqueOrThrow
+   */
+  export type LigneFactureFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneFacture to fetch.
+     */
+    where: LigneFactureWhereUniqueInput
+  }
+
+  /**
+   * LigneFacture findFirst
+   */
+  export type LigneFactureFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneFacture to fetch.
+     */
+    where?: LigneFactureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LigneFactures to fetch.
+     */
+    orderBy?: LigneFactureOrderByWithRelationInput | LigneFactureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LigneFactures.
+     */
+    cursor?: LigneFactureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LigneFactures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LigneFactures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LigneFactures.
+     */
+    distinct?: LigneFactureScalarFieldEnum | LigneFactureScalarFieldEnum[]
+  }
+
+  /**
+   * LigneFacture findFirstOrThrow
+   */
+  export type LigneFactureFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneFacture to fetch.
+     */
+    where?: LigneFactureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LigneFactures to fetch.
+     */
+    orderBy?: LigneFactureOrderByWithRelationInput | LigneFactureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for LigneFactures.
+     */
+    cursor?: LigneFactureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LigneFactures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LigneFactures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LigneFactures.
+     */
+    distinct?: LigneFactureScalarFieldEnum | LigneFactureScalarFieldEnum[]
+  }
+
+  /**
+   * LigneFacture findMany
+   */
+  export type LigneFactureFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * Filter, which LigneFactures to fetch.
+     */
+    where?: LigneFactureWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of LigneFactures to fetch.
+     */
+    orderBy?: LigneFactureOrderByWithRelationInput | LigneFactureOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing LigneFactures.
+     */
+    cursor?: LigneFactureWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` LigneFactures from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` LigneFactures.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of LigneFactures.
+     */
+    distinct?: LigneFactureScalarFieldEnum | LigneFactureScalarFieldEnum[]
+  }
+
+  /**
+   * LigneFacture create
+   */
+  export type LigneFactureCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * The data needed to create a LigneFacture.
+     */
+    data: XOR<LigneFactureCreateInput, LigneFactureUncheckedCreateInput>
+  }
+
+  /**
+   * LigneFacture createMany
+   */
+  export type LigneFactureCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many LigneFactures.
+     */
+    data: LigneFactureCreateManyInput | LigneFactureCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * LigneFacture createManyAndReturn
+   */
+  export type LigneFactureCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * The data used to create many LigneFactures.
+     */
+    data: LigneFactureCreateManyInput | LigneFactureCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LigneFacture update
+   */
+  export type LigneFactureUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * The data needed to update a LigneFacture.
+     */
+    data: XOR<LigneFactureUpdateInput, LigneFactureUncheckedUpdateInput>
+    /**
+     * Choose, which LigneFacture to update.
+     */
+    where: LigneFactureWhereUniqueInput
+  }
+
+  /**
+   * LigneFacture updateMany
+   */
+  export type LigneFactureUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update LigneFactures.
+     */
+    data: XOR<LigneFactureUpdateManyMutationInput, LigneFactureUncheckedUpdateManyInput>
+    /**
+     * Filter which LigneFactures to update
+     */
+    where?: LigneFactureWhereInput
+    /**
+     * Limit how many LigneFactures to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * LigneFacture updateManyAndReturn
+   */
+  export type LigneFactureUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * The data used to update LigneFactures.
+     */
+    data: XOR<LigneFactureUpdateManyMutationInput, LigneFactureUncheckedUpdateManyInput>
+    /**
+     * Filter which LigneFactures to update
+     */
+    where?: LigneFactureWhereInput
+    /**
+     * Limit how many LigneFactures to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * LigneFacture upsert
+   */
+  export type LigneFactureUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * The filter to search for the LigneFacture to update in case it exists.
+     */
+    where: LigneFactureWhereUniqueInput
+    /**
+     * In case the LigneFacture found by the `where` argument doesn't exist, create a new LigneFacture with this data.
+     */
+    create: XOR<LigneFactureCreateInput, LigneFactureUncheckedCreateInput>
+    /**
+     * In case the LigneFacture was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LigneFactureUpdateInput, LigneFactureUncheckedUpdateInput>
+  }
+
+  /**
+   * LigneFacture delete
+   */
+  export type LigneFactureDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+    /**
+     * Filter which LigneFacture to delete.
+     */
+    where: LigneFactureWhereUniqueInput
+  }
+
+  /**
+   * LigneFacture deleteMany
+   */
+  export type LigneFactureDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which LigneFactures to delete
+     */
+    where?: LigneFactureWhereInput
+    /**
+     * Limit how many LigneFactures to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * LigneFacture without action
+   */
+  export type LigneFactureDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LigneFacture
+     */
+    select?: LigneFactureSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the LigneFacture
+     */
+    omit?: LigneFactureOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LigneFactureInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -13665,6 +16330,40 @@ export namespace Prisma {
   export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
 
 
+  export const FactureScalarFieldEnum: {
+    id: 'id',
+    numero: 'numero',
+    statut: 'statut',
+    sale_id: 'sale_id',
+    clientNom: 'clientNom',
+    clientAdresse: 'clientAdresse',
+    clientTelephone: 'clientTelephone',
+    entrepriseNom: 'entrepriseNom',
+    ninea: 'ninea',
+    total: 'total',
+    montantVerse: 'montantVerse',
+    resteDu: 'resteDu',
+    dateFacture: 'dateFacture',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type FactureScalarFieldEnum = (typeof FactureScalarFieldEnum)[keyof typeof FactureScalarFieldEnum]
+
+
+  export const LigneFactureScalarFieldEnum: {
+    id: 'id',
+    designation: 'designation',
+    quantite: 'quantite',
+    prixUnitaire: 'prixUnitaire',
+    montant: 'montant',
+    factureId: 'factureId',
+    createdAt: 'createdAt'
+  };
+
+  export type LigneFactureScalarFieldEnum = (typeof LigneFactureScalarFieldEnum)[keyof typeof LigneFactureScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -13796,6 +16495,20 @@ export namespace Prisma {
    * Reference to a field of type 'CashType[]'
    */
   export type ListEnumCashTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CashType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'StatutFacture'
+   */
+  export type EnumStatutFactureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutFacture'>
+    
+
+
+  /**
+   * Reference to a field of type 'StatutFacture[]'
+   */
+  export type ListEnumStatutFactureFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StatutFacture[]'>
     
 
 
@@ -14106,6 +16819,7 @@ export namespace Prisma {
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
     cash?: TransactionListRelationFilter
+    facure?: XOR<FactureNullableScalarRelationFilter, FactureWhereInput> | null
   }
 
   export type SaleOrderByWithRelationInput = {
@@ -14123,6 +16837,7 @@ export namespace Prisma {
     product?: ProductOrderByWithRelationInput
     client?: ClientOrderByWithRelationInput
     cash?: TransactionOrderByRelationAggregateInput
+    facure?: FactureOrderByWithRelationInput
   }
 
   export type SaleWhereUniqueInput = Prisma.AtLeast<{
@@ -14143,6 +16858,7 @@ export namespace Prisma {
     product?: XOR<ProductScalarRelationFilter, ProductWhereInput>
     client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
     cash?: TransactionListRelationFilter
+    facure?: XOR<FactureNullableScalarRelationFilter, FactureWhereInput> | null
   }, "id">
 
   export type SaleOrderByWithAggregationInput = {
@@ -14524,6 +17240,183 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableWithAggregatesFilter<"Transaction"> | Date | string | null
   }
 
+  export type FactureWhereInput = {
+    AND?: FactureWhereInput | FactureWhereInput[]
+    OR?: FactureWhereInput[]
+    NOT?: FactureWhereInput | FactureWhereInput[]
+    id?: IntFilter<"Facture"> | number
+    numero?: IntFilter<"Facture"> | number
+    statut?: EnumStatutFactureFilter<"Facture"> | $Enums.StatutFacture
+    sale_id?: IntFilter<"Facture"> | number
+    clientNom?: StringFilter<"Facture"> | string
+    clientAdresse?: StringNullableFilter<"Facture"> | string | null
+    clientTelephone?: StringNullableFilter<"Facture"> | string | null
+    entrepriseNom?: StringFilter<"Facture"> | string
+    ninea?: StringNullableFilter<"Facture"> | string | null
+    total?: FloatFilter<"Facture"> | number
+    montantVerse?: FloatFilter<"Facture"> | number
+    resteDu?: FloatFilter<"Facture"> | number
+    dateFacture?: DateTimeFilter<"Facture"> | Date | string
+    createdAt?: DateTimeFilter<"Facture"> | Date | string
+    updatedAt?: DateTimeFilter<"Facture"> | Date | string
+    sale?: XOR<SaleScalarRelationFilter, SaleWhereInput>
+    lignes?: LigneFactureListRelationFilter
+  }
+
+  export type FactureOrderByWithRelationInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    statut?: SortOrder
+    sale_id?: SortOrder
+    clientNom?: SortOrder
+    clientAdresse?: SortOrderInput | SortOrder
+    clientTelephone?: SortOrderInput | SortOrder
+    entrepriseNom?: SortOrder
+    ninea?: SortOrderInput | SortOrder
+    total?: SortOrder
+    montantVerse?: SortOrder
+    resteDu?: SortOrder
+    dateFacture?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    sale?: SaleOrderByWithRelationInput
+    lignes?: LigneFactureOrderByRelationAggregateInput
+  }
+
+  export type FactureWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    numero?: number
+    sale_id?: number
+    AND?: FactureWhereInput | FactureWhereInput[]
+    OR?: FactureWhereInput[]
+    NOT?: FactureWhereInput | FactureWhereInput[]
+    statut?: EnumStatutFactureFilter<"Facture"> | $Enums.StatutFacture
+    clientNom?: StringFilter<"Facture"> | string
+    clientAdresse?: StringNullableFilter<"Facture"> | string | null
+    clientTelephone?: StringNullableFilter<"Facture"> | string | null
+    entrepriseNom?: StringFilter<"Facture"> | string
+    ninea?: StringNullableFilter<"Facture"> | string | null
+    total?: FloatFilter<"Facture"> | number
+    montantVerse?: FloatFilter<"Facture"> | number
+    resteDu?: FloatFilter<"Facture"> | number
+    dateFacture?: DateTimeFilter<"Facture"> | Date | string
+    createdAt?: DateTimeFilter<"Facture"> | Date | string
+    updatedAt?: DateTimeFilter<"Facture"> | Date | string
+    sale?: XOR<SaleScalarRelationFilter, SaleWhereInput>
+    lignes?: LigneFactureListRelationFilter
+  }, "id" | "numero" | "sale_id">
+
+  export type FactureOrderByWithAggregationInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    statut?: SortOrder
+    sale_id?: SortOrder
+    clientNom?: SortOrder
+    clientAdresse?: SortOrderInput | SortOrder
+    clientTelephone?: SortOrderInput | SortOrder
+    entrepriseNom?: SortOrder
+    ninea?: SortOrderInput | SortOrder
+    total?: SortOrder
+    montantVerse?: SortOrder
+    resteDu?: SortOrder
+    dateFacture?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: FactureCountOrderByAggregateInput
+    _avg?: FactureAvgOrderByAggregateInput
+    _max?: FactureMaxOrderByAggregateInput
+    _min?: FactureMinOrderByAggregateInput
+    _sum?: FactureSumOrderByAggregateInput
+  }
+
+  export type FactureScalarWhereWithAggregatesInput = {
+    AND?: FactureScalarWhereWithAggregatesInput | FactureScalarWhereWithAggregatesInput[]
+    OR?: FactureScalarWhereWithAggregatesInput[]
+    NOT?: FactureScalarWhereWithAggregatesInput | FactureScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Facture"> | number
+    numero?: IntWithAggregatesFilter<"Facture"> | number
+    statut?: EnumStatutFactureWithAggregatesFilter<"Facture"> | $Enums.StatutFacture
+    sale_id?: IntWithAggregatesFilter<"Facture"> | number
+    clientNom?: StringWithAggregatesFilter<"Facture"> | string
+    clientAdresse?: StringNullableWithAggregatesFilter<"Facture"> | string | null
+    clientTelephone?: StringNullableWithAggregatesFilter<"Facture"> | string | null
+    entrepriseNom?: StringWithAggregatesFilter<"Facture"> | string
+    ninea?: StringNullableWithAggregatesFilter<"Facture"> | string | null
+    total?: FloatWithAggregatesFilter<"Facture"> | number
+    montantVerse?: FloatWithAggregatesFilter<"Facture"> | number
+    resteDu?: FloatWithAggregatesFilter<"Facture"> | number
+    dateFacture?: DateTimeWithAggregatesFilter<"Facture"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"Facture"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Facture"> | Date | string
+  }
+
+  export type LigneFactureWhereInput = {
+    AND?: LigneFactureWhereInput | LigneFactureWhereInput[]
+    OR?: LigneFactureWhereInput[]
+    NOT?: LigneFactureWhereInput | LigneFactureWhereInput[]
+    id?: IntFilter<"LigneFacture"> | number
+    designation?: StringFilter<"LigneFacture"> | string
+    quantite?: IntFilter<"LigneFacture"> | number
+    prixUnitaire?: FloatFilter<"LigneFacture"> | number
+    montant?: FloatFilter<"LigneFacture"> | number
+    factureId?: IntFilter<"LigneFacture"> | number
+    createdAt?: DateTimeFilter<"LigneFacture"> | Date | string
+    facture?: XOR<FactureScalarRelationFilter, FactureWhereInput>
+  }
+
+  export type LigneFactureOrderByWithRelationInput = {
+    id?: SortOrder
+    designation?: SortOrder
+    quantite?: SortOrder
+    prixUnitaire?: SortOrder
+    montant?: SortOrder
+    factureId?: SortOrder
+    createdAt?: SortOrder
+    facture?: FactureOrderByWithRelationInput
+  }
+
+  export type LigneFactureWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: LigneFactureWhereInput | LigneFactureWhereInput[]
+    OR?: LigneFactureWhereInput[]
+    NOT?: LigneFactureWhereInput | LigneFactureWhereInput[]
+    designation?: StringFilter<"LigneFacture"> | string
+    quantite?: IntFilter<"LigneFacture"> | number
+    prixUnitaire?: FloatFilter<"LigneFacture"> | number
+    montant?: FloatFilter<"LigneFacture"> | number
+    factureId?: IntFilter<"LigneFacture"> | number
+    createdAt?: DateTimeFilter<"LigneFacture"> | Date | string
+    facture?: XOR<FactureScalarRelationFilter, FactureWhereInput>
+  }, "id">
+
+  export type LigneFactureOrderByWithAggregationInput = {
+    id?: SortOrder
+    designation?: SortOrder
+    quantite?: SortOrder
+    prixUnitaire?: SortOrder
+    montant?: SortOrder
+    factureId?: SortOrder
+    createdAt?: SortOrder
+    _count?: LigneFactureCountOrderByAggregateInput
+    _avg?: LigneFactureAvgOrderByAggregateInput
+    _max?: LigneFactureMaxOrderByAggregateInput
+    _min?: LigneFactureMinOrderByAggregateInput
+    _sum?: LigneFactureSumOrderByAggregateInput
+  }
+
+  export type LigneFactureScalarWhereWithAggregatesInput = {
+    AND?: LigneFactureScalarWhereWithAggregatesInput | LigneFactureScalarWhereWithAggregatesInput[]
+    OR?: LigneFactureScalarWhereWithAggregatesInput[]
+    NOT?: LigneFactureScalarWhereWithAggregatesInput | LigneFactureScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"LigneFacture"> | number
+    designation?: StringWithAggregatesFilter<"LigneFacture"> | string
+    quantite?: IntWithAggregatesFilter<"LigneFacture"> | number
+    prixUnitaire?: FloatWithAggregatesFilter<"LigneFacture"> | number
+    montant?: FloatWithAggregatesFilter<"LigneFacture"> | number
+    factureId?: IntWithAggregatesFilter<"LigneFacture"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"LigneFacture"> | Date | string
+  }
+
   export type UserCreateInput = {
     name: string
     email: string
@@ -14810,6 +17703,7 @@ export namespace Prisma {
     product: ProductCreateNestedOneWithoutSalesInput
     client?: ClientCreateNestedOneWithoutSalesInput
     cash?: TransactionCreateNestedManyWithoutSaleInput
+    facure?: FactureCreateNestedOneWithoutSaleInput
   }
 
   export type SaleUncheckedCreateInput = {
@@ -14825,6 +17719,7 @@ export namespace Prisma {
     note?: string | null
     createdAt?: Date | string
     cash?: TransactionUncheckedCreateNestedManyWithoutSaleInput
+    facure?: FactureUncheckedCreateNestedOneWithoutSaleInput
   }
 
   export type SaleUpdateInput = {
@@ -14839,6 +17734,7 @@ export namespace Prisma {
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     client?: ClientUpdateOneWithoutSalesNestedInput
     cash?: TransactionUpdateManyWithoutSaleNestedInput
+    facure?: FactureUpdateOneWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateInput = {
@@ -14854,6 +17750,7 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cash?: TransactionUncheckedUpdateManyWithoutSaleNestedInput
+    facure?: FactureUncheckedUpdateOneWithoutSaleNestedInput
   }
 
   export type SaleCreateManyInput = {
@@ -15244,6 +18141,198 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type FactureCreateInput = {
+    numero: number
+    statut?: $Enums.StatutFacture
+    clientNom: string
+    clientAdresse?: string | null
+    clientTelephone?: string | null
+    entrepriseNom?: string
+    ninea?: string | null
+    total: number
+    montantVerse?: number
+    resteDu: number
+    dateFacture?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sale: SaleCreateNestedOneWithoutFacureInput
+    lignes?: LigneFactureCreateNestedManyWithoutFactureInput
+  }
+
+  export type FactureUncheckedCreateInput = {
+    id?: number
+    numero: number
+    statut?: $Enums.StatutFacture
+    sale_id: number
+    clientNom: string
+    clientAdresse?: string | null
+    clientTelephone?: string | null
+    entrepriseNom?: string
+    ninea?: string | null
+    total: number
+    montantVerse?: number
+    resteDu: number
+    dateFacture?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lignes?: LigneFactureUncheckedCreateNestedManyWithoutFactureInput
+  }
+
+  export type FactureUpdateInput = {
+    numero?: IntFieldUpdateOperationsInput | number
+    statut?: EnumStatutFactureFieldUpdateOperationsInput | $Enums.StatutFacture
+    clientNom?: StringFieldUpdateOperationsInput | string
+    clientAdresse?: NullableStringFieldUpdateOperationsInput | string | null
+    clientTelephone?: NullableStringFieldUpdateOperationsInput | string | null
+    entrepriseNom?: StringFieldUpdateOperationsInput | string
+    ninea?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    montantVerse?: FloatFieldUpdateOperationsInput | number
+    resteDu?: FloatFieldUpdateOperationsInput | number
+    dateFacture?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sale?: SaleUpdateOneRequiredWithoutFacureNestedInput
+    lignes?: LigneFactureUpdateManyWithoutFactureNestedInput
+  }
+
+  export type FactureUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    numero?: IntFieldUpdateOperationsInput | number
+    statut?: EnumStatutFactureFieldUpdateOperationsInput | $Enums.StatutFacture
+    sale_id?: IntFieldUpdateOperationsInput | number
+    clientNom?: StringFieldUpdateOperationsInput | string
+    clientAdresse?: NullableStringFieldUpdateOperationsInput | string | null
+    clientTelephone?: NullableStringFieldUpdateOperationsInput | string | null
+    entrepriseNom?: StringFieldUpdateOperationsInput | string
+    ninea?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    montantVerse?: FloatFieldUpdateOperationsInput | number
+    resteDu?: FloatFieldUpdateOperationsInput | number
+    dateFacture?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lignes?: LigneFactureUncheckedUpdateManyWithoutFactureNestedInput
+  }
+
+  export type FactureCreateManyInput = {
+    id?: number
+    numero: number
+    statut?: $Enums.StatutFacture
+    sale_id: number
+    clientNom: string
+    clientAdresse?: string | null
+    clientTelephone?: string | null
+    entrepriseNom?: string
+    ninea?: string | null
+    total: number
+    montantVerse?: number
+    resteDu: number
+    dateFacture?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FactureUpdateManyMutationInput = {
+    numero?: IntFieldUpdateOperationsInput | number
+    statut?: EnumStatutFactureFieldUpdateOperationsInput | $Enums.StatutFacture
+    clientNom?: StringFieldUpdateOperationsInput | string
+    clientAdresse?: NullableStringFieldUpdateOperationsInput | string | null
+    clientTelephone?: NullableStringFieldUpdateOperationsInput | string | null
+    entrepriseNom?: StringFieldUpdateOperationsInput | string
+    ninea?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    montantVerse?: FloatFieldUpdateOperationsInput | number
+    resteDu?: FloatFieldUpdateOperationsInput | number
+    dateFacture?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type FactureUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    numero?: IntFieldUpdateOperationsInput | number
+    statut?: EnumStatutFactureFieldUpdateOperationsInput | $Enums.StatutFacture
+    sale_id?: IntFieldUpdateOperationsInput | number
+    clientNom?: StringFieldUpdateOperationsInput | string
+    clientAdresse?: NullableStringFieldUpdateOperationsInput | string | null
+    clientTelephone?: NullableStringFieldUpdateOperationsInput | string | null
+    entrepriseNom?: StringFieldUpdateOperationsInput | string
+    ninea?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    montantVerse?: FloatFieldUpdateOperationsInput | number
+    resteDu?: FloatFieldUpdateOperationsInput | number
+    dateFacture?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LigneFactureCreateInput = {
+    designation: string
+    quantite: number
+    prixUnitaire: number
+    montant: number
+    createdAt?: Date | string
+    facture: FactureCreateNestedOneWithoutLignesInput
+  }
+
+  export type LigneFactureUncheckedCreateInput = {
+    id?: number
+    designation: string
+    quantite: number
+    prixUnitaire: number
+    montant: number
+    factureId: number
+    createdAt?: Date | string
+  }
+
+  export type LigneFactureUpdateInput = {
+    designation?: StringFieldUpdateOperationsInput | string
+    quantite?: IntFieldUpdateOperationsInput | number
+    prixUnitaire?: FloatFieldUpdateOperationsInput | number
+    montant?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    facture?: FactureUpdateOneRequiredWithoutLignesNestedInput
+  }
+
+  export type LigneFactureUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    designation?: StringFieldUpdateOperationsInput | string
+    quantite?: IntFieldUpdateOperationsInput | number
+    prixUnitaire?: FloatFieldUpdateOperationsInput | number
+    montant?: FloatFieldUpdateOperationsInput | number
+    factureId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LigneFactureCreateManyInput = {
+    id?: number
+    designation: string
+    quantite: number
+    prixUnitaire: number
+    montant: number
+    factureId: number
+    createdAt?: Date | string
+  }
+
+  export type LigneFactureUpdateManyMutationInput = {
+    designation?: StringFieldUpdateOperationsInput | string
+    quantite?: IntFieldUpdateOperationsInput | number
+    prixUnitaire?: FloatFieldUpdateOperationsInput | number
+    montant?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LigneFactureUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    designation?: StringFieldUpdateOperationsInput | string
+    quantite?: IntFieldUpdateOperationsInput | number
+    prixUnitaire?: FloatFieldUpdateOperationsInput | number
+    montant?: FloatFieldUpdateOperationsInput | number
+    factureId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -15637,6 +18726,11 @@ export namespace Prisma {
     every?: TransactionWhereInput
     some?: TransactionWhereInput
     none?: TransactionWhereInput
+  }
+
+  export type FactureNullableScalarRelationFilter = {
+    is?: FactureWhereInput | null
+    isNot?: FactureWhereInput | null
   }
 
   export type TransactionOrderByRelationAggregateInput = {
@@ -16067,6 +19161,188 @@ export namespace Prisma {
     _max?: NestedEnumCashTypeFilter<$PrismaModel>
   }
 
+  export type EnumStatutFactureFilter<$PrismaModel = never> = {
+    equals?: $Enums.StatutFacture | EnumStatutFactureFieldRefInput<$PrismaModel>
+    in?: $Enums.StatutFacture[] | ListEnumStatutFactureFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StatutFacture[] | ListEnumStatutFactureFieldRefInput<$PrismaModel>
+    not?: NestedEnumStatutFactureFilter<$PrismaModel> | $Enums.StatutFacture
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type SaleScalarRelationFilter = {
+    is?: SaleWhereInput
+    isNot?: SaleWhereInput
+  }
+
+  export type LigneFactureListRelationFilter = {
+    every?: LigneFactureWhereInput
+    some?: LigneFactureWhereInput
+    none?: LigneFactureWhereInput
+  }
+
+  export type LigneFactureOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type FactureCountOrderByAggregateInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    statut?: SortOrder
+    sale_id?: SortOrder
+    clientNom?: SortOrder
+    clientAdresse?: SortOrder
+    clientTelephone?: SortOrder
+    entrepriseNom?: SortOrder
+    ninea?: SortOrder
+    total?: SortOrder
+    montantVerse?: SortOrder
+    resteDu?: SortOrder
+    dateFacture?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FactureAvgOrderByAggregateInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    sale_id?: SortOrder
+    total?: SortOrder
+    montantVerse?: SortOrder
+    resteDu?: SortOrder
+  }
+
+  export type FactureMaxOrderByAggregateInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    statut?: SortOrder
+    sale_id?: SortOrder
+    clientNom?: SortOrder
+    clientAdresse?: SortOrder
+    clientTelephone?: SortOrder
+    entrepriseNom?: SortOrder
+    ninea?: SortOrder
+    total?: SortOrder
+    montantVerse?: SortOrder
+    resteDu?: SortOrder
+    dateFacture?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FactureMinOrderByAggregateInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    statut?: SortOrder
+    sale_id?: SortOrder
+    clientNom?: SortOrder
+    clientAdresse?: SortOrder
+    clientTelephone?: SortOrder
+    entrepriseNom?: SortOrder
+    ninea?: SortOrder
+    total?: SortOrder
+    montantVerse?: SortOrder
+    resteDu?: SortOrder
+    dateFacture?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type FactureSumOrderByAggregateInput = {
+    id?: SortOrder
+    numero?: SortOrder
+    sale_id?: SortOrder
+    total?: SortOrder
+    montantVerse?: SortOrder
+    resteDu?: SortOrder
+  }
+
+  export type EnumStatutFactureWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StatutFacture | EnumStatutFactureFieldRefInput<$PrismaModel>
+    in?: $Enums.StatutFacture[] | ListEnumStatutFactureFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StatutFacture[] | ListEnumStatutFactureFieldRefInput<$PrismaModel>
+    not?: NestedEnumStatutFactureWithAggregatesFilter<$PrismaModel> | $Enums.StatutFacture
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStatutFactureFilter<$PrismaModel>
+    _max?: NestedEnumStatutFactureFilter<$PrismaModel>
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type FactureScalarRelationFilter = {
+    is?: FactureWhereInput
+    isNot?: FactureWhereInput
+  }
+
+  export type LigneFactureCountOrderByAggregateInput = {
+    id?: SortOrder
+    designation?: SortOrder
+    quantite?: SortOrder
+    prixUnitaire?: SortOrder
+    montant?: SortOrder
+    factureId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LigneFactureAvgOrderByAggregateInput = {
+    id?: SortOrder
+    quantite?: SortOrder
+    prixUnitaire?: SortOrder
+    montant?: SortOrder
+    factureId?: SortOrder
+  }
+
+  export type LigneFactureMaxOrderByAggregateInput = {
+    id?: SortOrder
+    designation?: SortOrder
+    quantite?: SortOrder
+    prixUnitaire?: SortOrder
+    montant?: SortOrder
+    factureId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LigneFactureMinOrderByAggregateInput = {
+    id?: SortOrder
+    designation?: SortOrder
+    quantite?: SortOrder
+    prixUnitaire?: SortOrder
+    montant?: SortOrder
+    factureId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type LigneFactureSumOrderByAggregateInput = {
+    id?: SortOrder
+    quantite?: SortOrder
+    prixUnitaire?: SortOrder
+    montant?: SortOrder
+    factureId?: SortOrder
+  }
+
   export type CashSessionCreateNestedManyWithoutUserInput = {
     create?: XOR<CashSessionCreateWithoutUserInput, CashSessionUncheckedCreateWithoutUserInput> | CashSessionCreateWithoutUserInput[] | CashSessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: CashSessionCreateOrConnectWithoutUserInput | CashSessionCreateOrConnectWithoutUserInput[]
@@ -16336,11 +19612,23 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type FactureCreateNestedOneWithoutSaleInput = {
+    create?: XOR<FactureCreateWithoutSaleInput, FactureUncheckedCreateWithoutSaleInput>
+    connectOrCreate?: FactureCreateOrConnectWithoutSaleInput
+    connect?: FactureWhereUniqueInput
+  }
+
   export type TransactionUncheckedCreateNestedManyWithoutSaleInput = {
     create?: XOR<TransactionCreateWithoutSaleInput, TransactionUncheckedCreateWithoutSaleInput> | TransactionCreateWithoutSaleInput[] | TransactionUncheckedCreateWithoutSaleInput[]
     connectOrCreate?: TransactionCreateOrConnectWithoutSaleInput | TransactionCreateOrConnectWithoutSaleInput[]
     createMany?: TransactionCreateManySaleInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type FactureUncheckedCreateNestedOneWithoutSaleInput = {
+    create?: XOR<FactureCreateWithoutSaleInput, FactureUncheckedCreateWithoutSaleInput>
+    connectOrCreate?: FactureCreateOrConnectWithoutSaleInput
+    connect?: FactureWhereUniqueInput
   }
 
   export type ProductUpdateOneRequiredWithoutSalesNestedInput = {
@@ -16375,6 +19663,16 @@ export namespace Prisma {
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
+  export type FactureUpdateOneWithoutSaleNestedInput = {
+    create?: XOR<FactureCreateWithoutSaleInput, FactureUncheckedCreateWithoutSaleInput>
+    connectOrCreate?: FactureCreateOrConnectWithoutSaleInput
+    upsert?: FactureUpsertWithoutSaleInput
+    disconnect?: FactureWhereInput | boolean
+    delete?: FactureWhereInput | boolean
+    connect?: FactureWhereUniqueInput
+    update?: XOR<XOR<FactureUpdateToOneWithWhereWithoutSaleInput, FactureUpdateWithoutSaleInput>, FactureUncheckedUpdateWithoutSaleInput>
+  }
+
   export type TransactionUncheckedUpdateManyWithoutSaleNestedInput = {
     create?: XOR<TransactionCreateWithoutSaleInput, TransactionUncheckedCreateWithoutSaleInput> | TransactionCreateWithoutSaleInput[] | TransactionUncheckedCreateWithoutSaleInput[]
     connectOrCreate?: TransactionCreateOrConnectWithoutSaleInput | TransactionCreateOrConnectWithoutSaleInput[]
@@ -16387,6 +19685,16 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutSaleInput | TransactionUpdateWithWhereUniqueWithoutSaleInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutSaleInput | TransactionUpdateManyWithWhereWithoutSaleInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type FactureUncheckedUpdateOneWithoutSaleNestedInput = {
+    create?: XOR<FactureCreateWithoutSaleInput, FactureUncheckedCreateWithoutSaleInput>
+    connectOrCreate?: FactureCreateOrConnectWithoutSaleInput
+    upsert?: FactureUpsertWithoutSaleInput
+    disconnect?: FactureWhereInput | boolean
+    delete?: FactureWhereInput | boolean
+    connect?: FactureWhereUniqueInput
+    update?: XOR<XOR<FactureUpdateToOneWithWhereWithoutSaleInput, FactureUpdateWithoutSaleInput>, FactureUncheckedUpdateWithoutSaleInput>
   }
 
   export type StockMovementCreateNestedManyWithoutSupplierInput = {
@@ -16585,6 +19893,88 @@ export namespace Prisma {
     delete?: SaleWhereInput | boolean
     connect?: SaleWhereUniqueInput
     update?: XOR<XOR<SaleUpdateToOneWithWhereWithoutCashInput, SaleUpdateWithoutCashInput>, SaleUncheckedUpdateWithoutCashInput>
+  }
+
+  export type SaleCreateNestedOneWithoutFacureInput = {
+    create?: XOR<SaleCreateWithoutFacureInput, SaleUncheckedCreateWithoutFacureInput>
+    connectOrCreate?: SaleCreateOrConnectWithoutFacureInput
+    connect?: SaleWhereUniqueInput
+  }
+
+  export type LigneFactureCreateNestedManyWithoutFactureInput = {
+    create?: XOR<LigneFactureCreateWithoutFactureInput, LigneFactureUncheckedCreateWithoutFactureInput> | LigneFactureCreateWithoutFactureInput[] | LigneFactureUncheckedCreateWithoutFactureInput[]
+    connectOrCreate?: LigneFactureCreateOrConnectWithoutFactureInput | LigneFactureCreateOrConnectWithoutFactureInput[]
+    createMany?: LigneFactureCreateManyFactureInputEnvelope
+    connect?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+  }
+
+  export type LigneFactureUncheckedCreateNestedManyWithoutFactureInput = {
+    create?: XOR<LigneFactureCreateWithoutFactureInput, LigneFactureUncheckedCreateWithoutFactureInput> | LigneFactureCreateWithoutFactureInput[] | LigneFactureUncheckedCreateWithoutFactureInput[]
+    connectOrCreate?: LigneFactureCreateOrConnectWithoutFactureInput | LigneFactureCreateOrConnectWithoutFactureInput[]
+    createMany?: LigneFactureCreateManyFactureInputEnvelope
+    connect?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+  }
+
+  export type EnumStatutFactureFieldUpdateOperationsInput = {
+    set?: $Enums.StatutFacture
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type SaleUpdateOneRequiredWithoutFacureNestedInput = {
+    create?: XOR<SaleCreateWithoutFacureInput, SaleUncheckedCreateWithoutFacureInput>
+    connectOrCreate?: SaleCreateOrConnectWithoutFacureInput
+    upsert?: SaleUpsertWithoutFacureInput
+    connect?: SaleWhereUniqueInput
+    update?: XOR<XOR<SaleUpdateToOneWithWhereWithoutFacureInput, SaleUpdateWithoutFacureInput>, SaleUncheckedUpdateWithoutFacureInput>
+  }
+
+  export type LigneFactureUpdateManyWithoutFactureNestedInput = {
+    create?: XOR<LigneFactureCreateWithoutFactureInput, LigneFactureUncheckedCreateWithoutFactureInput> | LigneFactureCreateWithoutFactureInput[] | LigneFactureUncheckedCreateWithoutFactureInput[]
+    connectOrCreate?: LigneFactureCreateOrConnectWithoutFactureInput | LigneFactureCreateOrConnectWithoutFactureInput[]
+    upsert?: LigneFactureUpsertWithWhereUniqueWithoutFactureInput | LigneFactureUpsertWithWhereUniqueWithoutFactureInput[]
+    createMany?: LigneFactureCreateManyFactureInputEnvelope
+    set?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+    disconnect?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+    delete?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+    connect?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+    update?: LigneFactureUpdateWithWhereUniqueWithoutFactureInput | LigneFactureUpdateWithWhereUniqueWithoutFactureInput[]
+    updateMany?: LigneFactureUpdateManyWithWhereWithoutFactureInput | LigneFactureUpdateManyWithWhereWithoutFactureInput[]
+    deleteMany?: LigneFactureScalarWhereInput | LigneFactureScalarWhereInput[]
+  }
+
+  export type LigneFactureUncheckedUpdateManyWithoutFactureNestedInput = {
+    create?: XOR<LigneFactureCreateWithoutFactureInput, LigneFactureUncheckedCreateWithoutFactureInput> | LigneFactureCreateWithoutFactureInput[] | LigneFactureUncheckedCreateWithoutFactureInput[]
+    connectOrCreate?: LigneFactureCreateOrConnectWithoutFactureInput | LigneFactureCreateOrConnectWithoutFactureInput[]
+    upsert?: LigneFactureUpsertWithWhereUniqueWithoutFactureInput | LigneFactureUpsertWithWhereUniqueWithoutFactureInput[]
+    createMany?: LigneFactureCreateManyFactureInputEnvelope
+    set?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+    disconnect?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+    delete?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+    connect?: LigneFactureWhereUniqueInput | LigneFactureWhereUniqueInput[]
+    update?: LigneFactureUpdateWithWhereUniqueWithoutFactureInput | LigneFactureUpdateWithWhereUniqueWithoutFactureInput[]
+    updateMany?: LigneFactureUpdateManyWithWhereWithoutFactureInput | LigneFactureUpdateManyWithWhereWithoutFactureInput[]
+    deleteMany?: LigneFactureScalarWhereInput | LigneFactureScalarWhereInput[]
+  }
+
+  export type FactureCreateNestedOneWithoutLignesInput = {
+    create?: XOR<FactureCreateWithoutLignesInput, FactureUncheckedCreateWithoutLignesInput>
+    connectOrCreate?: FactureCreateOrConnectWithoutLignesInput
+    connect?: FactureWhereUniqueInput
+  }
+
+  export type FactureUpdateOneRequiredWithoutLignesNestedInput = {
+    create?: XOR<FactureCreateWithoutLignesInput, FactureUncheckedCreateWithoutLignesInput>
+    connectOrCreate?: FactureCreateOrConnectWithoutLignesInput
+    upsert?: FactureUpsertWithoutLignesInput
+    connect?: FactureWhereUniqueInput
+    update?: XOR<XOR<FactureUpdateToOneWithWhereWithoutLignesInput, FactureUpdateWithoutLignesInput>, FactureUncheckedUpdateWithoutLignesInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -16893,6 +20283,39 @@ export namespace Prisma {
     _max?: NestedEnumCashTypeFilter<$PrismaModel>
   }
 
+  export type NestedEnumStatutFactureFilter<$PrismaModel = never> = {
+    equals?: $Enums.StatutFacture | EnumStatutFactureFieldRefInput<$PrismaModel>
+    in?: $Enums.StatutFacture[] | ListEnumStatutFactureFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StatutFacture[] | ListEnumStatutFactureFieldRefInput<$PrismaModel>
+    not?: NestedEnumStatutFactureFilter<$PrismaModel> | $Enums.StatutFacture
+  }
+
+  export type NestedEnumStatutFactureWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StatutFacture | EnumStatutFactureFieldRefInput<$PrismaModel>
+    in?: $Enums.StatutFacture[] | ListEnumStatutFactureFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StatutFacture[] | ListEnumStatutFactureFieldRefInput<$PrismaModel>
+    not?: NestedEnumStatutFactureWithAggregatesFilter<$PrismaModel> | $Enums.StatutFacture
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStatutFactureFilter<$PrismaModel>
+    _max?: NestedEnumStatutFactureFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type CashSessionCreateWithoutUserInput = {
     openedAt?: Date | string
     closedAt?: Date | string | null
@@ -17016,6 +20439,7 @@ export namespace Prisma {
     createdAt?: Date | string
     client?: ClientCreateNestedOneWithoutSalesInput
     cash?: TransactionCreateNestedManyWithoutSaleInput
+    facure?: FactureCreateNestedOneWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutProductInput = {
@@ -17030,6 +20454,7 @@ export namespace Prisma {
     note?: string | null
     createdAt?: Date | string
     cash?: TransactionUncheckedCreateNestedManyWithoutSaleInput
+    facure?: FactureUncheckedCreateNestedOneWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutProductInput = {
@@ -17269,6 +20694,7 @@ export namespace Prisma {
     createdAt?: Date | string
     product: ProductCreateNestedOneWithoutSalesInput
     cash?: TransactionCreateNestedManyWithoutSaleInput
+    facure?: FactureCreateNestedOneWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutClientInput = {
@@ -17283,6 +20709,7 @@ export namespace Prisma {
     note?: string | null
     createdAt?: Date | string
     cash?: TransactionUncheckedCreateNestedManyWithoutSaleInput
+    facure?: FactureUncheckedCreateNestedOneWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutClientInput = {
@@ -17390,6 +20817,46 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type FactureCreateWithoutSaleInput = {
+    numero: number
+    statut?: $Enums.StatutFacture
+    clientNom: string
+    clientAdresse?: string | null
+    clientTelephone?: string | null
+    entrepriseNom?: string
+    ninea?: string | null
+    total: number
+    montantVerse?: number
+    resteDu: number
+    dateFacture?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lignes?: LigneFactureCreateNestedManyWithoutFactureInput
+  }
+
+  export type FactureUncheckedCreateWithoutSaleInput = {
+    id?: number
+    numero: number
+    statut?: $Enums.StatutFacture
+    clientNom: string
+    clientAdresse?: string | null
+    clientTelephone?: string | null
+    entrepriseNom?: string
+    ninea?: string | null
+    total: number
+    montantVerse?: number
+    resteDu: number
+    dateFacture?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lignes?: LigneFactureUncheckedCreateNestedManyWithoutFactureInput
+  }
+
+  export type FactureCreateOrConnectWithoutSaleInput = {
+    where: FactureWhereUniqueInput
+    create: XOR<FactureCreateWithoutSaleInput, FactureUncheckedCreateWithoutSaleInput>
+  }
+
   export type ProductUpsertWithoutSalesInput = {
     update: XOR<ProductUpdateWithoutSalesInput, ProductUncheckedUpdateWithoutSalesInput>
     create: XOR<ProductCreateWithoutSalesInput, ProductUncheckedCreateWithoutSalesInput>
@@ -17480,6 +20947,52 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFilter<"Transaction"> | $Enums.PaymentMethod
     createdAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
     updatedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
+  }
+
+  export type FactureUpsertWithoutSaleInput = {
+    update: XOR<FactureUpdateWithoutSaleInput, FactureUncheckedUpdateWithoutSaleInput>
+    create: XOR<FactureCreateWithoutSaleInput, FactureUncheckedCreateWithoutSaleInput>
+    where?: FactureWhereInput
+  }
+
+  export type FactureUpdateToOneWithWhereWithoutSaleInput = {
+    where?: FactureWhereInput
+    data: XOR<FactureUpdateWithoutSaleInput, FactureUncheckedUpdateWithoutSaleInput>
+  }
+
+  export type FactureUpdateWithoutSaleInput = {
+    numero?: IntFieldUpdateOperationsInput | number
+    statut?: EnumStatutFactureFieldUpdateOperationsInput | $Enums.StatutFacture
+    clientNom?: StringFieldUpdateOperationsInput | string
+    clientAdresse?: NullableStringFieldUpdateOperationsInput | string | null
+    clientTelephone?: NullableStringFieldUpdateOperationsInput | string | null
+    entrepriseNom?: StringFieldUpdateOperationsInput | string
+    ninea?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    montantVerse?: FloatFieldUpdateOperationsInput | number
+    resteDu?: FloatFieldUpdateOperationsInput | number
+    dateFacture?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lignes?: LigneFactureUpdateManyWithoutFactureNestedInput
+  }
+
+  export type FactureUncheckedUpdateWithoutSaleInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    numero?: IntFieldUpdateOperationsInput | number
+    statut?: EnumStatutFactureFieldUpdateOperationsInput | $Enums.StatutFacture
+    clientNom?: StringFieldUpdateOperationsInput | string
+    clientAdresse?: NullableStringFieldUpdateOperationsInput | string | null
+    clientTelephone?: NullableStringFieldUpdateOperationsInput | string | null
+    entrepriseNom?: StringFieldUpdateOperationsInput | string
+    ninea?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    montantVerse?: FloatFieldUpdateOperationsInput | number
+    resteDu?: FloatFieldUpdateOperationsInput | number
+    dateFacture?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lignes?: LigneFactureUncheckedUpdateManyWithoutFactureNestedInput
   }
 
   export type StockMovementCreateWithoutSupplierInput = {
@@ -17772,6 +21285,7 @@ export namespace Prisma {
     createdAt?: Date | string
     product: ProductCreateNestedOneWithoutSalesInput
     client?: ClientCreateNestedOneWithoutSalesInput
+    facure?: FactureCreateNestedOneWithoutSaleInput
   }
 
   export type SaleUncheckedCreateWithoutCashInput = {
@@ -17786,6 +21300,7 @@ export namespace Prisma {
     customer?: string | null
     note?: string | null
     createdAt?: Date | string
+    facure?: FactureUncheckedCreateNestedOneWithoutSaleInput
   }
 
   export type SaleCreateOrConnectWithoutCashInput = {
@@ -17815,6 +21330,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     client?: ClientUpdateOneWithoutSalesNestedInput
+    facure?: FactureUpdateOneWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutCashInput = {
@@ -17829,6 +21345,223 @@ export namespace Prisma {
     customer?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    facure?: FactureUncheckedUpdateOneWithoutSaleNestedInput
+  }
+
+  export type SaleCreateWithoutFacureInput = {
+    quantity: number
+    unitPrice: Decimal | DecimalJsLike | number | string
+    totalAmount: Decimal | DecimalJsLike | number | string
+    paidAmount?: Decimal | DecimalJsLike | number | string
+    remaining?: Decimal | DecimalJsLike | number | string
+    customer?: string | null
+    note?: string | null
+    createdAt?: Date | string
+    product: ProductCreateNestedOneWithoutSalesInput
+    client?: ClientCreateNestedOneWithoutSalesInput
+    cash?: TransactionCreateNestedManyWithoutSaleInput
+  }
+
+  export type SaleUncheckedCreateWithoutFacureInput = {
+    id?: number
+    productId: number
+    clientId?: number | null
+    quantity: number
+    unitPrice: Decimal | DecimalJsLike | number | string
+    totalAmount: Decimal | DecimalJsLike | number | string
+    paidAmount?: Decimal | DecimalJsLike | number | string
+    remaining?: Decimal | DecimalJsLike | number | string
+    customer?: string | null
+    note?: string | null
+    createdAt?: Date | string
+    cash?: TransactionUncheckedCreateNestedManyWithoutSaleInput
+  }
+
+  export type SaleCreateOrConnectWithoutFacureInput = {
+    where: SaleWhereUniqueInput
+    create: XOR<SaleCreateWithoutFacureInput, SaleUncheckedCreateWithoutFacureInput>
+  }
+
+  export type LigneFactureCreateWithoutFactureInput = {
+    designation: string
+    quantite: number
+    prixUnitaire: number
+    montant: number
+    createdAt?: Date | string
+  }
+
+  export type LigneFactureUncheckedCreateWithoutFactureInput = {
+    id?: number
+    designation: string
+    quantite: number
+    prixUnitaire: number
+    montant: number
+    createdAt?: Date | string
+  }
+
+  export type LigneFactureCreateOrConnectWithoutFactureInput = {
+    where: LigneFactureWhereUniqueInput
+    create: XOR<LigneFactureCreateWithoutFactureInput, LigneFactureUncheckedCreateWithoutFactureInput>
+  }
+
+  export type LigneFactureCreateManyFactureInputEnvelope = {
+    data: LigneFactureCreateManyFactureInput | LigneFactureCreateManyFactureInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SaleUpsertWithoutFacureInput = {
+    update: XOR<SaleUpdateWithoutFacureInput, SaleUncheckedUpdateWithoutFacureInput>
+    create: XOR<SaleCreateWithoutFacureInput, SaleUncheckedCreateWithoutFacureInput>
+    where?: SaleWhereInput
+  }
+
+  export type SaleUpdateToOneWithWhereWithoutFacureInput = {
+    where?: SaleWhereInput
+    data: XOR<SaleUpdateWithoutFacureInput, SaleUncheckedUpdateWithoutFacureInput>
+  }
+
+  export type SaleUpdateWithoutFacureInput = {
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paidAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    remaining?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    customer?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    product?: ProductUpdateOneRequiredWithoutSalesNestedInput
+    client?: ClientUpdateOneWithoutSalesNestedInput
+    cash?: TransactionUpdateManyWithoutSaleNestedInput
+  }
+
+  export type SaleUncheckedUpdateWithoutFacureInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    productId?: IntFieldUpdateOperationsInput | number
+    clientId?: NullableIntFieldUpdateOperationsInput | number | null
+    quantity?: IntFieldUpdateOperationsInput | number
+    unitPrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    totalAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    paidAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    remaining?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    customer?: NullableStringFieldUpdateOperationsInput | string | null
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    cash?: TransactionUncheckedUpdateManyWithoutSaleNestedInput
+  }
+
+  export type LigneFactureUpsertWithWhereUniqueWithoutFactureInput = {
+    where: LigneFactureWhereUniqueInput
+    update: XOR<LigneFactureUpdateWithoutFactureInput, LigneFactureUncheckedUpdateWithoutFactureInput>
+    create: XOR<LigneFactureCreateWithoutFactureInput, LigneFactureUncheckedCreateWithoutFactureInput>
+  }
+
+  export type LigneFactureUpdateWithWhereUniqueWithoutFactureInput = {
+    where: LigneFactureWhereUniqueInput
+    data: XOR<LigneFactureUpdateWithoutFactureInput, LigneFactureUncheckedUpdateWithoutFactureInput>
+  }
+
+  export type LigneFactureUpdateManyWithWhereWithoutFactureInput = {
+    where: LigneFactureScalarWhereInput
+    data: XOR<LigneFactureUpdateManyMutationInput, LigneFactureUncheckedUpdateManyWithoutFactureInput>
+  }
+
+  export type LigneFactureScalarWhereInput = {
+    AND?: LigneFactureScalarWhereInput | LigneFactureScalarWhereInput[]
+    OR?: LigneFactureScalarWhereInput[]
+    NOT?: LigneFactureScalarWhereInput | LigneFactureScalarWhereInput[]
+    id?: IntFilter<"LigneFacture"> | number
+    designation?: StringFilter<"LigneFacture"> | string
+    quantite?: IntFilter<"LigneFacture"> | number
+    prixUnitaire?: FloatFilter<"LigneFacture"> | number
+    montant?: FloatFilter<"LigneFacture"> | number
+    factureId?: IntFilter<"LigneFacture"> | number
+    createdAt?: DateTimeFilter<"LigneFacture"> | Date | string
+  }
+
+  export type FactureCreateWithoutLignesInput = {
+    numero: number
+    statut?: $Enums.StatutFacture
+    clientNom: string
+    clientAdresse?: string | null
+    clientTelephone?: string | null
+    entrepriseNom?: string
+    ninea?: string | null
+    total: number
+    montantVerse?: number
+    resteDu: number
+    dateFacture?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sale: SaleCreateNestedOneWithoutFacureInput
+  }
+
+  export type FactureUncheckedCreateWithoutLignesInput = {
+    id?: number
+    numero: number
+    statut?: $Enums.StatutFacture
+    sale_id: number
+    clientNom: string
+    clientAdresse?: string | null
+    clientTelephone?: string | null
+    entrepriseNom?: string
+    ninea?: string | null
+    total: number
+    montantVerse?: number
+    resteDu: number
+    dateFacture?: Date | string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type FactureCreateOrConnectWithoutLignesInput = {
+    where: FactureWhereUniqueInput
+    create: XOR<FactureCreateWithoutLignesInput, FactureUncheckedCreateWithoutLignesInput>
+  }
+
+  export type FactureUpsertWithoutLignesInput = {
+    update: XOR<FactureUpdateWithoutLignesInput, FactureUncheckedUpdateWithoutLignesInput>
+    create: XOR<FactureCreateWithoutLignesInput, FactureUncheckedCreateWithoutLignesInput>
+    where?: FactureWhereInput
+  }
+
+  export type FactureUpdateToOneWithWhereWithoutLignesInput = {
+    where?: FactureWhereInput
+    data: XOR<FactureUpdateWithoutLignesInput, FactureUncheckedUpdateWithoutLignesInput>
+  }
+
+  export type FactureUpdateWithoutLignesInput = {
+    numero?: IntFieldUpdateOperationsInput | number
+    statut?: EnumStatutFactureFieldUpdateOperationsInput | $Enums.StatutFacture
+    clientNom?: StringFieldUpdateOperationsInput | string
+    clientAdresse?: NullableStringFieldUpdateOperationsInput | string | null
+    clientTelephone?: NullableStringFieldUpdateOperationsInput | string | null
+    entrepriseNom?: StringFieldUpdateOperationsInput | string
+    ninea?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    montantVerse?: FloatFieldUpdateOperationsInput | number
+    resteDu?: FloatFieldUpdateOperationsInput | number
+    dateFacture?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sale?: SaleUpdateOneRequiredWithoutFacureNestedInput
+  }
+
+  export type FactureUncheckedUpdateWithoutLignesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    numero?: IntFieldUpdateOperationsInput | number
+    statut?: EnumStatutFactureFieldUpdateOperationsInput | $Enums.StatutFacture
+    sale_id?: IntFieldUpdateOperationsInput | number
+    clientNom?: StringFieldUpdateOperationsInput | string
+    clientAdresse?: NullableStringFieldUpdateOperationsInput | string | null
+    clientTelephone?: NullableStringFieldUpdateOperationsInput | string | null
+    entrepriseNom?: StringFieldUpdateOperationsInput | string
+    ninea?: NullableStringFieldUpdateOperationsInput | string | null
+    total?: FloatFieldUpdateOperationsInput | number
+    montantVerse?: FloatFieldUpdateOperationsInput | number
+    resteDu?: FloatFieldUpdateOperationsInput | number
+    dateFacture?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CashSessionCreateManyUserInput = {
@@ -17931,6 +21664,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     client?: ClientUpdateOneWithoutSalesNestedInput
     cash?: TransactionUpdateManyWithoutSaleNestedInput
+    facure?: FactureUpdateOneWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutProductInput = {
@@ -17945,6 +21679,7 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cash?: TransactionUncheckedUpdateManyWithoutSaleNestedInput
+    facure?: FactureUncheckedUpdateOneWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutProductInput = {
@@ -17984,6 +21719,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     product?: ProductUpdateOneRequiredWithoutSalesNestedInput
     cash?: TransactionUpdateManyWithoutSaleNestedInput
+    facure?: FactureUpdateOneWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateWithoutClientInput = {
@@ -17998,6 +21734,7 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cash?: TransactionUncheckedUpdateManyWithoutSaleNestedInput
+    facure?: FactureUncheckedUpdateOneWithoutSaleNestedInput
   }
 
   export type SaleUncheckedUpdateManyWithoutClientInput = {
@@ -18174,6 +21911,41 @@ export namespace Prisma {
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     note?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LigneFactureCreateManyFactureInput = {
+    id?: number
+    designation: string
+    quantite: number
+    prixUnitaire: number
+    montant: number
+    createdAt?: Date | string
+  }
+
+  export type LigneFactureUpdateWithoutFactureInput = {
+    designation?: StringFieldUpdateOperationsInput | string
+    quantite?: IntFieldUpdateOperationsInput | number
+    prixUnitaire?: FloatFieldUpdateOperationsInput | number
+    montant?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LigneFactureUncheckedUpdateWithoutFactureInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    designation?: StringFieldUpdateOperationsInput | string
+    quantite?: IntFieldUpdateOperationsInput | number
+    prixUnitaire?: FloatFieldUpdateOperationsInput | number
+    montant?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LigneFactureUncheckedUpdateManyWithoutFactureInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    designation?: StringFieldUpdateOperationsInput | string
+    quantite?: IntFieldUpdateOperationsInput | number
+    prixUnitaire?: FloatFieldUpdateOperationsInput | number
+    montant?: FloatFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

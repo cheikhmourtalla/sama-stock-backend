@@ -25,6 +25,21 @@ router.get("/test-payment-route", (_req, res) => {
   return res.status(200).json({ message: "sale payment route loaded" });
 });
 
+// FACTURE
+router.get(
+  "/factures",
+  protect,
+  authorizeRoles("admin"),
+  saleController.getFactures,
+);
+
+router.get(
+  "/last-facture",
+  protect,
+  authorizeRoles("admin"),
+  saleController.lastFacture,
+);
+
 /**
  * @swagger
  * /api/sales:
@@ -37,9 +52,12 @@ router.get("/test-payment-route", (_req, res) => {
  *       200:
  *         description: Liste des transactions
  */
-router.get("/", protect, authorizeRoles("admin", "employee"), saleController.getSales);
-
-
+router.get(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.getSales,
+);
 
 /**
  * @swagger
@@ -74,9 +92,12 @@ router.get("/", protect, authorizeRoles("admin", "employee"), saleController.get
  *       201:
  *         description: Vente créée
  */
-router.post("/", protect, authorizeRoles("admin", "employee"), saleController.createSale);
-
-
+router.post(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.createSale,
+);
 
 /**
  * @swagger
@@ -96,8 +117,12 @@ router.post("/", protect, authorizeRoles("admin", "employee"), saleController.cr
  *       200:
  *         description: Informations sur la vente et les articles
  */
-router.get("/:id", protect, authorizeRoles("admin", "employee"), saleController.getSaleById);
-
+router.get(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.getSaleById,
+);
 
 /**
  * @swagger
@@ -127,7 +152,12 @@ router.get("/:id", protect, authorizeRoles("admin", "employee"), saleController.
  *       200:
  *         description: Paiement mis à jour
  */
-router.patch("/:id/payment", protect, authorizeRoles("admin", "employee"), saleController.addSalePayment);
+router.patch(
+  "/:id/payment",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.addSalePayment,
+);
 
 /**
  * @swagger
@@ -147,7 +177,12 @@ router.patch("/:id/payment", protect, authorizeRoles("admin", "employee"), saleC
  *       200:
  *         description: Vente modifiée
  */
-router.put("/:id", protect, authorizeRoles("admin", "employee"), saleController.updateSale);
+router.put(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.updateSale,
+);
 
 /**
  * @swagger
@@ -167,6 +202,18 @@ router.put("/:id", protect, authorizeRoles("admin", "employee"), saleController.
  *       200:
  *         description: Vente annulée/supprimée
  */
-router.delete("/:id", protect, authorizeRoles("admin"), saleController.deleteSale);
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  saleController.deleteSale,
+);
+
+router.get(
+  "/facture/:fac_id",
+  protect,
+  authorizeRoles("admin"),
+  saleController.getFacture,
+);
 
 export default router;

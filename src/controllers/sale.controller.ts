@@ -8,6 +8,7 @@ import {
   AddSalePaymentSchema,
 } from "../dto/sale/sale.dto.js";
 import loggerService from "../services/logger.service.js";
+import { AppError, ErrorCodes } from "../utils/app-error.js";
 
 export const saleController = {
   // get all sales
@@ -157,7 +158,7 @@ export const saleController = {
     const sale = await SaleService.addSalePayment(
       saleId,
       validatedData.amount,
-      validatedData.paymentMethod as any
+      validatedData.paymentMethod as any,
     );
 
     logger.info(`Paiement ajouté avec succès pour la vente ID: ${saleId}`, {
@@ -170,6 +171,43 @@ export const saleController = {
       success: true,
       data: sale,
       message: "Paiement ajouté avec succès",
+    });
+  },
+
+  async getFacture(req: Request, res: Response) {
+    const id = Number(req.params.fac_id);
+
+    if (isNaN(id)) {
+      throw new AppError(
+        "ID de facture invalide.",
+        400,
+        ErrorCodes.VALIDATION_ERROR,
+      );
+    }
+
+    const facture = await SaleService.getFacture(id);
+    res.status(200).json({
+      success: true,
+      message: "Facture récupérée avec succès.",
+      data: facture,
+    });
+  },
+
+  async getFactures(req: Request, res: Response) {
+    const facture = await SaleService.getFactures();
+    res.status(200).json({
+      success: true,
+      message: "Factures récupérée avec succès.",
+      data: facture,
+    });
+  },
+
+  async lastFacture(req: Request, res: Response) {
+    const facture = await SaleService.getLastFacture();
+    res.status(200).json({
+      success: true,
+      message: "Derniere facture ",
+      data: facture,
     });
   },
 };

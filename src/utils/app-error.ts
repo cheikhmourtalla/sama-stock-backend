@@ -3,7 +3,12 @@ export class AppError extends Error {
   public errorCode: string;
   public details?: any;
 
-  constructor(message: string, statusCode: number, errorCode: string, details?: any) {
+  constructor(
+    message: string,
+    statusCode: number,
+    errorCode: string,
+    details?: any,
+  ) {
     super(message);
     this.name = "AppError";
     this.statusCode = statusCode;
@@ -39,6 +44,7 @@ export const ErrorCodes = {
   SUPPLIER_NOT_FOUND: "BIZ_005",
   SESSION_NOT_OPEN: "BIZ_010",
   SESSION_ALREADY_OPEN: "BIZ_011",
+  FACTURE_NOT_FOUND: "BIZ_12",
 
   // Database errors (4000-4999)
   DB_CONNECTION_ERROR: "DB_001",
