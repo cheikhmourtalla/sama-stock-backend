@@ -48,6 +48,7 @@ app.use(
       "https://sama-stock-frontend-v2.vercel.app",
       "https://samastockfront.netlify.app",
       "https://samastockfr.netlify.app",
+      "https://nimble-monstera-022f79.netlify.app",
     ],
     credentials: true,
   }),
