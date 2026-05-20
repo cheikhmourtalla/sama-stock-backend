@@ -47,6 +47,7 @@ app.use(
       "https://peppy-faun-3bcc7b.netlify.app",
       "https://sama-stock-frontend-v2.vercel.app",
       "https://samastockfront.netlify.app",
+      "https://samastockfr.netlify.app",
     ],
     credentials: true,
   }),
