@@ -26,17 +26,9 @@ export const CreateSaleSchema = z.object({
 
 export type CreateSaleDto = z.infer<typeof CreateSaleSchema>;
 export const UpdateSaleSchema = z.object({
-  customer: z
-    .string()
-    .trim()
-    .max(100)
-    .optional(),
+  customer: z.string().trim().max(100).optional(),
 
-  note: z
-    .string()
-    .trim()
-    .max(500)
-    .optional(),
+  note: z.string().trim().max(500).optional(),
 });
 
 export type UpdateSaleDto = z.infer<typeof UpdateSaleSchema>;
@@ -52,5 +44,22 @@ export const AddSalePaymentSchema = z.object({
     .default("CASH"),
 });
 
-export type AddSalePaymentDto = z.infer<typeof AddSalePaymentSchema>;
+export interface CreateSale {
+  items: {
+    productId: number;
+    quantity: number;
+    unitPrice?: number;
+  }[];
 
+  clientId?: number;
+
+  paidAmount?: number;
+
+  paymentMethod?: "CASH" | "WAVE" | "ORANGE_MONEY";
+
+  customer?: string;
+
+  note?: string;
+}
+
+export type AddSalePaymentDto = z.infer<typeof AddSalePaymentSchema>;

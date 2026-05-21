@@ -4,7 +4,6 @@ import { ClientService } from "../services/client.service.js";
 import loggerService from "../services/logger.service.js";
 
 export const clientController = {
-
   // get clients
   async getClients(_req: Request, res: Response) {
     const logger = loggerService.getLogger("ClientController");
@@ -12,14 +11,14 @@ export const clientController = {
 
     logger.debug(`Récupération de la liste des clients`, {
       requestId,
-      ip: _req.ip
+      ip: _req.ip,
     });
 
     const clients = await ClientService.getClient();
 
     logger.info(`Liste des clients récupérée`, {
       requestId,
-      count: clients?.length || 0
+      count: clients?.length || 0,
     });
 
     return res.status(200).json({
@@ -38,7 +37,7 @@ export const clientController = {
     logger.debug(`Recherche du client ID: ${id}`, {
       requestId,
       clientId: id,
-      ip: req.ip
+      ip: req.ip,
     });
 
     const client = await ClientService.getClientById(id);
@@ -46,7 +45,7 @@ export const clientController = {
     logger.info(`Client trouvé ID: ${id}`, {
       requestId,
       clientId: id,
-      clientName: client?.name
+      clientName: client?.name,
     });
 
     return res.status(200).json({
@@ -66,7 +65,7 @@ export const clientController = {
       requestId,
       clientName: name,
       phone,
-      ip: req.ip
+      ip: req.ip,
     });
 
     const client = await ClientService.createClient(name, phone);
@@ -74,7 +73,7 @@ export const clientController = {
     logger.info(`Client créé avec succès`, {
       requestId,
       clientId: client?.id,
-      clientName: name
+      clientName: name,
     });
 
     return res.status(201).json({
@@ -96,7 +95,7 @@ export const clientController = {
       clientId: id,
       newName: name,
       newPhone: phone,
-      ip: req.ip
+      ip: req.ip,
     });
 
     const updatedClient = await ClientService.updateClient(id, name, phone);
@@ -104,7 +103,7 @@ export const clientController = {
     logger.info(`Client modifié avec succès ID: ${id}`, {
       requestId,
       clientId: id,
-      clientName: updatedClient?.name
+      clientName: updatedClient?.name,
     });
 
     return res.status(200).json({
@@ -123,19 +122,34 @@ export const clientController = {
     logger.warn(`Tentative de suppression du client ID: ${id}`, {
       requestId,
       clientId: id,
-      ip: req.ip
+      ip: req.ip,
     });
 
     await ClientService.deleteClient(id);
 
     logger.info(`Client supprimé avec succès ID: ${id}`, {
       requestId,
-      clientId: id
+      clientId: id,
     });
 
     return res.status(200).json({
       success: true,
       message: "Client supprimé avec succès",
+    });
+  },
+
+
+  async getAllClients(req: Request, res: Response) {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const search = String(req.query.search || "");
+
+    const result = await ClientService.getAllClients(page, limit, search);
+
+    res.status(200).json({
+      success: true,
+      message: "Liste des clients",
+      ...result,
     });
   },
 };

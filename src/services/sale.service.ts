@@ -1,7 +1,11 @@
 import { prisma } from "../config/prisma.js";
 import { AppError, ErrorCodes } from "../utils/app-error.js";
 import { SaleRepository } from "../repositories/sale.repository.js";
-import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto.js";
+import {
+  CreateSale,
+  CreateSaleDto,
+  UpdateSaleDto,
+} from "../dto/sale/sale.dto.js";
 import loggerService from "../services/logger.service.js";
 import { PaymentMethod, Prisma } from "../../generated/prisma/client.js";
 
@@ -50,145 +54,141 @@ export const SaleService = {
     return sale;
   },
 
-  async createSale(data: CreateSaleDto, saleId?: string) {
-    const {
-      productId,
-      clientId,
-      quantity,
-      paidAmount,
-      paymentMethod,
-      customer,
-      note,
-    } = data;
+  // ===============================================
+  async createSale(data: CreateSale) {
+    const { items, clientId, paidAmount, paymentMethod, customer, note } = data;
 
-    logger.info(`Tentative de création d'une nouvelle vente`, {
-      productId,
-      clientId,
-      quantity,
-      paidAmount,
-      paymentMethod,
-      customer,
-    });
-
-    if (quantity <= 0) {
-      logger.warn(`Création vente refusée - Quantité invalide: ${quantity}`);
+    if (!items || items.length === 0) {
       throw new AppError(
-        `La quantité doit être supérieure à 0. Valeur reçue: ${quantity}.`,
+        "Aucun produit dans la vente",
         400,
         ErrorCodes.VALIDATION_ERROR,
       );
     }
 
     return prisma.$transaction(async (tx) => {
-      // product
-      const product = await tx.product.findUnique({
-        where: {
-          id: productId,
-        },
-      });
-
-      if (!product) {
-        logger.warn(
-          `Création vente refusée - Produit introuvable ID: ${productId}`,
-        );
-        throw new AppError(
-          `Produit avec l'ID ${productId} introuvable. Vérifiez le produit et réessayez.`,
-          404,
-          ErrorCodes.PRODUCT_NOT_FOUND,
-        );
-      }
-
-      // atomic stock update
-      const updated = await tx.product.updateMany({
-        where: {
-          id: productId,
-          quantity: {
-            gte: quantity,
-          },
-        },
-        data: {
-          quantity: {
-            decrement: quantity,
-          },
-        },
-      });
-
-      if (updated.count === 0) {
-        logger.warn(
-          `Création vente refusée - Stock insuffisant pour le produit ID: ${productId}, Quantité demandée: ${quantity}, Stock disponible: ${product.quantity}`,
-        );
-        throw new AppError(
-          `Stock insuffisant pour le produit "${product.name}". Disponible: ${product.quantity}, Demandé: ${quantity}.`,
-          400,
-          ErrorCodes.INSUFFICIENT_STOCK,
-        );
-      }
-
-      // client
+      // CLIENT
       let client = null;
 
       if (clientId) {
         client = await tx.client.findUnique({
-          where: {
-            id: clientId,
-          },
+          where: { id: clientId },
         });
 
         if (!client) {
-          logger.warn(
-            `Création vente refusée - Client introuvable ID: ${clientId}`,
-          );
           throw new AppError(
-            `Client avec l'ID ${clientId} introuvable. Veuillez vérifier le client ou créer la vente sans client.`,
+            "Client introuvable",
             404,
             ErrorCodes.CLIENT_NOT_FOUND,
           );
         }
       }
 
-      // prices
-      const unitPrice = Number(product.salePrice);
-      const totalAmount = unitPrice * quantity;
-      const paid = Number(paidAmount ?? totalAmount);
+      // TOTALS
+      let globalTotal = 0;
 
-      if (paid < 0 || paid > totalAmount) {
-        logger.warn(
-          `Création vente refusée - Montant payé invalide: ${paid} (Total: ${totalAmount})`,
-        );
-        throw new AppError(
-          `Le montant payé (${paid}) est invalide. Il doit être compris entre 0 et ${totalAmount}.`,
-          400,
-          ErrorCodes.VALIDATION_ERROR,
-        );
+      const factureLignes = [];
+
+      const createdSales = [];
+
+      // BOUCLE PRODUITS
+      for (const item of items) {
+        const product = await tx.product.findUnique({
+          where: {
+            id: item.productId,
+          },
+        });
+
+        if (!product) {
+          throw new AppError(
+            `Produit ${item.productId} introuvable`,
+            404,
+            ErrorCodes.PRODUCT_NOT_FOUND,
+          );
+        }
+
+        if (product.quantity < item.quantity) {
+          throw new AppError(
+            `Stock insuffisant pour ${product.name}`,
+            400,
+            ErrorCodes.INSUFFICIENT_STOCK,
+          );
+        }
+
+        // update stock
+        await tx.product.update({
+          where: {
+            id: product.id,
+          },
+          data: {
+            quantity: {
+              decrement: item.quantity,
+            },
+          },
+        });
+
+        const unitPrice = Number(product.salePrice);
+
+        const lineTotal = unitPrice * item.quantity;
+
+        globalTotal += lineTotal;
+
+        // créer vente
+        const sale = await tx.sale.create({
+          data: {
+            productId: product.id,
+
+            clientId: clientId ?? null,
+
+            quantity: item.quantity,
+
+            unitPrice,
+
+            totalAmount: lineTotal,
+
+            paidAmount: 0,
+
+            remaining: lineTotal,
+
+            customer: customer ?? client?.name ?? "Client Comptant",
+
+            note,
+          },
+        });
+
+        createdSales.push(sale);
+
+        // ligne facture
+        factureLignes.push({
+          designation: product.name,
+
+          quantite: item.quantity,
+
+          prixUnitaire: unitPrice,
+
+          montant: lineTotal,
+        });
+
+        // stock movement
+        await tx.stockMovement.create({
+          data: {
+            productId: product.id,
+
+            type: "SALE",
+
+            quantity: item.quantity,
+
+            note: note ?? "Vente effectuée",
+          },
+        });
       }
 
-      const remaining = totalAmount - paid;
+      // paiement
+      const paid = Number(paidAmount ?? globalTotal);
 
-      logger.debug(
-        `Calculs vente - Prix unitaire: ${unitPrice}, Total: ${totalAmount}, Payé: ${paid}, Restant: ${remaining}`,
-      );
+      const remaining = globalTotal - paid;
 
-      // create sale
-      const sale = await tx.sale.create({
-        data: {
-          productId,
-          clientId: clientId ?? null,
-          quantity,
-          unitPrice,
-          totalAmount,
-          paidAmount: paid,
-          remaining,
-          customer: customer ?? client?.name ?? null,
-          note: note ?? null,
-        },
-        include: {
-          product: true,
-          client: true,
-        },
-      });
-
-      logger.debug(`Vente créée en base - ID: ${sale.id}`);
-
+      // facture number
       const lastFacture = await tx.facture.findFirst({
         orderBy: {
           numero: "desc",
@@ -196,81 +196,296 @@ export const SaleService = {
       });
 
       const nextNumero = lastFacture ? lastFacture.numero + 1 : 1;
-      await tx.facture.create({
+
+      // FACTURE
+      const facture = await tx.facture.create({
         data: {
           numero: nextNumero,
 
           statut: remaining > 0 ? "NON_REGLEE" : "REGLEE",
 
-          sale_id: sale.id,
+          sale_id: createdSales[0].id,
 
-          // infos client
           clientNom: customer ?? client?.name ?? "Client Comptant",
+
           clientAdresse: client?.address ?? "Dakar, Sénégal",
+
           clientTelephone: client?.phone ?? null,
 
-          // entreprise
           entrepriseNom: "TOUBA PALLENE",
+
           ninea: "008036221",
 
-          // montants
-          total: totalAmount,
+          total: globalTotal,
+
           montantVerse: paid,
+
           resteDu: remaining,
 
           lignes: {
-            create: [
-              {
-                designation: product.name,
-                quantite: quantity,
-                prixUnitaire: unitPrice,
-                montant: totalAmount,
-              },
-            ],
+            create: factureLignes,
           },
         },
-      });
 
-      // stock movement
-      await tx.stockMovement.create({
-        data: {
-          productId,
-          type: "SALE",
-          quantity,
-          note: note ?? "Vente effectuée",
+        include: {
+          lignes: true,
         },
       });
 
+      // CASH SESSION
       const currentSession = await tx.cashSession.findFirst({
-        orderBy: { openedAt: "desc" },
+        orderBy: {
+          openedAt: "desc",
+        },
       });
 
       if (!currentSession?.isOpen) {
-        logger.error(`Création vente échouée - Caisse fermée ou inexistante`);
         throw new AppError(
-          "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer une vente.",
+          "La caisse est fermée",
           403,
           ErrorCodes.SESSION_NOT_OPEN,
         );
       }
 
+      // mouvement caisse
       await tx.cashMovement.create({
         data: {
           sessionId: currentSession.id,
+
           type: "SALE",
+
           label: "Vente",
-          amount: paidAmount as number,
+
+          amount: paid,
+
           paymentMethod: paymentMethod ?? "CASH",
         },
       });
 
-      logger.info(
-        `Vente créée avec succès - ID: ${sale.id}, Produit: ${product.name}, Quantité: ${quantity}, Montant total: ${totalAmount}, Payé: ${paid}`,
-      );
-
-      return sale;
+      return facture;
     });
   },
+  // async createSale(data: CreateSaleDto, saleId?: string) {
+  //   const {
+  //     productId,
+  //     clientId,
+  //     quantity,
+  //     paidAmount,
+  //     paymentMethod,
+  //     customer,
+  //     note,
+  //   } = data;
+
+  //   logger.info(`Tentative de création d'une nouvelle vente`, {
+  //     productId,
+  //     clientId,
+  //     quantity,
+  //     paidAmount,
+  //     paymentMethod,
+  //     customer,
+  //   });
+
+  //   if (quantity <= 0) {
+  //     logger.warn(`Création vente refusée - Quantité invalide: ${quantity}`);
+  //     throw new AppError(
+  //       `La quantité doit être supérieure à 0. Valeur reçue: ${quantity}.`,
+  //       400,
+  //       ErrorCodes.VALIDATION_ERROR,
+  //     );
+  //   }
+
+  //   return prisma.$transaction(async (tx) => {
+  //     // product
+  //     const product = await tx.product.findUnique({
+  //       where: {
+  //         id: productId,
+  //       },
+  //     });
+
+  //     if (!product) {
+  //       logger.warn(
+  //         `Création vente refusée - Produit introuvable ID: ${productId}`,
+  //       );
+  //       throw new AppError(
+  //         `Produit avec l'ID ${productId} introuvable. Vérifiez le produit et réessayez.`,
+  //         404,
+  //         ErrorCodes.PRODUCT_NOT_FOUND,
+  //       );
+  //     }
+
+  //     // atomic stock update
+  //     const updated = await tx.product.updateMany({
+  //       where: {
+  //         id: productId,
+  //         quantity: {
+  //           gte: quantity,
+  //         },
+  //       },
+  //       data: {
+  //         quantity: {
+  //           decrement: quantity,
+  //         },
+  //       },
+  //     });
+
+  //     if (updated.count === 0) {
+  //       logger.warn(
+  //         `Création vente refusée - Stock insuffisant pour le produit ID: ${productId}, Quantité demandée: ${quantity}, Stock disponible: ${product.quantity}`,
+  //       );
+  //       throw new AppError(
+  //         `Stock insuffisant pour le produit "${product.name}". Disponible: ${product.quantity}, Demandé: ${quantity}.`,
+  //         400,
+  //         ErrorCodes.INSUFFICIENT_STOCK,
+  //       );
+  //     }
+
+  //     // client
+  //     let client = null;
+
+  //     if (clientId) {
+  //       client = await tx.client.findUnique({
+  //         where: {
+  //           id: clientId,
+  //         },
+  //       });
+
+  //       if (!client) {
+  //         logger.warn(
+  //           `Création vente refusée - Client introuvable ID: ${clientId}`,
+  //         );
+  //         throw new AppError(
+  //           `Client avec l'ID ${clientId} introuvable. Veuillez vérifier le client ou créer la vente sans client.`,
+  //           404,
+  //           ErrorCodes.CLIENT_NOT_FOUND,
+  //         );
+  //       }
+  //     }
+
+  //     // prices
+  //     const unitPrice = Number(product.salePrice);
+  //     const totalAmount = unitPrice * quantity;
+  //     const paid = Number(paidAmount ?? totalAmount);
+
+  //     if (paid < 0 || paid > totalAmount) {
+  //       logger.warn(
+  //         `Création vente refusée - Montant payé invalide: ${paid} (Total: ${totalAmount})`,
+  //       );
+  //       throw new AppError(
+  //         `Le montant payé (${paid}) est invalide. Il doit être compris entre 0 et ${totalAmount}.`,
+  //         400,
+  //         ErrorCodes.VALIDATION_ERROR,
+  //       );
+  //     }
+
+  //     const remaining = totalAmount - paid;
+
+  //     logger.debug(
+  //       `Calculs vente - Prix unitaire: ${unitPrice}, Total: ${totalAmount}, Payé: ${paid}, Restant: ${remaining}`,
+  //     );
+
+  //     // create sale
+  //     const sale = await tx.sale.create({
+  //       data: {
+  //         productId,
+  //         clientId: clientId ?? null,
+  //         quantity,
+  //         unitPrice,
+  //         totalAmount,
+  //         paidAmount: paid,
+  //         remaining,
+  //         customer: customer ?? client?.name ?? null,
+  //         note: note ?? null,
+  //       },
+  //       include: {
+  //         product: true,
+  //         client: true,
+  //       },
+  //     });
+
+  //     logger.debug(`Vente créée en base - ID: ${sale.id}`);
+
+  //     const lastFacture = await tx.facture.findFirst({
+  //       orderBy: {
+  //         numero: "desc",
+  //       },
+  //     });
+
+  //     const nextNumero = lastFacture ? lastFacture.numero + 1 : 1;
+  //     await tx.facture.create({
+  //       data: {
+  //         numero: nextNumero,
+
+  //         statut: remaining > 0 ? "NON_REGLEE" : "REGLEE",
+
+  //         sale_id: sale.id,
+
+  //         // infos client
+  //         clientNom: customer ?? client?.name ?? "Client Comptant",
+  //         clientAdresse: client?.address ?? "Dakar, Sénégal",
+  //         clientTelephone: client?.phone ?? null,
+
+  //         // entreprise
+  //         entrepriseNom: "TOUBA PALLENE",
+  //         ninea: "008036221",
+
+  //         // montants
+  //         total: totalAmount,
+  //         montantVerse: paid,
+  //         resteDu: remaining,
+
+  //         lignes: {
+  //           create: [
+  //             {
+  //               designation: product.name,
+  //               quantite: quantity,
+  //               prixUnitaire: unitPrice,
+  //               montant: totalAmount,
+  //             },
+  //           ],
+  //         },
+  //       },
+  //     });
+
+  //     // stock movement
+  //     await tx.stockMovement.create({
+  //       data: {
+  //         productId,
+  //         type: "SALE",
+  //         quantity,
+  //         note: note ?? "Vente effectuée",
+  //       },
+  //     });
+
+  //     const currentSession = await tx.cashSession.findFirst({
+  //       orderBy: { openedAt: "desc" },
+  //     });
+
+  //     if (!currentSession?.isOpen) {
+  //       logger.error(`Création vente échouée - Caisse fermée ou inexistante`);
+  //       throw new AppError(
+  //         "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer une vente.",
+  //         403,
+  //         ErrorCodes.SESSION_NOT_OPEN,
+  //       );
+  //     }
+
+  //     await tx.cashMovement.create({
+  //       data: {
+  //         sessionId: currentSession.id,
+  //         type: "SALE",
+  //         label: "Vente",
+  //         amount: paidAmount as number,
+  //         paymentMethod: paymentMethod ?? "CASH",
+  //       },
+  //     });
+
+  //     logger.info(
+  //       `Vente créée avec succès - ID: ${sale.id}, Produit: ${product.name}, Quantité: ${quantity}, Montant total: ${totalAmount}, Payé: ${paid}`,
+  //     );
+
+  //     return sale;
+  //   });
+  // },
 
   async updateSale(id: number, data: UpdateSaleDto) {
     logger.debug(`Tentative de modification de la vente ID: ${id}`);

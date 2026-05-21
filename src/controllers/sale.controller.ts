@@ -63,7 +63,9 @@ export const saleController = {
   async createSale(req: Request, res: Response) {
     const logger = loggerService.getLogger("SaleController");
     const requestId = (req as any).requestId;
-    const validatedData = CreateSaleSchema.parse(req.body);
+    const validatedData = req.body;
+
+    console.log(validatedData);
 
     logger.info(`Tentative de création d'une nouvelle vente`, {
       requestId,
@@ -191,7 +193,6 @@ export const saleController = {
       message: "Facture récupérée avec succès.",
       data: facture,
     });
-
   },
 
   async getFactures(req: Request, res: Response) {
@@ -201,7 +202,7 @@ export const saleController = {
 
     const search = String(req.query.search || "");
 
-    const factures = await SaleService.getFactures(page, limit , search);
+    const factures = await SaleService.getFactures(page, limit, search);
 
     res.status(200).json({
       success: true,

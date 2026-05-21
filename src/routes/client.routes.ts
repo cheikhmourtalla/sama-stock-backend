@@ -25,8 +25,13 @@ const router = Router();
  *       401:
  *         description: Non authentifié
  */
-router.get("/", protect, authorizeRoles("admin", "employee"), clientController.getClients);
-
+router.get(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  clientController.getClients,
+);
+router.get("/all", clientController.getAllClients);
 /**
  * @swagger
  * /api/clients/{id}:
@@ -48,7 +53,12 @@ router.get("/", protect, authorizeRoles("admin", "employee"), clientController.g
  *       404:
  *         description: Client non trouvé
  */
-router.get("/:id", protect, authorizeRoles("admin", "employee"), clientController.getClient);
+router.get(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "employee"),
+  clientController.getClient,
+);
 
 /**
  * @swagger
@@ -80,7 +90,12 @@ router.get("/:id", protect, authorizeRoles("admin", "employee"), clientControlle
  *       201:
  *         description: Client créé
  */
-router.post("/", protect, authorizeRoles("admin", "employee"), clientController.createClient);
+router.post(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  clientController.createClient,
+);
 
 /**
  * @swagger
@@ -110,7 +125,12 @@ router.post("/", protect, authorizeRoles("admin", "employee"), clientController.
  *       200:
  *         description: Client mis à jour
  */
-router.put("/:id", protect, authorizeRoles("admin", "employee"), clientController.updateClient);
+router.put(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "employee"),
+  clientController.updateClient,
+);
 
 /**
  * @swagger
@@ -132,6 +152,11 @@ router.put("/:id", protect, authorizeRoles("admin", "employee"), clientControlle
  *       403:
  *         description: Accès refusé (Admin uniquement)
  */
-router.delete("/:id", protect, authorizeRoles("admin"), clientController.deleteClient);
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  clientController.deleteClient,
+);
 
 export default router;
