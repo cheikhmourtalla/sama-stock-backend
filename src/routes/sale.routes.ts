@@ -32,7 +32,13 @@ router.get(
   authorizeRoles("admin"),
   saleController.getFactures,
 );
+router.post(
+  "/facture/:id/payment",
 
+  protect,
+  authorizeRoles("admin", "employee"),
+  saleController.addFacturePayment,
+);
 router.get(
   "/last-facture",
   protect,

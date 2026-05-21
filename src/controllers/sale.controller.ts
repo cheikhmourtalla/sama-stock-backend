@@ -218,4 +218,22 @@ export const saleController = {
       data: facture,
     });
   },
+
+  async addFacturePayment(req: Request, res: Response) {
+    const factureId = Number(req.params.id);
+
+    const { amount, paymentMethod } = req.body;
+
+    const result = await SaleService.addFacturePayment({
+      factureId,
+      amount,
+      paymentMethod,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Paiement enregistré",
+      data: result,
+    });
+  },
 };

@@ -265,228 +265,128 @@ export const SaleService = {
       return facture;
     });
   },
-  // async createSale(data: CreateSaleDto, saleId?: string) {
-  //   const {
-  //     productId,
-  //     clientId,
-  //     quantity,
-  //     paidAmount,
-  //     paymentMethod,
-  //     customer,
-  //     note,
-  //   } = data;
+  async addFacturePayment(data: {
+    factureId: number;
+    amount: number;
+    paymentMethod: PaymentMethod;
+  }) {
+    const { factureId, amount, paymentMethod } = data;
 
-  //   logger.info(`Tentative de création d'une nouvelle vente`, {
-  //     productId,
-  //     clientId,
-  //     quantity,
-  //     paidAmount,
-  //     paymentMethod,
-  //     customer,
-  //   });
+    if (amount <= 0) {
+      throw new AppError("Montant invalide", 400, ErrorCodes.VALIDATION_ERROR);
+    }
 
-  //   if (quantity <= 0) {
-  //     logger.warn(`Création vente refusée - Quantité invalide: ${quantity}`);
-  //     throw new AppError(
-  //       `La quantité doit être supérieure à 0. Valeur reçue: ${quantity}.`,
-  //       400,
-  //       ErrorCodes.VALIDATION_ERROR,
-  //     );
-  //   }
+    return prisma.$transaction(async (tx) => {
+      // facture
+      const facture = await tx.facture.findUnique({
+        where: {
+          id: factureId,
+        },
+        include: {
+          sale: true,
+        },
+      });
 
-  //   return prisma.$transaction(async (tx) => {
-  //     // product
-  //     const product = await tx.product.findUnique({
-  //       where: {
-  //         id: productId,
-  //       },
-  //     });
+      if (!facture) {
+        throw new AppError(
+          "Facture introuvable",
+          404,
+          ErrorCodes.FACTURE_NOT_FOUND,
+        );
+      }
 
-  //     if (!product) {
-  //       logger.warn(
-  //         `Création vente refusée - Produit introuvable ID: ${productId}`,
-  //       );
-  //       throw new AppError(
-  //         `Produit avec l'ID ${productId} introuvable. Vérifiez le produit et réessayez.`,
-  //         404,
-  //         ErrorCodes.PRODUCT_NOT_FOUND,
-  //       );
-  //     }
+      // déjà réglée
+      if (facture.resteDu <= 0) {
+        throw new AppError(
+          "Cette facture est déjà réglée",
+          400,
+          ErrorCodes.VALIDATION_ERROR,
+        );
+      }
 
-  //     // atomic stock update
-  //     const updated = await tx.product.updateMany({
-  //       where: {
-  //         id: productId,
-  //         quantity: {
-  //           gte: quantity,
-  //         },
-  //       },
-  //       data: {
-  //         quantity: {
-  //           decrement: quantity,
-  //         },
-  //       },
-  //     });
+      // montant trop élevé
+      if (amount > facture.resteDu) {
+        throw new AppError(
+          `Le montant dépasse le reste dû (${facture.resteDu})`,
+          400,
+          ErrorCodes.VALIDATION_ERROR,
+        );
+      }
 
-  //     if (updated.count === 0) {
-  //       logger.warn(
-  //         `Création vente refusée - Stock insuffisant pour le produit ID: ${productId}, Quantité demandée: ${quantity}, Stock disponible: ${product.quantity}`,
-  //       );
-  //       throw new AppError(
-  //         `Stock insuffisant pour le produit "${product.name}". Disponible: ${product.quantity}, Demandé: ${quantity}.`,
-  //         400,
-  //         ErrorCodes.INSUFFICIENT_STOCK,
-  //       );
-  //     }
+      // session caisse
+      const currentSession = await tx.cashSession.findFirst({
+        orderBy: {
+          openedAt: "desc",
+        },
+      });
 
-  //     // client
-  //     let client = null;
+      if (!currentSession?.isOpen) {
+        throw new AppError(
+          "La caisse est fermée",
+          403,
+          ErrorCodes.SESSION_NOT_OPEN,
+        );
+      }
 
-  //     if (clientId) {
-  //       client = await tx.client.findUnique({
-  //         where: {
-  //           id: clientId,
-  //         },
-  //       });
+      // calculs
+      const newMontantVerse = Number(facture.montantVerse) + amount;
 
-  //       if (!client) {
-  //         logger.warn(
-  //           `Création vente refusée - Client introuvable ID: ${clientId}`,
-  //         );
-  //         throw new AppError(
-  //           `Client avec l'ID ${clientId} introuvable. Veuillez vérifier le client ou créer la vente sans client.`,
-  //           404,
-  //           ErrorCodes.CLIENT_NOT_FOUND,
-  //         );
-  //       }
-  //     }
+      const newReste = Number(facture.total) - newMontantVerse;
 
-  //     // prices
-  //     const unitPrice = Number(product.salePrice);
-  //     const totalAmount = unitPrice * quantity;
-  //     const paid = Number(paidAmount ?? totalAmount);
+      let newStatut: "REGLEE" | "NON_REGLEE" | "PARTIELLEMENT_REGLEE";
 
-  //     if (paid < 0 || paid > totalAmount) {
-  //       logger.warn(
-  //         `Création vente refusée - Montant payé invalide: ${paid} (Total: ${totalAmount})`,
-  //       );
-  //       throw new AppError(
-  //         `Le montant payé (${paid}) est invalide. Il doit être compris entre 0 et ${totalAmount}.`,
-  //         400,
-  //         ErrorCodes.VALIDATION_ERROR,
-  //       );
-  //     }
+      if (newReste <= 0) {
+        newStatut = "REGLEE";
+      } else if (newMontantVerse > 0) {
+        newStatut = "PARTIELLEMENT_REGLEE";
+      } else {
+        newStatut = "NON_REGLEE";
+      }
 
-  //     const remaining = totalAmount - paid;
+      // update facture
+      const updatedFacture = await tx.facture.update({
+        where: {
+          id: factureId,
+        },
+        data: {
+          montantVerse: newMontantVerse,
 
-  //     logger.debug(
-  //       `Calculs vente - Prix unitaire: ${unitPrice}, Total: ${totalAmount}, Payé: ${paid}, Restant: ${remaining}`,
-  //     );
+          resteDu: newReste,
 
-  //     // create sale
-  //     const sale = await tx.sale.create({
-  //       data: {
-  //         productId,
-  //         clientId: clientId ?? null,
-  //         quantity,
-  //         unitPrice,
-  //         totalAmount,
-  //         paidAmount: paid,
-  //         remaining,
-  //         customer: customer ?? client?.name ?? null,
-  //         note: note ?? null,
-  //       },
-  //       include: {
-  //         product: true,
-  //         client: true,
-  //       },
-  //     });
+          statut: newStatut,
+        },
+      });
 
-  //     logger.debug(`Vente créée en base - ID: ${sale.id}`);
+      // update sale
+      await tx.sale.update({
+        where: {
+          id: facture.sale_id,
+        },
+        data: {
+          paidAmount: newMontantVerse,
 
-  //     const lastFacture = await tx.facture.findFirst({
-  //       orderBy: {
-  //         numero: "desc",
-  //       },
-  //     });
+          remaining: newReste,
+        },
+      });
 
-  //     const nextNumero = lastFacture ? lastFacture.numero + 1 : 1;
-  //     await tx.facture.create({
-  //       data: {
-  //         numero: nextNumero,
+      // mouvement caisse
+      await tx.cashMovement.create({
+        data: {
+          sessionId: currentSession.id,
 
-  //         statut: remaining > 0 ? "NON_REGLEE" : "REGLEE",
+          type: "CLIENT_PAYMENT",
 
-  //         sale_id: sale.id,
+          label: `Paiement facture #${facture.numero}`,
 
-  //         // infos client
-  //         clientNom: customer ?? client?.name ?? "Client Comptant",
-  //         clientAdresse: client?.address ?? "Dakar, Sénégal",
-  //         clientTelephone: client?.phone ?? null,
+          amount,
 
-  //         // entreprise
-  //         entrepriseNom: "TOUBA PALLENE",
-  //         ninea: "008036221",
+          paymentMethod,
+        },
+      });
 
-  //         // montants
-  //         total: totalAmount,
-  //         montantVerse: paid,
-  //         resteDu: remaining,
-
-  //         lignes: {
-  //           create: [
-  //             {
-  //               designation: product.name,
-  //               quantite: quantity,
-  //               prixUnitaire: unitPrice,
-  //               montant: totalAmount,
-  //             },
-  //           ],
-  //         },
-  //       },
-  //     });
-
-  //     // stock movement
-  //     await tx.stockMovement.create({
-  //       data: {
-  //         productId,
-  //         type: "SALE",
-  //         quantity,
-  //         note: note ?? "Vente effectuée",
-  //       },
-  //     });
-
-  //     const currentSession = await tx.cashSession.findFirst({
-  //       orderBy: { openedAt: "desc" },
-  //     });
-
-  //     if (!currentSession?.isOpen) {
-  //       logger.error(`Création vente échouée - Caisse fermée ou inexistante`);
-  //       throw new AppError(
-  //         "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer une vente.",
-  //         403,
-  //         ErrorCodes.SESSION_NOT_OPEN,
-  //       );
-  //     }
-
-  //     await tx.cashMovement.create({
-  //       data: {
-  //         sessionId: currentSession.id,
-  //         type: "SALE",
-  //         label: "Vente",
-  //         amount: paidAmount as number,
-  //         paymentMethod: paymentMethod ?? "CASH",
-  //       },
-  //     });
-
-  //     logger.info(
-  //       `Vente créée avec succès - ID: ${sale.id}, Produit: ${product.name}, Quantité: ${quantity}, Montant total: ${totalAmount}, Payé: ${paid}`,
-  //     );
-
-  //     return sale;
-  //   });
-  // },
-
+      return updatedFacture;
+    });
+  },
   async updateSale(id: number, data: UpdateSaleDto) {
     logger.debug(`Tentative de modification de la vente ID: ${id}`);
 
