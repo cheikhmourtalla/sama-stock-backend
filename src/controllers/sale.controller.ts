@@ -194,14 +194,18 @@ export const saleController = {
   },
 
   async getFactures(req: Request, res: Response) {
-    const facture = await SaleService.getFactures();
+    const page = Number(req.query.page) || 1;
+
+    const limit = Number(req.query.limit) || 10;
+
+    const factures = await SaleService.getFactures(page, limit);
+
     res.status(200).json({
       success: true,
-      message: "Factures récupérée avec succès.",
-      data: facture,
+      message: "Factures récupérées avec succès.",
+      ...factures,
     });
   },
-
   async lastFacture(req: Request, res: Response) {
     const facture = await SaleService.getLastFacture();
     res.status(200).json({

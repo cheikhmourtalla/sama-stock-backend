@@ -522,10 +522,20 @@ export const SaleService = {
     return facture;
   },
 
-  async getFactures() {
-    logger.info(`Récupération des`);
+async getFactures(page = 1, limit = 10) {
+  logger.info(`Récupération des factures`);
 
-    const factures = await prisma.facture.findMany({
+  const skip = (page - 1) * limit;
+
+  const [factures, total] = await Promise.all([
+    prisma.facture.findMany({
+      skip,
+      take: limit,
+
+      orderBy: {
+        dateFacture: "desc",
+      },
+
       include: {
         sale: {
           include: {
@@ -536,12 +546,21 @@ export const SaleService = {
 
         lignes: true,
       },
-    });
+    }),
 
-    logger.info(`Factures recupere}`);
+    prisma.facture.count(),
+  ]);
 
-    return factures;
-  },
+  return {
+    data: factures,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+},
   async getLastFacture() {
     logger.info(`Récupération des`);
 
