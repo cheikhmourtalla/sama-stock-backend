@@ -3,7 +3,7 @@ import { AppError, ErrorCodes } from "../utils/app-error.js";
 import { SaleRepository } from "../repositories/sale.repository.js";
 import { CreateSaleDto, UpdateSaleDto } from "../dto/sale/sale.dto.js";
 import loggerService from "../services/logger.service.js";
-import { PaymentMethod } from "../../generated/prisma/client.js";
+import { PaymentMethod, Prisma } from "../../generated/prisma/client.js";
 
 const logger = loggerService.getLogger("SaleService");
 
@@ -522,45 +522,67 @@ export const SaleService = {
     return facture;
   },
 
-async getFactures(page = 1, limit = 10) {
-  logger.info(`Récupération des factures`);
+  async getFactures(page = 1, limit = 10, search: string) {
+    logger.info(`Récupération des factures`);
+    const where: Prisma.FactureWhereInput = search
+      ? {
+          OR: [
+            {
+              clientNom: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+            {
+              clientTelephone: {
+                contains: search,
+                mode: Prisma.QueryMode.insensitive,
+              },
+            },
+            {
+              numero: isNaN(Number(search)) ? undefined : Number(search),
+            },
+          ],
+        }
+      : {};
 
-  const skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;
 
-  const [factures, total] = await Promise.all([
-    prisma.facture.findMany({
-      skip,
-      take: limit,
+    const [factures, total] = await Promise.all([
+      prisma.facture.findMany({
+        where,
+        skip,
+        take: limit,
 
-      orderBy: {
-        dateFacture: "desc",
-      },
-
-      include: {
-        sale: {
-          include: {
-            product: true,
-            client: true,
-          },
+        orderBy: {
+          dateFacture: "desc",
         },
 
-        lignes: true,
+        include: {
+          sale: {
+            include: {
+              product: true,
+              client: true,
+            },
+          },
+
+          lignes: true,
+        },
+      }),
+
+      prisma.facture.count(),
+    ]);
+
+    return {
+      data: factures,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
       },
-    }),
-
-    prisma.facture.count(),
-  ]);
-
-  return {
-    data: factures,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
-},
+    };
+  },
   async getLastFacture() {
     logger.info(`Récupération des`);
 

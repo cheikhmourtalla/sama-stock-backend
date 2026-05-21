@@ -191,6 +191,7 @@ export const saleController = {
       message: "Facture récupérée avec succès.",
       data: facture,
     });
+
   },
 
   async getFactures(req: Request, res: Response) {
@@ -198,7 +199,9 @@ export const saleController = {
 
     const limit = Number(req.query.limit) || 10;
 
-    const factures = await SaleService.getFactures(page, limit);
+    const search = String(req.query.search || "");
+
+    const factures = await SaleService.getFactures(page, limit , search);
 
     res.status(200).json({
       success: true,
