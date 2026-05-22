@@ -195,7 +195,6 @@ exports.Prisma.CashSessionScalarFieldEnum = {
 
 exports.Prisma.CashMovementScalarFieldEnum = {
   id: 'id',
-  sessionId: 'sessionId',
   type: 'type',
   label: 'label',
   amount: 'amount',

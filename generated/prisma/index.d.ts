@@ -1920,37 +1920,6 @@ export namespace Prisma {
 
 
   /**
-   * Count Type UserCountOutputType
-   */
-
-  export type UserCountOutputType = {
-    cashSessions: number
-  }
-
-  export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    cashSessions?: boolean | UserCountOutputTypeCountCashSessionsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the UserCountOutputType
-     */
-    select?: UserCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * UserCountOutputType without action
-   */
-  export type UserCountOutputTypeCountCashSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CashSessionWhereInput
-  }
-
-
-  /**
    * Count Type ProductCountOutputType
    */
 
@@ -2089,37 +2058,6 @@ export namespace Prisma {
    */
   export type SupplierCountOutputTypeCountProductArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ProductWhereInput
-  }
-
-
-  /**
-   * Count Type CashSessionCountOutputType
-   */
-
-  export type CashSessionCountOutputType = {
-    movements: number
-  }
-
-  export type CashSessionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    movements?: boolean | CashSessionCountOutputTypeCountMovementsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * CashSessionCountOutputType without action
-   */
-  export type CashSessionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CashSessionCountOutputType
-     */
-    select?: CashSessionCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * CashSessionCountOutputType without action
-   */
-  export type CashSessionCountOutputTypeCountMovementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CashMovementWhereInput
   }
 
 
@@ -2364,8 +2302,6 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     createdAt?: boolean
-    cashSessions?: boolean | User$cashSessionsArgs<ExtArgs>
-    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2396,18 +2332,10 @@ export namespace Prisma {
   }
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "createdAt", ExtArgs["result"]["user"]>
-  export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    cashSessions?: boolean | User$cashSessionsArgs<ExtArgs>
-    _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type UserIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
-    objects: {
-      cashSessions: Prisma.$CashSessionPayload<ExtArgs>[]
-    }
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
@@ -2809,7 +2737,6 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    cashSessions<T extends User$cashSessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$cashSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2862,10 +2789,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -2884,10 +2807,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where: UserWhereUniqueInput
@@ -2905,10 +2824,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which User to fetch.
      */
@@ -2958,10 +2873,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter, which User to fetch.
      */
     where?: UserWhereInput
@@ -3009,10 +2920,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * Filter, which Users to fetch.
      */
@@ -3062,10 +2969,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * The data needed to create a User.
      */
     data: XOR<UserCreateInput, UserUncheckedCreateInput>
@@ -3113,10 +3016,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
     /**
      * The data needed to update a User.
      */
@@ -3184,10 +3083,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * The filter to search for the User to update in case it exists.
      */
     where: UserWhereUniqueInput
@@ -3214,10 +3109,6 @@ export namespace Prisma {
      */
     omit?: UserOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    /**
      * Filter which User to delete.
      */
     where: UserWhereUniqueInput
@@ -3238,30 +3129,6 @@ export namespace Prisma {
   }
 
   /**
-   * User.cashSessions
-   */
-  export type User$cashSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CashSession
-     */
-    select?: CashSessionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CashSession
-     */
-    omit?: CashSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
-    where?: CashSessionWhereInput
-    orderBy?: CashSessionOrderByWithRelationInput | CashSessionOrderByWithRelationInput[]
-    cursor?: CashSessionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CashSessionScalarFieldEnum | CashSessionScalarFieldEnum[]
-  }
-
-  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3273,10 +3140,6 @@ export namespace Prisma {
      * Omit specific fields from the User
      */
     omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
   }
 
 
@@ -9464,9 +9327,6 @@ export namespace Prisma {
     isOpen?: boolean
     userId?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    movements?: boolean | CashSession$movementsArgs<ExtArgs>
-    _count?: boolean | CashSessionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cashSession"]>
 
   export type CashSessionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9478,7 +9338,6 @@ export namespace Prisma {
     isOpen?: boolean
     userId?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cashSession"]>
 
   export type CashSessionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9490,7 +9349,6 @@ export namespace Prisma {
     isOpen?: boolean
     userId?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cashSession"]>
 
   export type CashSessionSelectScalar = {
@@ -9505,24 +9363,10 @@ export namespace Prisma {
   }
 
   export type CashSessionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "openedAt" | "closedAt" | "openingAmount" | "closingAmount" | "isOpen" | "userId" | "createdAt", ExtArgs["result"]["cashSession"]>
-  export type CashSessionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    movements?: boolean | CashSession$movementsArgs<ExtArgs>
-    _count?: boolean | CashSessionCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type CashSessionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type CashSessionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
 
   export type $CashSessionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "CashSession"
-    objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-      movements: Prisma.$CashMovementPayload<ExtArgs>[]
-    }
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
       openedAt: Date
@@ -9926,8 +9770,6 @@ export namespace Prisma {
    */
   export interface Prisma__CashSessionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    movements<T extends CashSession$movementsArgs<ExtArgs> = {}>(args?: Subset<T, CashSession$movementsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CashMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9982,10 +9824,6 @@ export namespace Prisma {
      */
     omit?: CashSessionOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
-    /**
      * Filter, which CashSession to fetch.
      */
     where: CashSessionWhereUniqueInput
@@ -10004,10 +9842,6 @@ export namespace Prisma {
      */
     omit?: CashSessionOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
-    /**
      * Filter, which CashSession to fetch.
      */
     where: CashSessionWhereUniqueInput
@@ -10025,10 +9859,6 @@ export namespace Prisma {
      * Omit specific fields from the CashSession
      */
     omit?: CashSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
     /**
      * Filter, which CashSession to fetch.
      */
@@ -10078,10 +9908,6 @@ export namespace Prisma {
      */
     omit?: CashSessionOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
-    /**
      * Filter, which CashSession to fetch.
      */
     where?: CashSessionWhereInput
@@ -10129,10 +9955,6 @@ export namespace Prisma {
      * Omit specific fields from the CashSession
      */
     omit?: CashSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
     /**
      * Filter, which CashSessions to fetch.
      */
@@ -10182,10 +10004,6 @@ export namespace Prisma {
      */
     omit?: CashSessionOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
-    /**
      * The data needed to create a CashSession.
      */
     data: XOR<CashSessionCreateInput, CashSessionUncheckedCreateInput>
@@ -10219,10 +10037,6 @@ export namespace Prisma {
      */
     data: CashSessionCreateManyInput | CashSessionCreateManyInput[]
     skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -10237,10 +10051,6 @@ export namespace Prisma {
      * Omit specific fields from the CashSession
      */
     omit?: CashSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
     /**
      * The data needed to update a CashSession.
      */
@@ -10293,10 +10103,6 @@ export namespace Prisma {
      * Limit how many CashSessions to update.
      */
     limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -10311,10 +10117,6 @@ export namespace Prisma {
      * Omit specific fields from the CashSession
      */
     omit?: CashSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
     /**
      * The filter to search for the CashSession to update in case it exists.
      */
@@ -10342,10 +10144,6 @@ export namespace Prisma {
      */
     omit?: CashSessionOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
-    /**
      * Filter which CashSession to delete.
      */
     where: CashSessionWhereUniqueInput
@@ -10366,30 +10164,6 @@ export namespace Prisma {
   }
 
   /**
-   * CashSession.movements
-   */
-  export type CashSession$movementsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CashMovement
-     */
-    select?: CashMovementSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the CashMovement
-     */
-    omit?: CashMovementOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
-    where?: CashMovementWhereInput
-    orderBy?: CashMovementOrderByWithRelationInput | CashMovementOrderByWithRelationInput[]
-    cursor?: CashMovementWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: CashMovementScalarFieldEnum | CashMovementScalarFieldEnum[]
-  }
-
-  /**
    * CashSession without action
    */
   export type CashSessionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10401,10 +10175,6 @@ export namespace Prisma {
      * Omit specific fields from the CashSession
      */
     omit?: CashSessionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashSessionInclude<ExtArgs> | null
   }
 
 
@@ -10422,19 +10192,16 @@ export namespace Prisma {
 
   export type CashMovementAvgAggregateOutputType = {
     id: number | null
-    sessionId: number | null
     amount: Decimal | null
   }
 
   export type CashMovementSumAggregateOutputType = {
     id: number | null
-    sessionId: number | null
     amount: Decimal | null
   }
 
   export type CashMovementMinAggregateOutputType = {
     id: number | null
-    sessionId: number | null
     type: $Enums.CashMovementType | null
     label: string | null
     amount: Decimal | null
@@ -10445,7 +10212,6 @@ export namespace Prisma {
 
   export type CashMovementMaxAggregateOutputType = {
     id: number | null
-    sessionId: number | null
     type: $Enums.CashMovementType | null
     label: string | null
     amount: Decimal | null
@@ -10456,7 +10222,6 @@ export namespace Prisma {
 
   export type CashMovementCountAggregateOutputType = {
     id: number
-    sessionId: number
     type: number
     label: number
     amount: number
@@ -10469,19 +10234,16 @@ export namespace Prisma {
 
   export type CashMovementAvgAggregateInputType = {
     id?: true
-    sessionId?: true
     amount?: true
   }
 
   export type CashMovementSumAggregateInputType = {
     id?: true
-    sessionId?: true
     amount?: true
   }
 
   export type CashMovementMinAggregateInputType = {
     id?: true
-    sessionId?: true
     type?: true
     label?: true
     amount?: true
@@ -10492,7 +10254,6 @@ export namespace Prisma {
 
   export type CashMovementMaxAggregateInputType = {
     id?: true
-    sessionId?: true
     type?: true
     label?: true
     amount?: true
@@ -10503,7 +10264,6 @@ export namespace Prisma {
 
   export type CashMovementCountAggregateInputType = {
     id?: true
-    sessionId?: true
     type?: true
     label?: true
     amount?: true
@@ -10601,7 +10361,6 @@ export namespace Prisma {
 
   export type CashMovementGroupByOutputType = {
     id: number
-    sessionId: number
     type: $Enums.CashMovementType
     label: string
     amount: Decimal
@@ -10631,43 +10390,36 @@ export namespace Prisma {
 
   export type CashMovementSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    sessionId?: boolean
     type?: boolean
     label?: boolean
     amount?: boolean
     paymentMethod?: boolean
     note?: boolean
     createdAt?: boolean
-    session?: boolean | CashSessionDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cashMovement"]>
 
   export type CashMovementSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    sessionId?: boolean
     type?: boolean
     label?: boolean
     amount?: boolean
     paymentMethod?: boolean
     note?: boolean
     createdAt?: boolean
-    session?: boolean | CashSessionDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cashMovement"]>
 
   export type CashMovementSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    sessionId?: boolean
     type?: boolean
     label?: boolean
     amount?: boolean
     paymentMethod?: boolean
     note?: boolean
     createdAt?: boolean
-    session?: boolean | CashSessionDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["cashMovement"]>
 
   export type CashMovementSelectScalar = {
     id?: boolean
-    sessionId?: boolean
     type?: boolean
     label?: boolean
     amount?: boolean
@@ -10676,25 +10428,13 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type CashMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sessionId" | "type" | "label" | "amount" | "paymentMethod" | "note" | "createdAt", ExtArgs["result"]["cashMovement"]>
-  export type CashMovementInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    session?: boolean | CashSessionDefaultArgs<ExtArgs>
-  }
-  export type CashMovementIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    session?: boolean | CashSessionDefaultArgs<ExtArgs>
-  }
-  export type CashMovementIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    session?: boolean | CashSessionDefaultArgs<ExtArgs>
-  }
+  export type CashMovementOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "label" | "amount" | "paymentMethod" | "note" | "createdAt", ExtArgs["result"]["cashMovement"]>
 
   export type $CashMovementPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "CashMovement"
-    objects: {
-      session: Prisma.$CashSessionPayload<ExtArgs>
-    }
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      sessionId: number
       type: $Enums.CashMovementType
       label: string
       amount: Prisma.Decimal
@@ -11095,7 +10835,6 @@ export namespace Prisma {
    */
   export interface Prisma__CashMovementClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    session<T extends CashSessionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CashSessionDefaultArgs<ExtArgs>>): Prisma__CashSessionClient<$Result.GetResult<Prisma.$CashSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11126,7 +10865,6 @@ export namespace Prisma {
    */
   interface CashMovementFieldRefs {
     readonly id: FieldRef<"CashMovement", 'Int'>
-    readonly sessionId: FieldRef<"CashMovement", 'Int'>
     readonly type: FieldRef<"CashMovement", 'CashMovementType'>
     readonly label: FieldRef<"CashMovement", 'String'>
     readonly amount: FieldRef<"CashMovement", 'Decimal'>
@@ -11150,10 +10888,6 @@ export namespace Prisma {
      */
     omit?: CashMovementOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
-    /**
      * Filter, which CashMovement to fetch.
      */
     where: CashMovementWhereUniqueInput
@@ -11172,10 +10906,6 @@ export namespace Prisma {
      */
     omit?: CashMovementOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
-    /**
      * Filter, which CashMovement to fetch.
      */
     where: CashMovementWhereUniqueInput
@@ -11193,10 +10923,6 @@ export namespace Prisma {
      * Omit specific fields from the CashMovement
      */
     omit?: CashMovementOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
     /**
      * Filter, which CashMovement to fetch.
      */
@@ -11246,10 +10972,6 @@ export namespace Prisma {
      */
     omit?: CashMovementOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
-    /**
      * Filter, which CashMovement to fetch.
      */
     where?: CashMovementWhereInput
@@ -11297,10 +11019,6 @@ export namespace Prisma {
      * Omit specific fields from the CashMovement
      */
     omit?: CashMovementOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
     /**
      * Filter, which CashMovements to fetch.
      */
@@ -11350,10 +11068,6 @@ export namespace Prisma {
      */
     omit?: CashMovementOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
-    /**
      * The data needed to create a CashMovement.
      */
     data: XOR<CashMovementCreateInput, CashMovementUncheckedCreateInput>
@@ -11387,10 +11101,6 @@ export namespace Prisma {
      */
     data: CashMovementCreateManyInput | CashMovementCreateManyInput[]
     skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -11405,10 +11115,6 @@ export namespace Prisma {
      * Omit specific fields from the CashMovement
      */
     omit?: CashMovementOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
     /**
      * The data needed to update a CashMovement.
      */
@@ -11461,10 +11167,6 @@ export namespace Prisma {
      * Limit how many CashMovements to update.
      */
     limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -11479,10 +11181,6 @@ export namespace Prisma {
      * Omit specific fields from the CashMovement
      */
     omit?: CashMovementOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
     /**
      * The filter to search for the CashMovement to update in case it exists.
      */
@@ -11509,10 +11207,6 @@ export namespace Prisma {
      * Omit specific fields from the CashMovement
      */
     omit?: CashMovementOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
     /**
      * Filter which CashMovement to delete.
      */
@@ -11545,10 +11239,6 @@ export namespace Prisma {
      * Omit specific fields from the CashMovement
      */
     omit?: CashMovementOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CashMovementInclude<ExtArgs> | null
   }
 
 
@@ -16292,7 +15982,6 @@ export namespace Prisma {
 
   export const CashMovementScalarFieldEnum: {
     id: 'id',
-    sessionId: 'sessionId',
     type: 'type',
     label: 'label',
     amount: 'amount',
@@ -16539,7 +16228,6 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
-    cashSessions?: CashSessionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -16549,7 +16237,6 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     createdAt?: SortOrder
-    cashSessions?: CashSessionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -16562,7 +16249,6 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
-    cashSessions?: CashSessionListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -16974,8 +16660,6 @@ export namespace Prisma {
     isOpen?: BoolFilter<"CashSession"> | boolean
     userId?: IntFilter<"CashSession"> | number
     createdAt?: DateTimeFilter<"CashSession"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    movements?: CashMovementListRelationFilter
   }
 
   export type CashSessionOrderByWithRelationInput = {
@@ -16987,8 +16671,6 @@ export namespace Prisma {
     isOpen?: SortOrder
     userId?: SortOrder
     createdAt?: SortOrder
-    user?: UserOrderByWithRelationInput
-    movements?: CashMovementOrderByRelationAggregateInput
   }
 
   export type CashSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -17003,8 +16685,6 @@ export namespace Prisma {
     isOpen?: BoolFilter<"CashSession"> | boolean
     userId?: IntFilter<"CashSession"> | number
     createdAt?: DateTimeFilter<"CashSession"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    movements?: CashMovementListRelationFilter
   }, "id">
 
   export type CashSessionOrderByWithAggregationInput = {
@@ -17042,26 +16722,22 @@ export namespace Prisma {
     OR?: CashMovementWhereInput[]
     NOT?: CashMovementWhereInput | CashMovementWhereInput[]
     id?: IntFilter<"CashMovement"> | number
-    sessionId?: IntFilter<"CashMovement"> | number
     type?: EnumCashMovementTypeFilter<"CashMovement"> | $Enums.CashMovementType
     label?: StringFilter<"CashMovement"> | string
     amount?: DecimalFilter<"CashMovement"> | Decimal | DecimalJsLike | number | string
     paymentMethod?: EnumPaymentMethodFilter<"CashMovement"> | $Enums.PaymentMethod
     note?: StringNullableFilter<"CashMovement"> | string | null
     createdAt?: DateTimeFilter<"CashMovement"> | Date | string
-    session?: XOR<CashSessionScalarRelationFilter, CashSessionWhereInput>
   }
 
   export type CashMovementOrderByWithRelationInput = {
     id?: SortOrder
-    sessionId?: SortOrder
     type?: SortOrder
     label?: SortOrder
     amount?: SortOrder
     paymentMethod?: SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
-    session?: CashSessionOrderByWithRelationInput
   }
 
   export type CashMovementWhereUniqueInput = Prisma.AtLeast<{
@@ -17069,19 +16745,16 @@ export namespace Prisma {
     AND?: CashMovementWhereInput | CashMovementWhereInput[]
     OR?: CashMovementWhereInput[]
     NOT?: CashMovementWhereInput | CashMovementWhereInput[]
-    sessionId?: IntFilter<"CashMovement"> | number
     type?: EnumCashMovementTypeFilter<"CashMovement"> | $Enums.CashMovementType
     label?: StringFilter<"CashMovement"> | string
     amount?: DecimalFilter<"CashMovement"> | Decimal | DecimalJsLike | number | string
     paymentMethod?: EnumPaymentMethodFilter<"CashMovement"> | $Enums.PaymentMethod
     note?: StringNullableFilter<"CashMovement"> | string | null
     createdAt?: DateTimeFilter<"CashMovement"> | Date | string
-    session?: XOR<CashSessionScalarRelationFilter, CashSessionWhereInput>
   }, "id">
 
   export type CashMovementOrderByWithAggregationInput = {
     id?: SortOrder
-    sessionId?: SortOrder
     type?: SortOrder
     label?: SortOrder
     amount?: SortOrder
@@ -17100,7 +16773,6 @@ export namespace Prisma {
     OR?: CashMovementScalarWhereWithAggregatesInput[]
     NOT?: CashMovementScalarWhereWithAggregatesInput | CashMovementScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"CashMovement"> | number
-    sessionId?: IntWithAggregatesFilter<"CashMovement"> | number
     type?: EnumCashMovementTypeWithAggregatesFilter<"CashMovement"> | $Enums.CashMovementType
     label?: StringWithAggregatesFilter<"CashMovement"> | string
     amount?: DecimalWithAggregatesFilter<"CashMovement"> | Decimal | DecimalJsLike | number | string
@@ -17423,7 +17095,6 @@ export namespace Prisma {
     password: string
     role?: string
     createdAt?: Date | string
-    cashSessions?: CashSessionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -17433,7 +17104,6 @@ export namespace Prisma {
     password: string
     role?: string
     createdAt?: Date | string
-    cashSessions?: CashSessionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -17442,7 +17112,6 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cashSessions?: CashSessionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -17452,7 +17121,6 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cashSessions?: CashSessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -17866,9 +17534,8 @@ export namespace Prisma {
     openingAmount: Decimal | DecimalJsLike | number | string
     closingAmount?: Decimal | DecimalJsLike | number | string | null
     isOpen?: boolean
+    userId: number
     createdAt?: Date | string
-    user: UserCreateNestedOneWithoutCashSessionsInput
-    movements?: CashMovementCreateNestedManyWithoutSessionInput
   }
 
   export type CashSessionUncheckedCreateInput = {
@@ -17880,7 +17547,6 @@ export namespace Prisma {
     isOpen?: boolean
     userId: number
     createdAt?: Date | string
-    movements?: CashMovementUncheckedCreateNestedManyWithoutSessionInput
   }
 
   export type CashSessionUpdateInput = {
@@ -17889,9 +17555,8 @@ export namespace Prisma {
     openingAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     closingAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isOpen?: BoolFieldUpdateOperationsInput | boolean
+    userId?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutCashSessionsNestedInput
-    movements?: CashMovementUpdateManyWithoutSessionNestedInput
   }
 
   export type CashSessionUncheckedUpdateInput = {
@@ -17903,7 +17568,6 @@ export namespace Prisma {
     isOpen?: BoolFieldUpdateOperationsInput | boolean
     userId?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    movements?: CashMovementUncheckedUpdateManyWithoutSessionNestedInput
   }
 
   export type CashSessionCreateManyInput = {
@@ -17923,6 +17587,7 @@ export namespace Prisma {
     openingAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     closingAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isOpen?: BoolFieldUpdateOperationsInput | boolean
+    userId?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -17944,12 +17609,10 @@ export namespace Prisma {
     paymentMethod: $Enums.PaymentMethod
     note?: string | null
     createdAt?: Date | string
-    session: CashSessionCreateNestedOneWithoutMovementsInput
   }
 
   export type CashMovementUncheckedCreateInput = {
     id?: number
-    sessionId: number
     type: $Enums.CashMovementType
     label: string
     amount: Decimal | DecimalJsLike | number | string
@@ -17965,12 +17628,10 @@ export namespace Prisma {
     paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    session?: CashSessionUpdateOneRequiredWithoutMovementsNestedInput
   }
 
   export type CashMovementUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    sessionId?: IntFieldUpdateOperationsInput | number
     type?: EnumCashMovementTypeFieldUpdateOperationsInput | $Enums.CashMovementType
     label?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -17981,7 +17642,6 @@ export namespace Prisma {
 
   export type CashMovementCreateManyInput = {
     id?: number
-    sessionId: number
     type: $Enums.CashMovementType
     label: string
     amount: Decimal | DecimalJsLike | number | string
@@ -18001,7 +17661,6 @@ export namespace Prisma {
 
   export type CashMovementUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    sessionId?: IntFieldUpdateOperationsInput | number
     type?: EnumCashMovementTypeFieldUpdateOperationsInput | $Enums.CashMovementType
     label?: StringFieldUpdateOperationsInput | string
     amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
@@ -18370,16 +18029,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type CashSessionListRelationFilter = {
-    every?: CashSessionWhereInput
-    some?: CashSessionWhereInput
-    none?: CashSessionWhereInput
-  }
-
-  export type CashSessionOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -18887,21 +18536,6 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
-  export type CashMovementListRelationFilter = {
-    every?: CashMovementWhereInput
-    some?: CashMovementWhereInput
-    none?: CashMovementWhereInput
-  }
-
-  export type CashMovementOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type CashSessionCountOrderByAggregateInput = {
     id?: SortOrder
     openedAt?: SortOrder
@@ -18987,14 +18621,8 @@ export namespace Prisma {
     not?: NestedEnumPaymentMethodFilter<$PrismaModel> | $Enums.PaymentMethod
   }
 
-  export type CashSessionScalarRelationFilter = {
-    is?: CashSessionWhereInput
-    isNot?: CashSessionWhereInput
-  }
-
   export type CashMovementCountOrderByAggregateInput = {
     id?: SortOrder
-    sessionId?: SortOrder
     type?: SortOrder
     label?: SortOrder
     amount?: SortOrder
@@ -19005,13 +18633,11 @@ export namespace Prisma {
 
   export type CashMovementAvgOrderByAggregateInput = {
     id?: SortOrder
-    sessionId?: SortOrder
     amount?: SortOrder
   }
 
   export type CashMovementMaxOrderByAggregateInput = {
     id?: SortOrder
-    sessionId?: SortOrder
     type?: SortOrder
     label?: SortOrder
     amount?: SortOrder
@@ -19022,7 +18648,6 @@ export namespace Prisma {
 
   export type CashMovementMinOrderByAggregateInput = {
     id?: SortOrder
-    sessionId?: SortOrder
     type?: SortOrder
     label?: SortOrder
     amount?: SortOrder
@@ -19033,7 +18658,6 @@ export namespace Prisma {
 
   export type CashMovementSumOrderByAggregateInput = {
     id?: SortOrder
-    sessionId?: SortOrder
     amount?: SortOrder
   }
 
@@ -19343,20 +18967,6 @@ export namespace Prisma {
     factureId?: SortOrder
   }
 
-  export type CashSessionCreateNestedManyWithoutUserInput = {
-    create?: XOR<CashSessionCreateWithoutUserInput, CashSessionUncheckedCreateWithoutUserInput> | CashSessionCreateWithoutUserInput[] | CashSessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CashSessionCreateOrConnectWithoutUserInput | CashSessionCreateOrConnectWithoutUserInput[]
-    createMany?: CashSessionCreateManyUserInputEnvelope
-    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-  }
-
-  export type CashSessionUncheckedCreateNestedManyWithoutUserInput = {
-    create?: XOR<CashSessionCreateWithoutUserInput, CashSessionUncheckedCreateWithoutUserInput> | CashSessionCreateWithoutUserInput[] | CashSessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CashSessionCreateOrConnectWithoutUserInput | CashSessionCreateOrConnectWithoutUserInput[]
-    createMany?: CashSessionCreateManyUserInputEnvelope
-    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-  }
-
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
@@ -19365,40 +18975,12 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type CashSessionUpdateManyWithoutUserNestedInput = {
-    create?: XOR<CashSessionCreateWithoutUserInput, CashSessionUncheckedCreateWithoutUserInput> | CashSessionCreateWithoutUserInput[] | CashSessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CashSessionCreateOrConnectWithoutUserInput | CashSessionCreateOrConnectWithoutUserInput[]
-    upsert?: CashSessionUpsertWithWhereUniqueWithoutUserInput | CashSessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: CashSessionCreateManyUserInputEnvelope
-    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-    update?: CashSessionUpdateWithWhereUniqueWithoutUserInput | CashSessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: CashSessionUpdateManyWithWhereWithoutUserInput | CashSessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
-  }
-
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type CashSessionUncheckedUpdateManyWithoutUserNestedInput = {
-    create?: XOR<CashSessionCreateWithoutUserInput, CashSessionUncheckedCreateWithoutUserInput> | CashSessionCreateWithoutUserInput[] | CashSessionUncheckedCreateWithoutUserInput[]
-    connectOrCreate?: CashSessionCreateOrConnectWithoutUserInput | CashSessionCreateOrConnectWithoutUserInput[]
-    upsert?: CashSessionUpsertWithWhereUniqueWithoutUserInput | CashSessionUpsertWithWhereUniqueWithoutUserInput[]
-    createMany?: CashSessionCreateManyUserInputEnvelope
-    set?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-    disconnect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-    delete?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-    connect?: CashSessionWhereUniqueInput | CashSessionWhereUniqueInput[]
-    update?: CashSessionUpdateWithWhereUniqueWithoutUserInput | CashSessionUpdateWithWhereUniqueWithoutUserInput[]
-    updateMany?: CashSessionUpdateManyWithWhereWithoutUserInput | CashSessionUpdateManyWithWhereWithoutUserInput[]
-    deleteMany?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
   }
 
   export type SupplierCreateNestedOneWithoutProductInput = {
@@ -19785,26 +19367,6 @@ export namespace Prisma {
     deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutCashSessionsInput = {
-    create?: XOR<UserCreateWithoutCashSessionsInput, UserUncheckedCreateWithoutCashSessionsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCashSessionsInput
-    connect?: UserWhereUniqueInput
-  }
-
-  export type CashMovementCreateNestedManyWithoutSessionInput = {
-    create?: XOR<CashMovementCreateWithoutSessionInput, CashMovementUncheckedCreateWithoutSessionInput> | CashMovementCreateWithoutSessionInput[] | CashMovementUncheckedCreateWithoutSessionInput[]
-    connectOrCreate?: CashMovementCreateOrConnectWithoutSessionInput | CashMovementCreateOrConnectWithoutSessionInput[]
-    createMany?: CashMovementCreateManySessionInputEnvelope
-    connect?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-  }
-
-  export type CashMovementUncheckedCreateNestedManyWithoutSessionInput = {
-    create?: XOR<CashMovementCreateWithoutSessionInput, CashMovementUncheckedCreateWithoutSessionInput> | CashMovementCreateWithoutSessionInput[] | CashMovementUncheckedCreateWithoutSessionInput[]
-    connectOrCreate?: CashMovementCreateOrConnectWithoutSessionInput | CashMovementCreateOrConnectWithoutSessionInput[]
-    createMany?: CashMovementCreateManySessionInputEnvelope
-    connect?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-  }
-
   export type NullableDecimalFieldUpdateOperationsInput = {
     set?: Decimal | DecimalJsLike | number | string | null
     increment?: Decimal | DecimalJsLike | number | string
@@ -19817,62 +19379,12 @@ export namespace Prisma {
     set?: boolean
   }
 
-  export type UserUpdateOneRequiredWithoutCashSessionsNestedInput = {
-    create?: XOR<UserCreateWithoutCashSessionsInput, UserUncheckedCreateWithoutCashSessionsInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCashSessionsInput
-    upsert?: UserUpsertWithoutCashSessionsInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCashSessionsInput, UserUpdateWithoutCashSessionsInput>, UserUncheckedUpdateWithoutCashSessionsInput>
-  }
-
-  export type CashMovementUpdateManyWithoutSessionNestedInput = {
-    create?: XOR<CashMovementCreateWithoutSessionInput, CashMovementUncheckedCreateWithoutSessionInput> | CashMovementCreateWithoutSessionInput[] | CashMovementUncheckedCreateWithoutSessionInput[]
-    connectOrCreate?: CashMovementCreateOrConnectWithoutSessionInput | CashMovementCreateOrConnectWithoutSessionInput[]
-    upsert?: CashMovementUpsertWithWhereUniqueWithoutSessionInput | CashMovementUpsertWithWhereUniqueWithoutSessionInput[]
-    createMany?: CashMovementCreateManySessionInputEnvelope
-    set?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-    disconnect?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-    delete?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-    connect?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-    update?: CashMovementUpdateWithWhereUniqueWithoutSessionInput | CashMovementUpdateWithWhereUniqueWithoutSessionInput[]
-    updateMany?: CashMovementUpdateManyWithWhereWithoutSessionInput | CashMovementUpdateManyWithWhereWithoutSessionInput[]
-    deleteMany?: CashMovementScalarWhereInput | CashMovementScalarWhereInput[]
-  }
-
-  export type CashMovementUncheckedUpdateManyWithoutSessionNestedInput = {
-    create?: XOR<CashMovementCreateWithoutSessionInput, CashMovementUncheckedCreateWithoutSessionInput> | CashMovementCreateWithoutSessionInput[] | CashMovementUncheckedCreateWithoutSessionInput[]
-    connectOrCreate?: CashMovementCreateOrConnectWithoutSessionInput | CashMovementCreateOrConnectWithoutSessionInput[]
-    upsert?: CashMovementUpsertWithWhereUniqueWithoutSessionInput | CashMovementUpsertWithWhereUniqueWithoutSessionInput[]
-    createMany?: CashMovementCreateManySessionInputEnvelope
-    set?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-    disconnect?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-    delete?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-    connect?: CashMovementWhereUniqueInput | CashMovementWhereUniqueInput[]
-    update?: CashMovementUpdateWithWhereUniqueWithoutSessionInput | CashMovementUpdateWithWhereUniqueWithoutSessionInput[]
-    updateMany?: CashMovementUpdateManyWithWhereWithoutSessionInput | CashMovementUpdateManyWithWhereWithoutSessionInput[]
-    deleteMany?: CashMovementScalarWhereInput | CashMovementScalarWhereInput[]
-  }
-
-  export type CashSessionCreateNestedOneWithoutMovementsInput = {
-    create?: XOR<CashSessionCreateWithoutMovementsInput, CashSessionUncheckedCreateWithoutMovementsInput>
-    connectOrCreate?: CashSessionCreateOrConnectWithoutMovementsInput
-    connect?: CashSessionWhereUniqueInput
-  }
-
   export type EnumCashMovementTypeFieldUpdateOperationsInput = {
     set?: $Enums.CashMovementType
   }
 
   export type EnumPaymentMethodFieldUpdateOperationsInput = {
     set?: $Enums.PaymentMethod
-  }
-
-  export type CashSessionUpdateOneRequiredWithoutMovementsNestedInput = {
-    create?: XOR<CashSessionCreateWithoutMovementsInput, CashSessionUncheckedCreateWithoutMovementsInput>
-    connectOrCreate?: CashSessionCreateOrConnectWithoutMovementsInput
-    upsert?: CashSessionUpsertWithoutMovementsInput
-    connect?: CashSessionWhereUniqueInput
-    update?: XOR<XOR<CashSessionUpdateToOneWithWhereWithoutMovementsInput, CashSessionUpdateWithoutMovementsInput>, CashSessionUncheckedUpdateWithoutMovementsInput>
   }
 
   export type SaleCreateNestedOneWithoutCashInput = {
@@ -20314,67 +19826,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type CashSessionCreateWithoutUserInput = {
-    openedAt?: Date | string
-    closedAt?: Date | string | null
-    openingAmount: Decimal | DecimalJsLike | number | string
-    closingAmount?: Decimal | DecimalJsLike | number | string | null
-    isOpen?: boolean
-    createdAt?: Date | string
-    movements?: CashMovementCreateNestedManyWithoutSessionInput
-  }
-
-  export type CashSessionUncheckedCreateWithoutUserInput = {
-    id?: number
-    openedAt?: Date | string
-    closedAt?: Date | string | null
-    openingAmount: Decimal | DecimalJsLike | number | string
-    closingAmount?: Decimal | DecimalJsLike | number | string | null
-    isOpen?: boolean
-    createdAt?: Date | string
-    movements?: CashMovementUncheckedCreateNestedManyWithoutSessionInput
-  }
-
-  export type CashSessionCreateOrConnectWithoutUserInput = {
-    where: CashSessionWhereUniqueInput
-    create: XOR<CashSessionCreateWithoutUserInput, CashSessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type CashSessionCreateManyUserInputEnvelope = {
-    data: CashSessionCreateManyUserInput | CashSessionCreateManyUserInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type CashSessionUpsertWithWhereUniqueWithoutUserInput = {
-    where: CashSessionWhereUniqueInput
-    update: XOR<CashSessionUpdateWithoutUserInput, CashSessionUncheckedUpdateWithoutUserInput>
-    create: XOR<CashSessionCreateWithoutUserInput, CashSessionUncheckedCreateWithoutUserInput>
-  }
-
-  export type CashSessionUpdateWithWhereUniqueWithoutUserInput = {
-    where: CashSessionWhereUniqueInput
-    data: XOR<CashSessionUpdateWithoutUserInput, CashSessionUncheckedUpdateWithoutUserInput>
-  }
-
-  export type CashSessionUpdateManyWithWhereWithoutUserInput = {
-    where: CashSessionScalarWhereInput
-    data: XOR<CashSessionUpdateManyMutationInput, CashSessionUncheckedUpdateManyWithoutUserInput>
-  }
-
-  export type CashSessionScalarWhereInput = {
-    AND?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
-    OR?: CashSessionScalarWhereInput[]
-    NOT?: CashSessionScalarWhereInput | CashSessionScalarWhereInput[]
-    id?: IntFilter<"CashSession"> | number
-    openedAt?: DateTimeFilter<"CashSession"> | Date | string
-    closedAt?: DateTimeNullableFilter<"CashSession"> | Date | string | null
-    openingAmount?: DecimalFilter<"CashSession"> | Decimal | DecimalJsLike | number | string
-    closingAmount?: DecimalNullableFilter<"CashSession"> | Decimal | DecimalJsLike | number | string | null
-    isOpen?: BoolFilter<"CashSession"> | boolean
-    userId?: IntFilter<"CashSession"> | number
-    createdAt?: DateTimeFilter<"CashSession"> | Date | string
   }
 
   export type SupplierCreateWithoutProductInput = {
@@ -21107,173 +20558,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Product"> | Date | string
   }
 
-  export type UserCreateWithoutCashSessionsInput = {
-    name: string
-    email: string
-    password: string
-    role?: string
-    createdAt?: Date | string
-  }
-
-  export type UserUncheckedCreateWithoutCashSessionsInput = {
-    id?: number
-    name: string
-    email: string
-    password: string
-    role?: string
-    createdAt?: Date | string
-  }
-
-  export type UserCreateOrConnectWithoutCashSessionsInput = {
-    where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCashSessionsInput, UserUncheckedCreateWithoutCashSessionsInput>
-  }
-
-  export type CashMovementCreateWithoutSessionInput = {
-    type: $Enums.CashMovementType
-    label: string
-    amount: Decimal | DecimalJsLike | number | string
-    paymentMethod: $Enums.PaymentMethod
-    note?: string | null
-    createdAt?: Date | string
-  }
-
-  export type CashMovementUncheckedCreateWithoutSessionInput = {
-    id?: number
-    type: $Enums.CashMovementType
-    label: string
-    amount: Decimal | DecimalJsLike | number | string
-    paymentMethod: $Enums.PaymentMethod
-    note?: string | null
-    createdAt?: Date | string
-  }
-
-  export type CashMovementCreateOrConnectWithoutSessionInput = {
-    where: CashMovementWhereUniqueInput
-    create: XOR<CashMovementCreateWithoutSessionInput, CashMovementUncheckedCreateWithoutSessionInput>
-  }
-
-  export type CashMovementCreateManySessionInputEnvelope = {
-    data: CashMovementCreateManySessionInput | CashMovementCreateManySessionInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type UserUpsertWithoutCashSessionsInput = {
-    update: XOR<UserUpdateWithoutCashSessionsInput, UserUncheckedUpdateWithoutCashSessionsInput>
-    create: XOR<UserCreateWithoutCashSessionsInput, UserUncheckedCreateWithoutCashSessionsInput>
-    where?: UserWhereInput
-  }
-
-  export type UserUpdateToOneWithWhereWithoutCashSessionsInput = {
-    where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCashSessionsInput, UserUncheckedUpdateWithoutCashSessionsInput>
-  }
-
-  export type UserUpdateWithoutCashSessionsInput = {
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UserUncheckedUpdateWithoutCashSessionsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    name?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    password?: StringFieldUpdateOperationsInput | string
-    role?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CashMovementUpsertWithWhereUniqueWithoutSessionInput = {
-    where: CashMovementWhereUniqueInput
-    update: XOR<CashMovementUpdateWithoutSessionInput, CashMovementUncheckedUpdateWithoutSessionInput>
-    create: XOR<CashMovementCreateWithoutSessionInput, CashMovementUncheckedCreateWithoutSessionInput>
-  }
-
-  export type CashMovementUpdateWithWhereUniqueWithoutSessionInput = {
-    where: CashMovementWhereUniqueInput
-    data: XOR<CashMovementUpdateWithoutSessionInput, CashMovementUncheckedUpdateWithoutSessionInput>
-  }
-
-  export type CashMovementUpdateManyWithWhereWithoutSessionInput = {
-    where: CashMovementScalarWhereInput
-    data: XOR<CashMovementUpdateManyMutationInput, CashMovementUncheckedUpdateManyWithoutSessionInput>
-  }
-
-  export type CashMovementScalarWhereInput = {
-    AND?: CashMovementScalarWhereInput | CashMovementScalarWhereInput[]
-    OR?: CashMovementScalarWhereInput[]
-    NOT?: CashMovementScalarWhereInput | CashMovementScalarWhereInput[]
-    id?: IntFilter<"CashMovement"> | number
-    sessionId?: IntFilter<"CashMovement"> | number
-    type?: EnumCashMovementTypeFilter<"CashMovement"> | $Enums.CashMovementType
-    label?: StringFilter<"CashMovement"> | string
-    amount?: DecimalFilter<"CashMovement"> | Decimal | DecimalJsLike | number | string
-    paymentMethod?: EnumPaymentMethodFilter<"CashMovement"> | $Enums.PaymentMethod
-    note?: StringNullableFilter<"CashMovement"> | string | null
-    createdAt?: DateTimeFilter<"CashMovement"> | Date | string
-  }
-
-  export type CashSessionCreateWithoutMovementsInput = {
-    openedAt?: Date | string
-    closedAt?: Date | string | null
-    openingAmount: Decimal | DecimalJsLike | number | string
-    closingAmount?: Decimal | DecimalJsLike | number | string | null
-    isOpen?: boolean
-    createdAt?: Date | string
-    user: UserCreateNestedOneWithoutCashSessionsInput
-  }
-
-  export type CashSessionUncheckedCreateWithoutMovementsInput = {
-    id?: number
-    openedAt?: Date | string
-    closedAt?: Date | string | null
-    openingAmount: Decimal | DecimalJsLike | number | string
-    closingAmount?: Decimal | DecimalJsLike | number | string | null
-    isOpen?: boolean
-    userId: number
-    createdAt?: Date | string
-  }
-
-  export type CashSessionCreateOrConnectWithoutMovementsInput = {
-    where: CashSessionWhereUniqueInput
-    create: XOR<CashSessionCreateWithoutMovementsInput, CashSessionUncheckedCreateWithoutMovementsInput>
-  }
-
-  export type CashSessionUpsertWithoutMovementsInput = {
-    update: XOR<CashSessionUpdateWithoutMovementsInput, CashSessionUncheckedUpdateWithoutMovementsInput>
-    create: XOR<CashSessionCreateWithoutMovementsInput, CashSessionUncheckedCreateWithoutMovementsInput>
-    where?: CashSessionWhereInput
-  }
-
-  export type CashSessionUpdateToOneWithWhereWithoutMovementsInput = {
-    where?: CashSessionWhereInput
-    data: XOR<CashSessionUpdateWithoutMovementsInput, CashSessionUncheckedUpdateWithoutMovementsInput>
-  }
-
-  export type CashSessionUpdateWithoutMovementsInput = {
-    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    openingAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    closingAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    isOpen?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutCashSessionsNestedInput
-  }
-
-  export type CashSessionUncheckedUpdateWithoutMovementsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    openingAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    closingAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    isOpen?: BoolFieldUpdateOperationsInput | boolean
-    userId?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type SaleCreateWithoutCashInput = {
     quantity: number
     unitPrice: Decimal | DecimalJsLike | number | string
@@ -21564,47 +20848,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CashSessionCreateManyUserInput = {
-    id?: number
-    openedAt?: Date | string
-    closedAt?: Date | string | null
-    openingAmount: Decimal | DecimalJsLike | number | string
-    closingAmount?: Decimal | DecimalJsLike | number | string | null
-    isOpen?: boolean
-    createdAt?: Date | string
-  }
-
-  export type CashSessionUpdateWithoutUserInput = {
-    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    openingAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    closingAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    isOpen?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    movements?: CashMovementUpdateManyWithoutSessionNestedInput
-  }
-
-  export type CashSessionUncheckedUpdateWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    openingAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    closingAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    isOpen?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    movements?: CashMovementUncheckedUpdateManyWithoutSessionNestedInput
-  }
-
-  export type CashSessionUncheckedUpdateManyWithoutUserInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    openedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    openingAmount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    closingAmount?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    isOpen?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type StockMovementCreateManyProductInput = {
     id?: number
     supplier_id?: number | null
@@ -21873,45 +21116,6 @@ export namespace Prisma {
     alertThreshold?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CashMovementCreateManySessionInput = {
-    id?: number
-    type: $Enums.CashMovementType
-    label: string
-    amount: Decimal | DecimalJsLike | number | string
-    paymentMethod: $Enums.PaymentMethod
-    note?: string | null
-    createdAt?: Date | string
-  }
-
-  export type CashMovementUpdateWithoutSessionInput = {
-    type?: EnumCashMovementTypeFieldUpdateOperationsInput | $Enums.CashMovementType
-    label?: StringFieldUpdateOperationsInput | string
-    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    note?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CashMovementUncheckedUpdateWithoutSessionInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    type?: EnumCashMovementTypeFieldUpdateOperationsInput | $Enums.CashMovementType
-    label?: StringFieldUpdateOperationsInput | string
-    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    note?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CashMovementUncheckedUpdateManyWithoutSessionInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    type?: EnumCashMovementTypeFieldUpdateOperationsInput | $Enums.CashMovementType
-    label?: StringFieldUpdateOperationsInput | string
-    amount?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    paymentMethod?: EnumPaymentMethodFieldUpdateOperationsInput | $Enums.PaymentMethod
-    note?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type LigneFactureCreateManyFactureInput = {

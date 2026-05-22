@@ -18,7 +18,7 @@ model User {
   role      String   @default("admin")
   createdAt DateTime @default(now())
 
-  cashSessions CashSession[]
+  // cashSessions CashSession[]
 }
 
 model Product {
@@ -92,24 +92,24 @@ model Supplier {
 }
 
 model CashSession {
-  id            Int            @id @default(autoincrement())
-  openedAt      DateTime       @default(now())
+  id            Int       @id @default(autoincrement())
+  openedAt      DateTime  @default(now())
   closedAt      DateTime?
   openingAmount Decimal
   closingAmount Decimal?
-  isOpen        Boolean        @default(true)
+  isOpen        Boolean   @default(true)
   userId        Int
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  movements     CashMovement[]
-  createdAt     DateTime       @default(now())
+  // user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // movements     CashMovement[]
+  createdAt     DateTime  @default(now())
 
   @@map("cash_sessions")
 }
 
 model CashMovement {
   id            Int              @id @default(autoincrement())
-  sessionId     Int
-  session       CashSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  // sessionId     Int
+  // session       CashSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   type          CashMovementType
   label         String
   amount        Decimal

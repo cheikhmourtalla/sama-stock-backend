@@ -17,7 +17,7 @@ export const SaleService = {
 
     const [sales, total] = await Promise.all([
       prisma.sale.findMany({
-        skip: page,
+        skip: skip,
         take: limit,
         orderBy: {
           createdAt: "desc",
@@ -268,7 +268,6 @@ export const SaleService = {
       // mouvement caisse
       await tx.cashMovement.create({
         data: {
-          sessionId: currentSession.id,
 
           type: "SALE",
 
@@ -390,7 +389,7 @@ export const SaleService = {
       // mouvement caisse
       await tx.cashMovement.create({
         data: {
-          sessionId: currentSession.id,
+          // sessionId: currentSession.id,
 
           type: "CLIENT_PAYMENT",
 
@@ -532,7 +531,7 @@ export const SaleService = {
 
       await tx.cashMovement.create({
         data: {
-          sessionId: currentCashSession.id,
+          // sessionId: currentCashSession.id,
           type: "CLIENT_PAYMENT",
           label: "Versement dette",
           amount: paidAmount,
