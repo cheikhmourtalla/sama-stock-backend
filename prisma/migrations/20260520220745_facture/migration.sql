@@ -1,9 +1,10 @@
 -- CreateEnum
 DO $$ BEGIN
-  CREATE TYPE "CashType" AS ENUM (...);
+  CREATE TYPE "CashType" AS ENUM ('EXIT', 'ENTRY');
 EXCEPTION
   WHEN duplicate_object THEN null;
 END $$;
+
 
 -- CreateEnum
 CREATE TYPE "CashMovementType" AS ENUM ('SALE', 'CLIENT_PAYMENT', 'SUPPLIER_PAYMENT', 'EXPENSE');
