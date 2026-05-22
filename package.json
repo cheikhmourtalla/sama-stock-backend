@@ -19,6 +19,7 @@
     "seed:admin:dev": "cross-env NODE_ENV=development tsx src/scripts/create-admin.ts",
     "seed:admin:prod": "cross-env NODE_ENV=production node dist/scripts/create-admin.js",
     "deploy": "npm install && npm run prisma:generate && npm run build && npm run prisma:deploy && npm run seed:admin"
+    
   },
   "keywords": [],
   "author": "",
