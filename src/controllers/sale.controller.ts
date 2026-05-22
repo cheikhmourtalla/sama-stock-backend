@@ -9,6 +9,7 @@ import {
 } from "../dto/sale/sale.dto.js";
 import loggerService from "../services/logger.service.js";
 import { AppError, ErrorCodes } from "../utils/app-error.js";
+import { prisma } from "../config/prisma.js";
 
 export const saleController = {
   // get all sales
@@ -21,11 +22,13 @@ export const saleController = {
       ip: _req.ip,
     });
 
-    const sales = await SaleService.getSales();
+    const page = Number(_req.query.page || 1);
+    const limit = Number(_req.query.limit || 20);
 
+    const sales = await SaleService.getSales(page, limit);
     logger.info(`Liste des ventes récupérée`, {
       requestId,
-      count: sales?.length || 0,
+      count: sales || 0,
     });
 
     return res.status(200).json({
@@ -236,4 +239,160 @@ export const saleController = {
       data: result,
     });
   },
-};
+
+
+
+async getSalesStats (_req: Request, res: Response)  {
+  try {
+    /**
+     * ALL SALES
+     */
+    const sales = await prisma.sale.findMany({
+      include: {
+        product: true,
+        client: true,
+      },
+    });
+
+    /**
+     * GLOBALS
+     */
+    const totalRevenue = sales.reduce(
+      (acc, sale) => acc + Number(sale.totalAmount),
+      0,
+    );
+
+    const totalPaid = sales.reduce(
+      (acc, sale) => acc + Number(sale.paidAmount),
+      0,
+    );
+
+    const totalRemaining = sales.reduce(
+      (acc, sale) => acc + Number(sale.remaining),
+      0,
+    );
+
+    const totalSales = sales.length;
+
+    const totalProductsSold = sales.reduce(
+      (acc, sale) => acc + Number(sale.quantity),
+      0,
+    );
+
+    /**
+     * TODAY SALES
+     */
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    const todaySales = sales.filter(
+      (sale) => new Date(sale.createdAt) >= today,
+    );
+
+    const todayRevenue = todaySales.reduce(
+      (acc, sale) => acc + Number(sale.totalAmount),
+      0,
+    );
+
+    /**
+     * TOP PRODUCTS
+     */
+    const productsMap: Record<
+      string,
+      {
+        productId: number;
+        name: string;
+        quantity: number;
+        revenue: number;
+      }
+    > = {};
+
+    for (const sale of sales) {
+      const productId = sale.productId;
+
+      if (!productsMap[productId]) {
+        productsMap[productId] = {
+          productId,
+          name: sale.product?.name || "Produit",
+          quantity: 0,
+          revenue: 0,
+        };
+      }
+
+      productsMap[productId].quantity += Number(sale.quantity);
+
+      productsMap[productId].revenue += Number(sale.totalAmount);
+    }
+
+    const topProducts = Object.values(productsMap)
+      .sort((a, b) => b.quantity - a.quantity)
+      .slice(0, 5);
+
+    /**
+     * MONTHLY SALES
+     */
+    const monthlyMap: Record<
+      string,
+      {
+        month: string;
+        revenue: number;
+        sales: number;
+      }
+    > = {};
+
+    for (const sale of sales) {
+      const date = new Date(sale.createdAt);
+
+      const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+
+      if (!monthlyMap[monthKey]) {
+        monthlyMap[monthKey] = {
+          month: date.toLocaleDateString("fr-FR", {
+            month: "short",
+            year: "numeric",
+          }),
+
+          revenue: 0,
+          sales: 0,
+        };
+      }
+
+      monthlyMap[monthKey].revenue += Number(sale.totalAmount);
+
+      monthlyMap[monthKey].sales += 1;
+    }
+
+    const monthlyStats = Object.values(monthlyMap);
+
+    /**
+     * RECENT SALES
+     */
+    const recentSales = sales.slice(0, 5);
+
+    return res.json({
+      stats: {
+        totalRevenue,
+        totalPaid,
+        totalRemaining,
+        totalSales,
+        totalProductsSold,
+        todayRevenue,
+      },
+
+      topProducts,
+
+      monthlyStats,
+
+      recentSales,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Erreur lors du chargement des statistiques",
+    });
+  }
+  
+}
+}

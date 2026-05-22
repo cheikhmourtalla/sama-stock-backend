@@ -12,18 +12,36 @@ import { PaymentMethod, Prisma } from "../../generated/prisma/client.js";
 const logger = loggerService.getLogger("SaleService");
 
 export const SaleService = {
-  async getSales() {
-    logger.debug(`Récupération de toutes les ventes`);
+  async getSales(page: number, limit: number) {
+    const skip = (page - 1) * limit;
 
-    const sales = await SaleRepository.findAll();
+    const [sales, total] = await Promise.all([
+      prisma.sale.findMany({
+        skip: page,
+        take: limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+        include: {
+          product: true,
+          client: true,
+        },
+      }),
 
-    logger.info(
-      `Liste des ventes récupérée - ${sales?.length || 0} vente(s) trouvée(s)`,
-    );
+      prisma.sale.count(),
+    ]);
 
-    return sales;
+    return {
+      sales,
+
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   },
-
   async getSaleById(id: number) {
     logger.debug(`Recherche de la vente ID: ${id}`);
 
@@ -239,13 +257,13 @@ export const SaleService = {
         },
       });
 
-      if (!currentSession?.isOpen) {
-        throw new AppError(
-          "La caisse est fermée",
-          403,
-          ErrorCodes.SESSION_NOT_OPEN,
-        );
-      }
+      // if (!currentSession?.isOpen) {
+      //   throw new AppError(
+      //     "La caisse est fermée",
+      //     403,
+      //     ErrorCodes.SESSION_NOT_OPEN,
+      //   );
+      // }
 
       // mouvement caisse
       await tx.cashMovement.create({
@@ -320,13 +338,13 @@ export const SaleService = {
         },
       });
 
-      if (!currentSession?.isOpen) {
-        throw new AppError(
-          "La caisse est fermée",
-          403,
-          ErrorCodes.SESSION_NOT_OPEN,
-        );
-      }
+      // if (!currentSession?.isOpen) {
+      //   throw new AppError(
+      //     "La caisse est fermée",
+      //     403,
+      //     ErrorCodes.SESSION_NOT_OPEN,
+      //   );
+      // }
 
       // calculs
       const newMontantVerse = Number(facture.montantVerse) + amount;
@@ -511,17 +529,6 @@ export const SaleService = {
       const currentCashSession = await tx.cashSession.findFirst({
         orderBy: { openedAt: "desc" },
       });
-
-      if (!currentCashSession || !currentCashSession.isOpen) {
-        logger.error(
-          `Ajout paiement échoué - Caisse fermée ou inexistante pour la vente ID: ${saleId}`,
-        );
-        throw new AppError(
-          "La caisse est fermée. Veuillez ouvrir la caisse avant d'enregistrer un paiement.",
-          403,
-          ErrorCodes.SESSION_NOT_OPEN,
-        );
-      }
 
       await tx.cashMovement.create({
         data: {

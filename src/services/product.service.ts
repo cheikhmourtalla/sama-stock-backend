@@ -36,6 +36,22 @@ export const ProductService = {
       take: limit,
     });
 
+    // =========================
+    // 🔥 STATS GLOBALES (TOUS PRODUITS)
+    // =========================
+    const allProducts = await prisma.product.findMany({
+      select: {
+        quantity: true,
+        alertThreshold: true,
+      },
+    });
+
+    const lowStock = allProducts.filter(
+      (p) => p.quantity > 0 && p.quantity <= p.alertThreshold,
+    ).length;
+
+    const criticalStock = allProducts.filter((p) => p.quantity <= 0).length;
+
     return {
       products,
       pagination: {
@@ -44,9 +60,28 @@ export const ProductService = {
         limit,
         totalPages: Math.ceil(total / limit),
       },
+      stats: {
+        totalProducts: total,
+        lowStock,
+        criticalStock,
+      },
     };
   },
 
+  // Gett all productuc , not paginated
+  async allProduct() {
+    const product = await prisma.product.findMany({});
+
+    if (!product) {
+      throw new AppError(
+        "Produits introuvables",
+        404,
+        ErrorCodes.PRODUCT_NOT_FOUND,
+      );
+    }
+
+    return product;
+  },
   // get one product
   async getProductById(id: number) {
     if (isNaN(id)) {

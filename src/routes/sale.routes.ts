@@ -21,9 +21,12 @@ const router = Router();
  *       200:
  *         description: Succès
  */
-router.get("/test-payment-route", (_req, res) => {
-  return res.status(200).json({ message: "sale payment route loaded" });
-});
+router.get(
+  "/stats",
+  protect,
+  authorizeRoles("admin"),
+  saleController.getSalesStats,
+);
 
 // FACTURE
 router.get(
@@ -32,6 +35,7 @@ router.get(
   authorizeRoles("admin"),
   saleController.getFactures,
 );
+
 router.post(
   "/facture/:id/payment",
 

@@ -4,14 +4,14 @@ import { ProductService } from "../services/product.service.js";
 import loggerService from "../services/logger.service.js";
 
 export const productController = {
-
   // get products
   async getProducts(req: Request, res: Response) {
     const logger = loggerService.getLogger("ProductController");
     const requestId = (req as any).requestId;
 
     const search = typeof req.query.search === "string" ? req.query.search : "";
-    const category = typeof req.query.category === "string" ? req.query.category : "";
+    const category =
+      typeof req.query.category === "string" ? req.query.category : "";
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
 
@@ -21,25 +21,58 @@ export const productController = {
       category,
       page,
       limit,
-      ip: req.ip
+      ip: req.ip,
     });
 
-    const result = await ProductService.getProducts(search, category, page, limit);
+    const result = await ProductService.getProducts(
+      search,
+      category,
+      page,
+      limit,
+    );
 
     logger.info(`Liste des produits récupérée`, {
       requestId,
       count: result.products?.length || 0,
       total: result.pagination?.total || 0,
-      page
+      page,
     });
 
     return res.status(200).json({
       success: true,
       data: result.products,
       pagination: result.pagination,
+
+      // 🔥 AJOUT SAFE (ne casse rien)
+      stats: result.stats,
     });
   },
 
+  // get products not paginations
+  async getAllProduct(req: Request, res: Response) {
+    const logger = loggerService.getLogger("ProductController");
+    const requestId = (req as any).requestId;
+    const id = Number(req.params.id);
+
+    const products = await ProductService.allProduct();
+
+    logger.debug(`Recherche du produit ID: ${id}`, {
+      requestId,
+      productId: id,
+      ip: req.ip,
+    });
+
+    logger.info(`Produit trouvé ID: ${id}`, {
+      requestId,
+      productId: id,
+      // productName: products?.name,
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: products,
+    });
+  },
   // get one product
   async getProductById(req: Request, res: Response) {
     const logger = loggerService.getLogger("ProductController");
@@ -49,7 +82,7 @@ export const productController = {
     logger.debug(`Recherche du produit ID: ${id}`, {
       requestId,
       productId: id,
-      ip: req.ip
+      ip: req.ip,
     });
 
     const product = await ProductService.getProductById(id);
@@ -57,7 +90,7 @@ export const productController = {
     logger.info(`Produit trouvé ID: ${id}`, {
       requestId,
       productId: id,
-      productName: product?.name
+      productName: product?.name,
     });
 
     return res.status(200).json({
@@ -77,7 +110,7 @@ export const productController = {
       productName: productData?.name,
       price: productData?.price,
       quantity: productData?.quantity,
-      ip: req.ip
+      ip: req.ip,
     });
 
     const product = await ProductService.createProduct(req.body);
@@ -85,7 +118,7 @@ export const productController = {
     logger.info(`Produit créé avec succès`, {
       requestId,
       productId: product?.id,
-      productName: product?.name
+      productName: product?.name,
     });
 
     return res.status(201).json({
@@ -102,15 +135,17 @@ export const productController = {
     const id = Number(req.params.id);
     const updateData = req.body;
 
+    console.log(req.body);    
+
     logger.info(`Tentative de modification du produit ID: ${id}`, {
       requestId,
       productId: id,
       updates: {
         name: updateData?.name,
         price: updateData?.price,
-        quantity: updateData?.quantity
+        quantity: updateData?.quantity,
       },
-      ip: req.ip
+      ip: req.ip,
     });
 
     const updatedProduct = await ProductService.updateProduct(id, req.body);
@@ -118,7 +153,7 @@ export const productController = {
     logger.info(`Produit modifié avec succès ID: ${id}`, {
       requestId,
       productId: id,
-      productName: updatedProduct?.name
+      productName: updatedProduct?.name,
     });
 
     return res.status(200).json({
@@ -137,14 +172,14 @@ export const productController = {
     logger.warn(`Tentative de suppression du produit ID: ${id}`, {
       requestId,
       productId: id,
-      ip: req.ip
+      ip: req.ip,
     });
 
     await ProductService.deleteProduct(id);
 
     logger.info(`Produit supprimé avec succès ID: ${id}`, {
       requestId,
-      productId: id
+      productId: id,
     });
 
     return res.status(200).json({
@@ -160,14 +195,14 @@ export const productController = {
 
     logger.debug(`Récupération des produits en stock faible`, {
       requestId,
-      ip: _req.ip
+      ip: _req.ip,
     });
 
     const products = await ProductService.getLowStockProducts();
 
     logger.info(`Produits en stock faible récupérés`, {
       requestId,
-      count: products?.length || 0
+      count: products?.length || 0,
     });
 
     return res.status(200).json({
@@ -183,14 +218,14 @@ export const productController = {
 
     logger.debug(`Récupération des produits en rupture de stock`, {
       requestId,
-      ip: _req.ip
+      ip: _req.ip,
     });
 
     const products = await ProductService.getOutOfStockProducts();
 
     logger.info(`Produits en rupture de stock récupérés`, {
       requestId,
-      count: products?.length || 0
+      count: products?.length || 0,
     });
 
     return res.status(200).json({

@@ -23,7 +23,12 @@ const router = Router();
  *       200:
  *         description: Liste des produits récupérée
  */
-router.get("/", protect, authorizeRoles("admin", "employee"), productController.getProducts);
+router.get(
+  "/",
+  protect,
+  authorizeRoles("admin", "employee"),
+  productController.getProducts,
+);
 
 /**
  * @swagger
@@ -37,7 +42,18 @@ router.get("/", protect, authorizeRoles("admin", "employee"), productController.
  *       200:
  *         description: Produits en dessous du seuil d'alerte
  */
-router.get("/low-stock", protect, authorizeRoles("admin", "employee"), productController.getLowStockProducts);
+router.get(
+  "/low-stock",
+  protect,
+  authorizeRoles("admin", "employee"),
+  productController.getLowStockProducts,
+);
+router.get(
+  "/all/products",
+  protect,
+  authorizeRoles("admin", "employee"),
+  productController.getAllProduct,
+);
 
 /**
  * @swagger
@@ -51,7 +67,12 @@ router.get("/low-stock", protect, authorizeRoles("admin", "employee"), productCo
  *       200:
  *         description: Produits avec quantité à zéro
  */
-router.get("/out-of-stock", protect, authorizeRoles("admin", "employee"), productController.getOutOfStockProducts);
+router.get(
+  "/out-of-stock",
+  protect,
+  authorizeRoles("admin", "employee"),
+  productController.getOutOfStockProducts,
+);
 
 /**
  * @swagger
@@ -73,7 +94,12 @@ router.get("/out-of-stock", protect, authorizeRoles("admin", "employee"), produc
  *       404:
  *         description: Produit non trouvé
  */
-router.get("/:id", protect, authorizeRoles("admin", "employee"), productController.getProductById);
+router.get(
+  "/:id",
+  protect,
+  authorizeRoles("admin", "employee"),
+  productController.getProductById,
+);
 
 /**
  * @swagger
@@ -105,7 +131,12 @@ router.get("/:id", protect, authorizeRoles("admin", "employee"), productControll
  *       201:
  *         description: Produit créé avec succès
  */
-router.post("/", protect, authorizeRoles("admin"), productController.createProduct);
+router.post(
+  "/",
+  protect,
+  authorizeRoles("admin"),
+  productController.createProduct,
+);
 
 /**
  * @swagger
@@ -137,7 +168,12 @@ router.post("/", protect, authorizeRoles("admin"), productController.createProdu
  *       200:
  *         description: Produit mis à jour
  */
-router.put("/:id", protect, authorizeRoles("admin"), productController.updateProduct);
+router.patch(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  productController.updateProduct,
+);
 
 /**
  * @swagger
@@ -157,6 +193,11 @@ router.put("/:id", protect, authorizeRoles("admin"), productController.updatePro
  *       200:
  *         description: Produit supprimé
  */
-router.delete("/:id", protect, authorizeRoles("admin"), productController.deleteProduct);
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("admin"),
+  productController.deleteProduct,
+);
 
 export default router;
