@@ -45,7 +45,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://sama-stock.netlify.app",
-      "sama-stocks.netlify.app",
+      "https://sama-stocks.netlify.app",
     ],
     credentials: true,
   }),
