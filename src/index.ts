@@ -43,9 +43,9 @@ app.use(rateLimitedLogger(200)); // Limite à 200 logs/min par IP
 app.use(
   cors({
     origin: [
+      "https://sama-stocks.netlify.app",
       "http://localhost:5173",
       "https://sama-stock.netlify.app",
-      "https://sama-stocks.netlify.app",
     ],
     credentials: true,
   }),

@@ -75,7 +75,7 @@ export const SaleService = {
   // ===============================================
   async createSale(data: CreateSale) {
     const { items, clientId, paidAmount, paymentMethod, customer, note } = data;
-
+    console.log(data);
     if (!items || items.length === 0) {
       throw new AppError(
         "Aucun produit dans la vente",
@@ -145,7 +145,8 @@ export const SaleService = {
           },
         });
 
-        const unitPrice = Number(product.salePrice);
+        // P1 : use original price of the product
+        const unitPrice = Number(item.unitPrice);
 
         const lineTotal = unitPrice * item.quantity;
 
@@ -268,7 +269,6 @@ export const SaleService = {
       // mouvement caisse
       await tx.cashMovement.create({
         data: {
-
           type: "SALE",
 
           label: "Vente",

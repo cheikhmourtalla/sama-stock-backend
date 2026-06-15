@@ -68,28 +68,26 @@ export const saleController = {
     const requestId = (req as any).requestId;
     const validatedData = req.body;
 
-    console.log(validatedData);
-
-    logger.info(`Tentative de création d'une nouvelle vente`, {
-      requestId,
-      clientId: validatedData.clientId,
-      productId: validatedData.productId,
-      quantity: validatedData.quantity,
-      // totalAmount: validatedData.totalAmount,
-      ip: req.ip,
-    });
+    // logger.info(`Tentative de création d'une nouvelle vente`, {
+    //   requestId,
+    //   clientId: validatedData.clientId,
+    //   productId: validatedData.productId,
+    //   quantity: validatedData.quantity,
+    //   // totalAmount: validatedData.totalAmount,
+    //   ip: req.ip,
+    // });
 
     const sale = await SaleService.createSale(validatedData);
 
-    logger.info(`Vente créée avec succès`, {
-      requestId,
-      saleId: sale,
-    });
+    // logger.info(`Vente créée avec succès`, {
+    //   requestId,
+    //   saleId: sale,
+    // });
 
     return res.status(201).json({
       success: true,
       data: sale,
-      message: "Vente enregistrée avec succès",
+      message: "Vente enregistrée avec succèss",
     });
   },
 
@@ -240,159 +238,156 @@ export const saleController = {
     });
   },
 
+  async getSalesStats(_req: Request, res: Response) {
+    try {
+      /**
+       * ALL SALES
+       */
+      const sales = await prisma.sale.findMany({
+        include: {
+          product: true,
+          client: true,
+        },
+      });
 
+      /**
+       * GLOBALS
+       */
+      const totalRevenue = sales.reduce(
+        (acc, sale) => acc + Number(sale.totalAmount),
+        0,
+      );
 
-async getSalesStats (_req: Request, res: Response)  {
-  try {
-    /**
-     * ALL SALES
-     */
-    const sales = await prisma.sale.findMany({
-      include: {
-        product: true,
-        client: true,
-      },
-    });
+      const totalPaid = sales.reduce(
+        (acc, sale) => acc + Number(sale.paidAmount),
+        0,
+      );
 
-    /**
-     * GLOBALS
-     */
-    const totalRevenue = sales.reduce(
-      (acc, sale) => acc + Number(sale.totalAmount),
-      0,
-    );
+      const totalRemaining = sales.reduce(
+        (acc, sale) => acc + Number(sale.remaining),
+        0,
+      );
 
-    const totalPaid = sales.reduce(
-      (acc, sale) => acc + Number(sale.paidAmount),
-      0,
-    );
+      const totalSales = sales.length;
 
-    const totalRemaining = sales.reduce(
-      (acc, sale) => acc + Number(sale.remaining),
-      0,
-    );
+      const totalProductsSold = sales.reduce(
+        (acc, sale) => acc + Number(sale.quantity),
+        0,
+      );
 
-    const totalSales = sales.length;
+      /**
+       * TODAY SALES
+       */
+      const today = new Date();
 
-    const totalProductsSold = sales.reduce(
-      (acc, sale) => acc + Number(sale.quantity),
-      0,
-    );
+      today.setHours(0, 0, 0, 0);
 
-    /**
-     * TODAY SALES
-     */
-    const today = new Date();
+      const todaySales = sales.filter(
+        (sale) => new Date(sale.createdAt) >= today,
+      );
 
-    today.setHours(0, 0, 0, 0);
+      const todayRevenue = todaySales.reduce(
+        (acc, sale) => acc + Number(sale.totalAmount),
+        0,
+      );
 
-    const todaySales = sales.filter(
-      (sale) => new Date(sale.createdAt) >= today,
-    );
+      /**
+       * TOP PRODUCTS
+       */
+      const productsMap: Record<
+        string,
+        {
+          productId: number;
+          name: string;
+          quantity: number;
+          revenue: number;
+        }
+      > = {};
 
-    const todayRevenue = todaySales.reduce(
-      (acc, sale) => acc + Number(sale.totalAmount),
-      0,
-    );
+      for (const sale of sales) {
+        const productId = sale.productId;
 
-    /**
-     * TOP PRODUCTS
-     */
-    const productsMap: Record<
-      string,
-      {
-        productId: number;
-        name: string;
-        quantity: number;
-        revenue: number;
+        if (!productsMap[productId]) {
+          productsMap[productId] = {
+            productId,
+            name: sale.product?.name || "Produit",
+            quantity: 0,
+            revenue: 0,
+          };
+        }
+
+        productsMap[productId].quantity += Number(sale.quantity);
+
+        productsMap[productId].revenue += Number(sale.totalAmount);
       }
-    > = {};
 
-    for (const sale of sales) {
-      const productId = sale.productId;
+      const topProducts = Object.values(productsMap)
+        .sort((a, b) => b.quantity - a.quantity)
+        .slice(0, 5);
 
-      if (!productsMap[productId]) {
-        productsMap[productId] = {
-          productId,
-          name: sale.product?.name || "Produit",
-          quantity: 0,
-          revenue: 0,
-        };
+      /**
+       * MONTHLY SALES
+       */
+      const monthlyMap: Record<
+        string,
+        {
+          month: string;
+          revenue: number;
+          sales: number;
+        }
+      > = {};
+
+      for (const sale of sales) {
+        const date = new Date(sale.createdAt);
+
+        const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+
+        if (!monthlyMap[monthKey]) {
+          monthlyMap[monthKey] = {
+            month: date.toLocaleDateString("fr-FR", {
+              month: "short",
+              year: "numeric",
+            }),
+
+            revenue: 0,
+            sales: 0,
+          };
+        }
+
+        monthlyMap[monthKey].revenue += Number(sale.totalAmount);
+
+        monthlyMap[monthKey].sales += 1;
       }
 
-      productsMap[productId].quantity += Number(sale.quantity);
+      const monthlyStats = Object.values(monthlyMap);
 
-      productsMap[productId].revenue += Number(sale.totalAmount);
+      /**
+       * RECENT SALES
+       */
+      const recentSales = sales.slice(0, 5);
+
+      return res.json({
+        stats: {
+          totalRevenue,
+          totalPaid,
+          totalRemaining,
+          totalSales,
+          totalProductsSold,
+          todayRevenue,
+        },
+
+        topProducts,
+
+        monthlyStats,
+
+        recentSales,
+      });
+    } catch (error) {
+      console.error(error);
+
+      return res.status(500).json({
+        message: "Erreur lors du chargement des statistiques",
+      });
     }
-
-    const topProducts = Object.values(productsMap)
-      .sort((a, b) => b.quantity - a.quantity)
-      .slice(0, 5);
-
-    /**
-     * MONTHLY SALES
-     */
-    const monthlyMap: Record<
-      string,
-      {
-        month: string;
-        revenue: number;
-        sales: number;
-      }
-    > = {};
-
-    for (const sale of sales) {
-      const date = new Date(sale.createdAt);
-
-      const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
-
-      if (!monthlyMap[monthKey]) {
-        monthlyMap[monthKey] = {
-          month: date.toLocaleDateString("fr-FR", {
-            month: "short",
-            year: "numeric",
-          }),
-
-          revenue: 0,
-          sales: 0,
-        };
-      }
-
-      monthlyMap[monthKey].revenue += Number(sale.totalAmount);
-
-      monthlyMap[monthKey].sales += 1;
-    }
-
-    const monthlyStats = Object.values(monthlyMap);
-
-    /**
-     * RECENT SALES
-     */
-    const recentSales = sales.slice(0, 5);
-
-    return res.json({
-      stats: {
-        totalRevenue,
-        totalPaid,
-        totalRemaining,
-        totalSales,
-        totalProductsSold,
-        todayRevenue,
-      },
-
-      topProducts,
-
-      monthlyStats,
-
-      recentSales,
-    });
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      message: "Erreur lors du chargement des statistiques",
-    });
-  }
-  
-}
-}
+  },
+};
